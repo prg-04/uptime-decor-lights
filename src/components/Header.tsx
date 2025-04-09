@@ -92,7 +92,9 @@ const Header = () => {
             {links.map((link) => (
               <NavigationMenuItem key={link.title}>
                 {link?.subLinks ? (
-                  <NavigationMenuTrigger>{link.title}</NavigationMenuTrigger>
+                  <Link href={link.href}>
+                    <NavigationMenuTrigger>{link.title}</NavigationMenuTrigger>
+                  </Link>
                 ) : (
                   <Link
                     href={link.href}

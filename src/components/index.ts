@@ -12,4 +12,6 @@ export { default as HomeChandelier } from './HomeChandelier'
 export { default as HomePendants } from './HomePendants'
 export { default as HomeWallLights } from './HomeWallLights'
 export { default as HomeSeoContent } from './HomeSeoContent'
-export {default as Footer} from "./Footer"
+export { default as Footer } from "./Footer"
+export { default as ShippingInfo } from "./ShippingInfo"
+export {default as ProductPageLayout} from "./ProductPageLayout"

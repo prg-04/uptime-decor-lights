@@ -5,7 +5,12 @@ import new_arrival from '@/public/new_arrival.jpeg'
 import pendant_light from '@/public/hero_pr_1.jpeg'
 import switchesImg from '@/public/switches&sockets.jpeg'
 import banner from '@/public/lights_lamps_lights_and_lamps_TRADE_Banner.webp'
-import { categoriesHomeProps, FooterNavItem, HeroContentProps, ProductCardProps } from 'types'
+import shipping_1 from '@/public/L-L_ICON_ASSET-01.webp'
+import shipping_2 from '@/public/L-L_ICON_ASSET-03.webp'
+import shipping_3 from '@/public/L-L_ICON_ASSET-05.avif'
+import shipping_4 from '@/public/L-L_ICON_ASSET-18.webp'
+
+import { categoriesHomeProps, FooterNavItem, HeroContentProps, ProductCard, ProductsPageProps, ShippingInfoProps } from 'types'
 
 export const heroContent: HeroContentProps[] = [
   {
@@ -61,7 +66,7 @@ export const categoriesHome: categoriesHomeProps[] = [
   },
 ]
 
-export const new_arrivals: ProductCardProps[] = [
+export const new_arrivals: ProductCard[] = [
   {
     title: 'Aurora - 1 light polished chrome and crystal pendant',
     image: chandelier_2,
@@ -89,7 +94,7 @@ export const new_arrivals: ProductCardProps[] = [
   },
 ]
 
-export const bestSellers: ProductCardProps[] = [
+export const bestSellers: ProductCard[] = [
   {
     title: 'Lumina - 3 light polished chrome and crystal pendant',
     image: luxe_gold,
@@ -117,7 +122,7 @@ export const bestSellers: ProductCardProps[] = [
   },
 ]
 
-export const onSale: ProductCardProps[] = [
+export const onSale: ProductCard[] = [
   {
     title: 'Aurora - 1 light polished chrome and crystal pendant',
     image: chandelier_2,
@@ -266,3 +271,152 @@ export const footerNav: FooterNavItem[] = [
     ],
   },
 ]
+
+export const shippingInfo: ShippingInfoProps[] = [
+  {
+    title: 'Free Shipping',
+    image: shipping_2,
+  },
+  {
+    title: 'Next day delivery available',
+    image: shipping_3,
+  },
+  {
+    title: '28 days return policy',
+    image: shipping_1,
+  },
+  {
+    title: '100% recyclable packaging',
+    image: shipping_4,
+  },
+]
+
+export const ChandelierProducts: ProductsPageProps = {
+  title: 'Chandelier',
+  description:
+    "Our ceiling collection has been designed with everyone in mind. Whether it's a statement pendant, a sculptural fitting or a mid-century chandelier; we have curated a range of ceiling lights, big and small, to suit every home, every room and every interior style. Aspirational and affordable, inspiring and inclusive. Click here to browse the collection.",
+  hero_image: chandelier_1,
+  products: [
+    {
+      id: 1,
+      category: 'Chandelier',
+      title: 'Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 100,
+      onSale: true,
+      new_arrival: true,
+      bestSellers: true,
+      size: 'small',
+    },
+    {
+      id: 2,
+      category: 'Chandelier',
+      title: 'Crystal Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 299,
+      onSale: false,
+      new_arrival: true,
+      bestSellers: false,
+      size: 'large',
+    },
+    {
+      id: 3,
+      category: 'Chandelier',
+      title: 'Modern Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 449,
+      onSale: true,
+      new_arrival: false,
+      bestSellers: true,
+      size: 'medium',
+    },
+    {
+      id: 4,
+      category: 'Chandelier',
+      title: 'Vintage Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 379,
+      onSale: false,
+      new_arrival: false,
+      bestSellers: true,
+      size: 'large',
+    },
+    {
+      id: 5,
+      category: 'Chandelier',
+      title: 'Art Deco Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 599,
+      onSale: true,
+      new_arrival: true,
+      bestSellers: false,
+      size: 'medium',
+    },
+    {
+      id: 6,
+      category: 'Chandelier',
+      title: 'Industrial Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 289,
+      onSale: false,
+      new_arrival: true,
+      bestSellers: true,
+      size: 'small',
+    },
+    {
+      id: 7,
+      category: 'Chandelier',
+      title: 'Rustic Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 349,
+      onSale: true,
+      new_arrival: false,
+      bestSellers: false,
+      size: 'medium',
+    },
+    {
+      id: 8,
+      category: 'Chandelier',
+      title: 'Contemporary Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 479,
+      onSale: false,
+      new_arrival: true,
+      bestSellers: true,
+      size: 'large',
+    },
+    {
+      id: 9,
+      category: 'Chandelier',
+      title: 'Minimalist Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 259,
+      onSale: true,
+      new_arrival: false,
+      bestSellers: true,
+      size: 'small',
+    },
+    {
+      id: 10,
+      category: 'Chandelier',
+      title: 'Traditional Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 399,
+      onSale: false,
+      new_arrival: true,
+      bestSellers: false,
+      size: 'medium',
+    },
+    {
+      id: 11,
+      category: 'Chandelier',
+      title: 'Luxury Chandelier',
+      images: [chandelier_1, chandelier_2],
+      price: 899,
+      onSale: true,
+      new_arrival: true,
+      bestSellers: true,
+      size: 'large',
+    },
+  ],
+}

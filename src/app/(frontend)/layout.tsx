@@ -1,4 +1,4 @@
-import { Footer, Header } from '@/components'
+import { Footer, Header, ShippingInfo } from '@/components'
 import { Toaster } from 'sonner'
 import { Source_Serif_4 } from 'next/font/google'
 import { headers } from 'next/headers'
@@ -27,6 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main className={sourceSerif.className}>
           {children}
           <Toaster />
+          {!isAuthPage && <ShippingInfo />}
         </main>
         {!isAuthPage && <Footer />}
       </body>

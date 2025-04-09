@@ -63,11 +63,11 @@ interface categoriesHomeProps {
   image: string | StaticImageData
 }
 
-interface ProductCardProps {
-  title: string
-  image: string | StaticImageData
-  price: number | string
-}
+// interface ProductCardProps {
+//   title: string
+//   image: string | StaticImageData
+//   price: number | string
+// }
 
 interface CatSecLayoutProps {
   title: string
@@ -110,4 +110,29 @@ interface FooterNavItem {
     title: string
     href: string
   }[]
+}
+
+interface ShippingInfoProps {
+  title: string
+  image: string | StaticImageData
+}
+
+interface ProductsPageProps {
+  title: string
+  description: string
+  hero_image: string | StaticImageData
+  products: ProductCard[]
+}
+
+interface ProductCard {
+  id?: number | string
+  category?: string
+  title: string
+  images?: string[] | StaticImageData[]
+  price: number | string
+  onSale?: boolean
+  new_arrival?: boolean
+  bestSellers?: boolean
+  size?: string
+  image?: string | StaticImageData
 }
