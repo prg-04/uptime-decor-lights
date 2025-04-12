@@ -10,9 +10,13 @@ import {
 import Link from "next/link";
 import Form from "next/form";
 import { PackageIcon, TrolleyIcon } from "@sanity/icons";
+import { useCartStore } from "@/store/store";
 
 const Header = () => {
   const { user } = useUser();
+  const itemCount = useCartStore((state) =>
+    state.items.reduce((total, item) => total + item.quantity, 0)
+  );
   // create passkey function that can be implemented later
   // const createClerkPasskey = async () => {
   //   try {
@@ -49,6 +53,9 @@ const Header = () => {
           >
             <TrolleyIcon className="w-6 h-6" />
             {/* item count */}
+            <span className="absolute -top-3 -right-4 bg-red-500 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">
+              {itemCount}
+            </span>
             <span>Cart</span>
           </Link>
           {/* user area */}
@@ -60,6 +67,7 @@ const Header = () => {
               >
                 <PackageIcon className="w-6 h-6" />
                 {/* item count */}
+
                 <span>Orders</span>
               </Link>
             </SignedIn>
