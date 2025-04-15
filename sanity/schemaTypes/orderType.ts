@@ -1,3 +1,5 @@
+// sanity/schema/order.ts
+
 import { defineType, defineField, defineArrayMember } from "sanity";
 import { BasketIcon, PackageIcon } from "@sanity/icons";
 
@@ -14,15 +16,68 @@ export const orderType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "stripeCheckoutSessionId",
-      title: "Stripe Checkout Session ID",
+      name: "mpesaTransactionId",
+      title: "M-Pesa Checkout Request ID",
       type: "string",
+      description: "The STK Push checkout request ID from M-Pesa",
     }),
     defineField({
-      name: "stripeCustomerId",
-      title: "Stripe Customer ID",
+      name: "mpesaReceiptNumber",
+      title: "M-Pesa Receipt Number",
       type: "string",
-      validation: (Rule) => Rule.required(),
+      description:
+        "The receipt number provided by M-Pesa after successful payment",
+    }),
+    defineField({
+      name: "paymentMethod",
+      title: "Payment Method",
+      type: "string",
+      initialValue: "mpesa",
+      options: {
+        list: [
+          { title: "M-Pesa", value: "mpesa" },
+          { title: "Card", value: "card" },
+          { title: "Cash on Delivery", value: "cod" },
+        ],
+      },
+    }),
+    defineField({
+      name: "paymentDetails",
+      title: "Payment Details",
+      type: "object",
+      fields: [
+        defineField({
+          name: "resultCode",
+          title: "Result Code",
+          type: "number",
+        }),
+        defineField({
+          name: "resultDesc",
+          title: "Result Description",
+          type: "string",
+        }),
+        defineField({
+          name: "transactionDate",
+          title: "Transaction Date",
+          type: "string",
+        }),
+        defineField({
+          name: "phoneNumber",
+          title: "Phone Number",
+          type: "string",
+        }),
+        defineField({
+          name: "amount",
+          title: "Amount",
+          type: "number",
+        }),
+      ],
+    }),
+    defineField({
+      name: "paymentDate",
+      title: "Payment Date",
+      type: "datetime",
+      description: "Date when payment was confirmed",
     }),
     defineField({
       name: "clerkUserId",
@@ -43,8 +98,8 @@ export const orderType = defineType({
       validation: (Rule) => Rule.required().email(),
     }),
     defineField({
-      name: "stripePaymentIntentId",
-      title: "Stripe Payment Intent ID",
+      name: "customerPhoneNumber",
+      title: "Customer Phone Number",
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
@@ -113,6 +168,7 @@ export const orderType = defineType({
         list: [
           { title: "Pending", value: "pending" },
           { title: "Paid", value: "paid" },
+          { title: "Failed", value: "failed" },
           { title: "Shipped", value: "shipped" },
           { title: "Delivered", value: "delivered" },
           { title: "Cancelled", value: "cancelled" },
@@ -137,10 +193,12 @@ export const orderType = defineType({
       date: "orderDate",
     },
     prepare(select) {
-      const orderIdSnippet = `${select.orderId.slice(0, 5)}...${select.orderId.slice(-5)}`;
+      const orderIdSnippet = select.orderId
+        ? `${select.orderId.slice(0, 5)}...${select.orderId.slice(-5)}`
+        : "No ID";
       return {
         title: `${select.name}  (${orderIdSnippet})`,
-        subtitle: `${select.amount} ${select.currency}, ${select.email}`,
+        subtitle: `${select.amount} ${select.currency}, ${select.status || "unknown status"}`,
         media: BasketIcon,
       };
     },
