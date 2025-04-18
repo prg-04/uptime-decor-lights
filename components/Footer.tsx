@@ -19,7 +19,6 @@ const Footer = () => {
   });
 
   const handleSubmit = (data: AuthFormData) => {
-    console.log(data);
     form.reset();
   };
 

@@ -32,10 +32,10 @@ export default async function Home() {
       <HomeWallLights />
       <HomeSeoContent />
 
-      <HeroSalesBanner />
+      {/* <HeroSalesBanner />
       <div className="flex flex-col items-center justify-top min-h-screen bg-gray-200 p-4">
         <ProductsView products={products} categories={categories} />
-      </div>
+      </div> */}
     </div>
   );
 }

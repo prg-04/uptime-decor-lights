@@ -1,11 +1,10 @@
 import React from 'react'
-import CatSecLayout from './CatSecLayout'
-import { bestSellers as wallLights } from '@/constants'
+import SecWrapper from './SecWrapper'
 
 const HomeWallLights = () => {
   return (
     <div className="">
-      <CatSecLayout title="Wall Lights" items={wallLights} />
+      <SecWrapper title="Wall Lights" category="wall-lights" />
     </div>
   )
 }

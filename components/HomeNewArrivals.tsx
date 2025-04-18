@@ -1,13 +1,11 @@
-import React from 'react'
-import { new_arrivals } from '@/constants'
-import CatSecLayout from './CatSecLayout'
-
-const HomeNewArrivals = () => {
+import React from "react";
+import CatSecLayout from "./CatSecLayout";
+const HomeNewArrivals = async () => {
   return (
     <div className="">
-      <CatSecLayout title="New Arrivals" items={new_arrivals} />
+      <CatSecLayout title="New Arrivals" salesCategory="newArrival" />
     </div>
-  )
-}
+  );
+};
 
-export default HomeNewArrivals
+export default HomeNewArrivals;

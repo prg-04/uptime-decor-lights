@@ -9,9 +9,9 @@ const ProductThumbnail = ({ product }: { product: Product }) => {
   return (
     <Link
       href={`/products/${product.slug?.current}`}
-      className={`group flex flex-col bg-white rounded-lg w-64 border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${isOutOfStock ? "opacity-50" : ""}`}
+      className={`group flex flex-col bg-white rounded-lg w-64  shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${isOutOfStock ? "opacity-50" : ""}`}
     >
-      <div className="relative aspect-square w-full h-56 overflow-hidden">
+      <div className="relative aspect-square w-full sm:h-64  md:h-72 rounded-lg overflow-hidden">
         {product.image && (
           <Image
             className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -28,7 +28,7 @@ const ProductThumbnail = ({ product }: { product: Product }) => {
         )}
       </div>
       <div className="p-4">
-        <h2 className="text-lg font-semibold text-gray-800 truncate ">
+        <h2 className="text-md sm:text-lg font-semibold text-gray-800 truncate ">
           {product.name}
         </h2>
         <p className="text-gray-600 line-clamp-2 mt-2 text-sm">
@@ -40,7 +40,7 @@ const ProductThumbnail = ({ product }: { product: Product }) => {
             )
             .join("") || "No description available"}
         </p>
-        <p className="mt-2 text-lg font-bold text-gray-900">
+        <p className="mt-2 text-sm sm:text-lg font-bold text-gray-900">
           Ksh. {product.price?.toFixed(2)}
         </p>
       </div>

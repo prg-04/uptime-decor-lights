@@ -1,21 +1,36 @@
-import { homeBannerContent } from '@/constants'
-import Image from 'next/image'
-import React from 'react'
+import { homeBannerContent } from "@/constants";
+import Image from "next/image";
+import React from "react";
+
 const Banner = () => {
-  const { title, description, description_2, image } = homeBannerContent
+  const { title, description, description_2, image } = homeBannerContent;
+
   return (
-    <section className="min-h-[50vh] font-extralight">
-      <div className="min-h-full h-full relative">
-        <Image src={image} alt="banner" className="w-full h-full object-cover" />
-        <div className="absolute top-0 left-0 bg-black/60 w-full h-full" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-full w-full flex flex-col items-start justify-center text-white px-10 gap-4">
-          <h2 className="text-5xl capitalize font-source-serif">{title}</h2>
-          <p className="text-lg">{description}</p>
-          <p className="text-lg">{description_2}</p>
+    <section className="min-h-[50vh] w-full font-extralight relative">
+      {/* Background Image */}
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src={image}
+          alt="banner"
+          fill
+          className="object-cover w-full h-full"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/60" />
+      </div>
+
+      {/* Content */}
+      <div className="w-full h-full flex items-center justify-center px-4 sm:px-8 lg:px-16 py-20 text-white">
+        <div className="max-w-6xl flex flex-col gap-4 text-center sm:text-left">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-source-serif capitalize font-semibold leading-snug">
+            {title}
+          </h2>
+          <p className="text-base sm:text-lg lg:text-xl">{description}</p>
+          <p className="text-base sm:text-lg lg:text-xl">{description_2}</p>
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Banner
+export default Banner;

@@ -1,13 +1,13 @@
-import React from 'react'
-import CatSecLayout from './CatSecLayout'
-import { new_arrivals as pendants } from '@/constants'
+import React from "react";
+import SecWrapper from "./SecWrapper";
 
 const HomePendants = () => {
+
   return (
     <div className="">
-      <CatSecLayout title="Pendants" items={pendants} />
+      <SecWrapper title="Pendants" category="pendant-lights" />
     </div>
-  )
-}
+  );
+};
 
-export default HomePendants
+export default HomePendants;

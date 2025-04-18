@@ -1,6 +1,6 @@
 import ProductsView from "@/components/ProductsView";
 import { getAllCategories } from "@/sanity/lib/products/getAllCategories";
-import getProductsByCategory from "@/sanity/lib/products/getProducsByCategory";
+import getProductsByCategory from "@/sanity/lib/products/getProductsByCategory";
 import React from "react";
 
 async function CategoryPage({ params }: { params: { slug: string } }) {

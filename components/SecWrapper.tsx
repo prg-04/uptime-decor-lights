@@ -1,16 +1,16 @@
 import React from "react";
 import Link from "next/link";
 import ProductGrid from "./ProductGrid";
-import { getProductsBySalesCategory } from "@/sanity/lib/products/getProductsBySalesCategory";
+import getProductsByCategory from "@/sanity/lib/products/getProductsByCategory";
 
 type Props = {
   title: string;
-  salesCategory: string;
-  category?: string;
+  category: string;
 };
 
-const CatSecLayout = async ({ title, salesCategory }: Props) => {
-  const products = await getProductsBySalesCategory([salesCategory]);
+const SecWrapper = async ({ title, category }: Props) => {
+  const products = await getProductsByCategory(category);
+
   const productsSlice = products.slice(0, 4);
   return (
     <div className="px-2 sm:px-10 my-12">
@@ -31,4 +31,4 @@ const CatSecLayout = async ({ title, salesCategory }: Props) => {
   );
 };
 
-export default CatSecLayout;
+export default SecWrapper;

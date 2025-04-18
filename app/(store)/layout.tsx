@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/Header";
 import { SanityLive } from "@/sanity/lib/live";
 import Footer from "@/components/Footer";
+import ShippingInfo from "@/components/ShippingInfo";
 
 const josefinSans = Josefin_Sans({
   variable: "--font-josefin-sans",
@@ -22,15 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${josefinSans.variable} antialiased`}>
-        <ClerkProvider>
-          <Header />
-          <main>{children}</main>
-          <SanityLive />
-          <Footer />
-        </ClerkProvider>
-      </body>
-    </html>
+    <div className={`${josefinSans.variable} antialiased`}>
+      <ClerkProvider>
+        <Header />
+        <main>{children}</main>
+        <SanityLive />
+        <ShippingInfo />
+        <Footer />
+      </ClerkProvider>
+    </div>
   );
 }

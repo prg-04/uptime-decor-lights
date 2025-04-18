@@ -61,6 +61,26 @@ export const productType = defineType({
       type: "number",
       validation: (Rule) => Rule.min(0),
     }),
+
+    defineField({
+      name: "salesCategories",
+      title: "Sales Categories",
+      type: "array",
+      validation: (Rule) => Rule.min(1),
+      of: [
+        {
+          type: "string",
+          options: {
+            list: [
+              { title: "On Sale", value: "onSale" },
+              { title: "Best Seller", value: "bestSeller" },
+              { title: "New Arrivals", value: "newArrival" },
+            ],
+            layout: "dropdown",
+          },
+        },
+      ],
+    }),
   ],
   preview: {
     select: {
