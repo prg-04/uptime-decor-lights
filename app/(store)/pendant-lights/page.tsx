@@ -3,7 +3,7 @@ import ProductPageLayout from '@/components/ProductPageLayout'
 
 const page = () => {
   return (
-    <ProductPageLayout category="wall-lights" />
+    <ProductPageLayout category="pendant-lights" />
   )
 }
 

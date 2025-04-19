@@ -17,9 +17,9 @@ const CatSecLayout = async ({ title, salesCategory }: Props) => {
       <div className="mb-8 flex items-center justify-between">
         <h2 className="text-4xl font-semibold font-cormorant">{title}</h2>
 
-        <Link href="/new-arrivals">
+        <Link href="/new-arrivals" className="flex items-center gap-2">
           <span className="hidden sm:block">View All</span>{" "}
-          <span className="text-primary bg-gray-300 rounded-full p-1.5 px-2.5 ml-1">
+          <span className="text-primary bg-gray-400 rounded-full p-1.5 px-3.5 ml-1">
             &gt;
           </span>
         </Link>

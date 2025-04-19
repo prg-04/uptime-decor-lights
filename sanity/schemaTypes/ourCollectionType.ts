@@ -1,11 +1,12 @@
-import { TagIcon } from "@sanity/icons";
-import { defineField, defineType } from "sanity";
+// ourCollection.ts
+import { StackCompactIcon } from "@sanity/icons";
+import { defineType, defineField } from "sanity";
 
-export const categoryType = defineType({
-  name: "category",
-  title: "Category",
+export const ourCollection = defineType({
+  name: "ourCollection",
+  title: "Our Collection (Hero)",
   type: "document",
-  icon: TagIcon,
+  icon: StackCompactIcon,
   fields: [
     defineField({
       name: "title",
@@ -29,8 +30,7 @@ export const categoryType = defineType({
       name: "hero_image",
       title: "Hero Image",
       type: "image",
-      description:
-        "Please make sure it is a large landscape image for better layout",
+      description: "Please upload a large landscape image for best results.",
       options: {
         hotspot: true,
       },
@@ -39,16 +39,8 @@ export const categoryType = defineType({
           name: "alt",
           type: "string",
           title: "Alt Text",
-          description: "Alternative text for accessibility and SEO.",
         }),
       ],
     }),
   ],
-  preview: {
-    select: {
-      title: "title",
-      subtitle: "description",
-      media: "hero_image",
-    },
-  },
 });

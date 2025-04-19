@@ -33,7 +33,7 @@ export default function CategorySelectorComponent({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full max-w-full relative flex justify-center sm:justify-start sm:flex-none items-center space-x-2 bg-blue-500 hover:bg-blue-600 hover:text-white text-white font-bold py-2 px-4 rounded"
+          className="w-full max-w-full relative flex justify-center sm:justify-center sm:flex-none items-center space-x-2 bg-black hover:bg-white hover:text-black hover:border-gray-400 text-white font-bold py-2 px-4 rounded"
         >
           {value
             ? categories.find((category) => category._id === value)?.title

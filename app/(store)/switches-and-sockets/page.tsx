@@ -1,9 +1,8 @@
-import React from 'react'
+import React from "react";
+import ProductPageLayout from "@/components/ProductPageLayout";
 
 const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+  return <ProductPageLayout category="switches-and-sockets" />;
+};
 
-export default page
+export default page;

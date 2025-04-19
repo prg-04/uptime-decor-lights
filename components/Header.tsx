@@ -57,30 +57,22 @@ const links: Link[] = [
   {
     title: "Chandeliers",
     href: "/chandeliers",
-    subLinks: [
-      { title: "Low ceiling", href: "/low-ceiling", image: lowceilImage },
-      {
-        title: "Pendant Lights(3 in 1)",
-        href: "/pendant-lights-3-in-1",
-        image: pendantImage,
-      },
-    ],
+  },
+  {
+    title: "Pendants Lights",
+    href: "/pendant-lights",
   },
   {
     title: "Wall Lights",
     href: "/wall-lights",
-    subLinks: [
-      {
-        title: "Indoor Lights",
-        href: "/indoor-lights",
-        image: chandelierImage,
-      },
-      { title: "Outdoor Lights", href: "/outdoor-lights", image: wallLight },
-    ],
   },
   {
     title: "Switches & Sockets",
-    href: "/switches-sockets",
+    href: "/switches-and-sockets",
+  },
+  {
+    title: "Our collection",
+    href: "/our-collection",
   },
 ];
 
@@ -113,13 +105,19 @@ const Header = () => {
   }, [showSearch]);
 
   return (
-    <NavigationMenu className="flex min-w-full justify-between items-center px-4 py-2 sticky top-0 z-50 bg-white/50 backdrop-blur-md border-b border-b-gray-600/20">
+    <NavigationMenu className="@container flex min-w-full justify-between items-center px-4 py-2 sticky top-0 z-50 bg-white/50 backdrop-blur-md border-b border-b-gray-600/20">
       <div className="flex flex-wrap w-full justify-between items-center">
         <Link
           href="/"
           className="text-2xl text-black hover:opacity-50 cursor-pointer mx-auto sm:mx-0"
         >
-          Uptime Decor Lights
+          <Image
+            src="/uptime_logo.png"
+            alt="Uptime Decor Lights"
+            width={100}
+            height={50}
+            className=""
+          />
         </Link>
 
         <NavigationMenuList className="hidden md:flex items-center flex-wrap">
@@ -127,7 +125,9 @@ const Header = () => {
             <NavigationMenuItem key={link.title}>
               {link.subLinks ? (
                 <>
-                  <NavigationMenuTrigger>{link.title}</NavigationMenuTrigger>
+                  <NavigationMenuTrigger className="cursor-pointer">
+                    {link.title}
+                  </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                       {link.subLinks.map((subLink) => (
@@ -155,10 +155,10 @@ const Header = () => {
               ) : (
                 <Link
                   href={link.href}
-                  className="flex h-full w-full select-none flex-col no-underline"
+                  className="flex cursor-pointer h-full w-full select-none flex-col no-underline"
                 >
                   <Button
-                    className={`text-primary shadow-none ${navigationMenuTriggerStyle()}`}
+                    className={`text-primary cursor-pointer shadow-none ${navigationMenuTriggerStyle()}`}
                   >
                     {link.title}
                   </Button>
@@ -171,20 +171,6 @@ const Header = () => {
         <div className="flex  items-center space-x-4 mt-4 sm:mt-0 flex-1 sm:flex-none justify-end">
           {/* SEARCH */}
           <div className="flex  items-center flex-1 sm:flex-none justify-end">
-            {/* Mobile: always show search input */}
-            <Form
-              action="/search"
-              className="flex w-full md:hidden max-w-sm mt-2 mb-2"
-            >
-              <input
-                type="text"
-                name="query"
-                placeholder="Search for products"
-                className="bg-gray-100 text-gray-800 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-opacity-50 border w-full"
-              />
-            </Form>
-
-            {/* Tablet+ (≥768px): show icon or input */}
             <div className="hidden md:flex items-center">
               {showSearch ? (
                 <Form
@@ -209,7 +195,6 @@ const Header = () => {
                 </button>
               )}
             </div>
-            {/* …rest of your icons/buttons… */}
           </div>
 
           <TooltipProvider>
@@ -236,7 +221,7 @@ const Header = () => {
                   <TooltipTrigger>
                     <Link
                       href="/orders"
-                      className="relative hidden md:flex items-center hover:bg-white/50 hover:text-black font-bold rounded transition duration-300 ease-in-out"
+                      className="relative hidden @sm:flex items-center hover:bg-white/50 hover:text-black font-bold rounded transition duration-300 ease-in-out"
                     >
                       <PackageIcon className="w-8 h-8" />
                     </Link>
@@ -246,7 +231,7 @@ const Header = () => {
               </TooltipProvider>
             </SignedIn>
             {user ? (
-              <div className="hidden md:flex items-center space-x-2 group">
+              <div className="hidden @sm:flex items-center space-x-2 group">
                 <UserButton />
               </div>
             ) : (
@@ -262,7 +247,7 @@ const Header = () => {
           <Popover open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <PopoverTrigger asChild>
               <button
-                className="sm:hidden"
+                className="lg:hidden @container"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 <Menu className="w-8 h-8" />
@@ -299,7 +284,7 @@ const Header = () => {
                 </div>
               ))}
 
-              <div className="pt-2 border-t">
+              <div className="pt-2 border-t @sm:hidden">
                 {user ? (
                   <UserButton />
                 ) : (

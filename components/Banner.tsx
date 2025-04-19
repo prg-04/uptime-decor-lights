@@ -30,7 +30,7 @@ const Banner = () => {
         </div>
       </div>
     </section>
-  );
+  )
 };
 
 export default Banner;

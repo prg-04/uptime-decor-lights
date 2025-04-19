@@ -54,13 +54,13 @@ const Carousel: React.FC<CarouselProps> = ({
         {items.map((item) => {
           const sharedTextSection = (
             <div className="w-full h-full flex flex-col justify-center items-center text-center p-6 md:p-8 lg:p-10 mx-auto max-w-[90%]">
-              <h2 className="text-2xl sm:text-3xl md:text-5xl md:leading-[3.5rem] uppercase font-cormorant font-bold mb-4">
+              <h2 className="text-2xl sm:text-3xl md:text-[2.5rem] md:leading-[3.5rem] uppercase font-cormorant font-bold mb-4">
                 {item.title}
               </h2>
               <p className="text-base sm:text-lg md:text-xl mb-6">
                 {item.description}
               </p>
-              <Button className="mt-4 md:mt-6">
+              <Button className="md:mt-6">
                 <Link href="/shop" className="flex items-center">
                   <span>Shop Now</span>
                   <ArrowUpRight className="ml-2" />
@@ -101,6 +101,9 @@ const Carousel: React.FC<CarouselProps> = ({
           }
 
           if (item.type === "Best Seller") {
+            const missingPromoOrInfo =
+              !item.promo_code || !item.additionalInfo || !item.discount;
+
             return (
               <div
                 key={item.id}
@@ -116,25 +119,32 @@ const Carousel: React.FC<CarouselProps> = ({
                   />
                 </div>
                 <div className="w-full md:w-1/2 lg:w-1/3 h-full flex bg-primary text-white flex-col justify-center items-center p-6 md:p-8 lg:p-10 text-center">
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl uppercase font-extrabold mb-4">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-cormorant lg:text-6xl uppercase font-extrabold mb-4">
                     {item.title}
                   </h2>
                   <p className="text-base sm:text-lg md:text-2xl hidden md:block mb-6">
                     {item.description}
                   </p>
 
-                  {/* if there is no promocode and promo */}
-
-                  <div className="flex items-center justify-between w-full mt-8 rounded-lg p-6 shadow-lg border-2 border-dashed border-gray-300 relative overflow-hidden gap-4">
-                    <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-9 h-9 bg-gray-100 rounded-full" />
-                    <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-9 h-9 bg-gray-100 rounded-full" />
-                    <div className="text-center text-lg sm:text-xl md:text-2xl uppercase font-extrabold">
-                      {item.additionalInfo}
+                  {missingPromoOrInfo ? (
+                    <Button className="mt-4 md:mt-6 bg-white text-black">
+                      <Link href="/best-sellers" className="flex items-center">
+                        <span>Explore Best Sellers</span>
+                        <ArrowUpRight className="ml-2" />
+                      </Link>
+                    </Button>
+                  ) : (
+                    <div className="flex items-center justify-between w-full mt-8 rounded-lg p-6 shadow-lg border-2 border-dashed border-gray-300 relative overflow-hidden gap-4">
+                      <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-9 h-9 bg-gray-100 rounded-full" />
+                      <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-9 h-9 bg-gray-100 rounded-full" />
+                      <div className="text-center text-lg sm:text-xl md:text-2xl uppercase font-extrabold">
+                        {item.additionalInfo}
+                      </div>
+                      <div className="text-center px-4 py-2 bg-chart-5 font-bold rounded-md tracking-wider transform hover:scale-105 transition-transform">
+                        {item.promo_code}
+                      </div>
                     </div>
-                    <div className="text-center px-4 py-2 bg-chart-5 font-bold rounded-md tracking-wider transform hover:scale-105 transition-transform">
-                      {item.promo_code}
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             );
@@ -156,7 +166,7 @@ const Carousel: React.FC<CarouselProps> = ({
                   />
                 </div>
                 <div className="w-full md:w-1/3 h-full flex bg-orange-100 text-primary flex-col justify-center items-center text-center p-6 md:p-8 lg:p-10">
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl uppercase font-extrabold mb-4">
+                  <h2 className="text-2xl sm:text-3xl md:text-5xl  uppercase font-cormorant font-bold mb-4">
                     {item.title}
                   </h2>
                   <p className="text-base sm:text-lg md:text-2xl mb-6">
@@ -177,7 +187,7 @@ const Carousel: React.FC<CarouselProps> = ({
         })}
       </div>
 
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+      <div className="absolute bottom-0 left-0 right-0 flex justify-center gap-2">
         {items.map((_, index) => (
           <div
             key={index}
