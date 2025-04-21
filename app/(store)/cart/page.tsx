@@ -1,25 +1,20 @@
 "use client";
-import { createCheckoutSession } from "@/actions/createCheckoutSession";
+// import { createCheckoutSession } from "@/actions/createCheckoutSession";
 import AddToCartButton from "@/components/AddToCartButton";
 import { imageUrl } from "@/lib/imageUrl";
 import { useCartStore } from "@/store/store";
-import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
+// import { Metadata } from "@/types";
+import { SignInButton, useAuth, } from "@clerk/nextjs";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-interface Metadata {
-  orderNumber: string;
-  customerName: string;
-  customerEmail: string;
-  clerkUserId: string;
-}
 
 function CartPage() {
   const groupedItems = useCartStore((state) => state.getGroupedCartItems());
   const { isSignedIn } = useAuth();
-  const { user } = useUser();
-  const router = useRouter();
+  // const { user } = useUser();
+  // const router = useRouter();
 
   const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,30 +37,28 @@ function CartPage() {
   }
 
   const handleCheckout = async () => {
-    if (!isSignedIn) return null;
+    if (!isSignedIn) return;
     setIsLoading(true);
 
     try {
-      const metadata: Metadata = {
-        orderNumber: crypto.randomUUID(),
-        customerName: user?.fullName ?? "Unknown",
-        customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
-        clerkUserId: user!.id,
-      };
+      // const metadata: Metadata = {
+      //   orderNumber: crypto.randomUUID(),
+      //   customerName: user?.fullName ?? "Unknown",
+      //   customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
+      //   clerkUserId: user!.id,
+      // };
 
-      const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
+      // const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
 
-      if (checkoutUrl && typeof checkoutUrl === "string") {
-        window.location.href = checkoutUrl;
-      }
+      // if (checkoutUrl) {
+      //   window.location.href = checkoutUrl;
+      // }
     } catch (error) {
       console.error("Error during checkout:", error);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  return (
+  };  return (
     <div className="container mx-auto p-4 max-w-6xl">
       <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
       <div className="flex flex-col lg:flex-row gap-8">
