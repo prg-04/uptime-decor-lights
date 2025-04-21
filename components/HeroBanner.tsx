@@ -7,7 +7,7 @@ const HeroBanner = ({
 }: {
   image: string;
   title: string;
-  description: string;
+  description: string | null;
 }) => (
   <div className="relative h-[40dvh] sm:h-[50dvh] lg:h-[60dvh] w-full">
     <Image
