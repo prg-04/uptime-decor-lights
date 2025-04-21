@@ -56,6 +56,7 @@ export interface HeroContentProps {
   subtitle_3?: string;
   description?: string;
   additionalInfo?: string;
+  discount?: string;
   promo_code?: string;
 }
 
