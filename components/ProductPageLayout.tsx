@@ -11,23 +11,18 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
 
   if (!categoryData) return null;
 
-  const {
-    hero_image: {
-      asset: { url },
-    },
-    title,
-    description,
-  } = categoryData;
+  const { hero_image, title, description } = categoryData;
 
+  const url = hero_image?.asset?.url || "";
 
   return (
     <section className="">
       <HeroBanner image={url} title={title} description={description} />
       <section className="flex stick">
-         {/*<FilterSection />*/}
+        {/*<FilterSection />*/}
         <div className="flex-1">
           <div className="gap-4 p-6">
-            { products.map((product) => (
+            {products.map((product) => (
               <ProductGrid key={product._id} products={product} />
             ))}
           </div>
