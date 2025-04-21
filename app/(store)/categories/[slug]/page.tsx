@@ -3,8 +3,12 @@ import { getAllCategories } from "@/sanity/lib/products/getAllCategories";
 import getProductsByCategory from "@/sanity/lib/products/getProductsByCategory";
 import React from "react";
 
-async function CategoryPage({ params }: { params: { slug: string } }) {
-  const { slug } = await params;
+async function CategoryPage({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<React.JSX.Element> {
+  const { slug } = params;
   const products = await getProductsByCategory(slug);
   const categories = await getAllCategories();
 
