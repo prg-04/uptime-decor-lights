@@ -9,7 +9,7 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
   const products = [await getProductsByCategory(category)];
   const categoryData = await getCategoryBySlug(category);
 
-  // console.log(categoryData)
+  if (!categoryData) return null;
 
   const {
     hero_image: {
