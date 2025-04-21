@@ -9,9 +9,7 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
   const products = [await getProductsByCategory(category)];
   const categoryData = await getCategoryBySlug(category);
 
-  if (!categoryData || !categoryData.hero_image?.asset?.url) {
-    return <div>Category not found</div>;
-  }
+  // console.log(categoryData)
 
   const {
     hero_image: {
@@ -21,13 +19,15 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
     description,
   } = categoryData;
 
+
   return (
     <section className="">
       <HeroBanner image={url} title={title} description={description} />
       <section className="flex stick">
+         {/*<FilterSection />*/}
         <div className="flex-1">
           <div className="gap-4 p-6">
-            {products.map((product) => (
+            { products.map((product) => (
               <ProductGrid key={product._id} products={product} />
             ))}
           </div>
