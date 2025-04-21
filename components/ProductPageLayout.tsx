@@ -6,7 +6,7 @@ import ProductGrid from "./ProductGrid";
 import { getCategoryBySlug } from "@/sanity/lib/category/getCategoryBySlug";
 
 const ProductPageLayout = async ({ category }: { category: string }) => {
-  const products = [await getProductsByCategory(category)];
+  const products = await getProductsByCategory(category); // <-- fixed here
   const categoryData = await getCategoryBySlug(category);
 
   if (!categoryData) return null;
@@ -21,10 +21,8 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
       <section className="flex stick">
         {/*<FilterSection />*/}
         <div className="flex-1">
-          <div className="gap-4 p-6">
-            {products.map((product) => (
-              <ProductGrid key={product._id!} products={product!} />
-            ))}
+          <div className="p-6">
+            <ProductGrid products={products} />
           </div>
         </div>
       </section>
