@@ -17,7 +17,7 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
 
   return (
     <section className="">
-      <HeroBanner image={url} title={title} description={description} />
+      <HeroBanner image={url!} title={title!} description={description!} />
       <section className="flex stick">
         {/*<FilterSection />*/}
         <div className="flex-1">
