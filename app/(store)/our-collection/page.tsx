@@ -11,7 +11,6 @@ const OurCollection = async () => {
   const products = [await getAllProducts()];
   const categories = await getAllCategories();
 
-
   if (!categoryData || !categoryData.hero_image?.asset?.url || !categoryData.title) {
     return null;
   }
@@ -45,5 +44,4 @@ const OurCollection = async () => {
       </section>
     </section>
   );
-
 };export default OurCollection;
