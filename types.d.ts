@@ -137,3 +137,9 @@ interface GroupedCartItem {
   product: CartItem["product"];
   quantity: number;
 }
+
+interface ProductCard {
+  title: string;
+  image: string | StaticImageData;
+  price: string;
+}
