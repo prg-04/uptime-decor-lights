@@ -23,7 +23,7 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
         <div className="flex-1">
           <div className="gap-4 p-6">
             {products.map((product) => (
-              <ProductGrid key={product._id} products={product} />
+              <ProductGrid key={product._id!} products={product!} />
             ))}
           </div>
         </div>
