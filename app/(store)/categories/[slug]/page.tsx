@@ -1,14 +1,12 @@
-// app/(store)/categories/[slug]/page.tsx
-
 import ProductsView from "@/components/ProductsView";
 import { getAllCategories } from "@/sanity/lib/products/getAllCategories";
 import getProductsByCategory from "@/sanity/lib/products/getProductsByCategory";
 
-type Props = {
+export default async function CategoryPage({
+  params,
+}: {
   params: { slug: string };
-};
-
-export default async function CategoryPage({ params }: Props) {
+}) {
   const { slug } = params;
   const products = await getProductsByCategory(slug);
   const categories = await getAllCategories();
