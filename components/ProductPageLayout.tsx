@@ -1,13 +1,22 @@
 import React from "react";
 import HeroBanner from "./HeroBanner";
-import FilterSection from "./FilterSection";
+// import FilterSection from "./FilterSection";
 import getProductsByCategory from "@/sanity/lib/products/getProductsByCategory";
 import ProductGrid from "./ProductGrid";
 import { getCategoryBySlug } from "@/sanity/lib/category/getCategoryBySlug";
 
-const ProductPageLayout = async ({ category }: { category: string }) => {
-  const products = [await getProductsByCategory(category)];
-  const categoryData = await getCategoryBySlug(category);
+const ProductPageLayout = async ({
+  category,
+}: {
+  category: Promise<{ category: string }>;
+}) => {
+  const categoryValue = await category;
+  const products = [await getProductsByCategory(categoryValue.category)];
+  const categoryData = await getCategoryBySlug(categoryValue.category);
+  if (!categoryData || !categoryData.hero_image?.asset?.url) {
+    return <div>Category not found</div>;
+  }
+
   const {
     hero_image: {
       asset: { url },
@@ -16,15 +25,14 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
     description,
   } = categoryData;
 
-
   return (
     <section className="">
       <HeroBanner image={url} title={title} description={description} />
       <section className="flex stick">
-         {/*<FilterSection />*/}
+        {/*<FilterSection />*/}
         <div className="flex-1">
           <div className="gap-4 p-6">
-            { products.map((product) => (
+            {products.map((product) => (
               <ProductGrid key={product._id} products={product} />
             ))}
           </div>
@@ -33,5 +41,4 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
     </section>
   );
 };
-
 export default ProductPageLayout;
