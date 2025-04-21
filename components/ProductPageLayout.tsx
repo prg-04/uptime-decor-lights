@@ -5,14 +5,10 @@ import getProductsByCategory from "@/sanity/lib/products/getProductsByCategory";
 import ProductGrid from "./ProductGrid";
 import { getCategoryBySlug } from "@/sanity/lib/category/getCategoryBySlug";
 
-const ProductPageLayout = async ({
-  category,
-}: {
-  category: Promise<{ category: string }>;
-}) => {
-  const categoryValue = await category;
-  const products = [await getProductsByCategory(categoryValue.category)];
-  const categoryData = await getCategoryBySlug(categoryValue.category);
+const ProductPageLayout = async ({ category }: { category: string }) => {
+  const products = [await getProductsByCategory(category)];
+  const categoryData = await getCategoryBySlug(category);
+
   if (!categoryData || !categoryData.hero_image?.asset?.url) {
     return <div>Category not found</div>;
   }
@@ -29,7 +25,6 @@ const ProductPageLayout = async ({
     <section className="">
       <HeroBanner image={url} title={title} description={description} />
       <section className="flex stick">
-        {/*<FilterSection />*/}
         <div className="flex-1">
           <div className="gap-4 p-6">
             {products.map((product) => (
@@ -41,4 +36,5 @@ const ProductPageLayout = async ({
     </section>
   );
 };
+
 export default ProductPageLayout;
