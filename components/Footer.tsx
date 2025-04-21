@@ -20,6 +20,7 @@ const Footer = () => {
 
   const handleSubmit = (data: AuthFormData) => {
     form.reset();
+    console.log(data);
   };
 
   return (
@@ -52,7 +53,7 @@ const Footer = () => {
                   (
                     service: {
                       href?: string;
-                      icon: string;
+                      icon?: string;
                       title?: string;
                       text?: string;
                       subText?: string;
