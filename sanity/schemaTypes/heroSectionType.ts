@@ -66,5 +66,12 @@ export const heroSection = defineType({
       description: "Set display order in the carousel",
       validation: (Rule) => Rule.min(1),
     }),
+    defineField({
+      name: "isActive",
+      title: "Is Active",
+      type: "boolean",
+      description: "Toggle to activate/deactivate the banner",
+      initialValue: true,
+    }),
   ],
 });

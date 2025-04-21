@@ -20,11 +20,11 @@ const ProductPageLayout = async ({ category }: { category: string }) => {
   return (
     <section className="">
       <HeroBanner image={url} title={title} description={description} />
-      <section className="flex">
-        {/* <FilterSection /> */}
+      <section className="flex stick">
+         {/*<FilterSection />*/}
         <div className="flex-1">
           <div className="gap-4 p-6">
-            {products.map((product) => (
+            { products.map((product) => (
               <ProductGrid key={product._id} products={product} />
             ))}
           </div>

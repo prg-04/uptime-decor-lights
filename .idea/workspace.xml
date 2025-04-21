@@ -6,31 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="ce350c6f-1f92-4a09-b49f-34ec7ad2d005" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/actions/createCheckoutSession.ts" beforeDir="false" afterPath="$PROJECT_DIR$/actions/createCheckoutSession.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(store)/cart/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(store)/cart/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(store)/categories/[slug]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(store)/categories/[slug]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(store)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(store)/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(store)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(store)/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(store)/products/[slug]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(store)/products/[slug]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(store)/search/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(store)/search/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/mpesa/callback/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/mpesa/status/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/mpesa/stk-push/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Footer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/FormField.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/FormField.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/MpesaPayment.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ProductGrid.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductGrid.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ui/command.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ui/command.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ui/form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ui/form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/daraja.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/mpesa.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.sourcegraph/cody_settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.sourcegraph/cody_settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.qodo/indexes.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/.qodo/indexes.sqlite" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/FilterSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/FilterSection.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProductPageLayout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductPageLayout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sanity.types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sanity.types.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sanity/schemaTypes/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sanity/schemaTypes/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sanity/schemaTypes/productType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sanity/schemaTypes/productType.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sanity/lib/category/getOurCollectionBySlug.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sanity/lib/category/getOurCollectionBySlug.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sanity/schemaTypes/heroSectionType.ts" beforeDir="false" afterPath="$PROJECT_DIR$/sanity/schemaTypes/heroSectionType.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/schema.json" beforeDir="false" afterPath="$PROJECT_DIR$/schema.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +30,9 @@
 }</component>
   <component name="ProjectId" id="2voajfCs4vJnRBiMVRO6Q9fCdUv" />
   <component name="ProjectViewState">
+    <option name="autoscrollToSource" value="true" />
     <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="openDirectoriesWithSingleClick" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
@@ -69,7 +55,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.fonts.default",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "ts.external.directory.path": "/home/whoami/Desktop/Clients_Projects/uptime-decor-lights/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   }
@@ -92,6 +78,8 @@
       <workItem from="1744814029214" duration="146000" />
       <workItem from="1744814205077" duration="145000" />
       <workItem from="1744896573319" duration="1414000" />
+      <workItem from="1745136530011" duration="175000" />
+      <workItem from="1745136737129" duration="1718000" />
     </task>
     <servers />
   </component>

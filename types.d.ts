@@ -34,6 +34,7 @@ interface LoginResponse {
 
 import { StaticImageData } from "next/image";
 import { Product } from "./sanity.types";
+import { CartItem } from "./store/store";
 
 export interface CarouselItem {
   id: number;
@@ -68,7 +69,6 @@ interface categoriesHomeProps {
   href: string;
   image: string | StaticImageData;
 }
-
 
 interface CatSecLayoutProps {
   title: string;
@@ -125,4 +125,14 @@ interface ProductsPageProps {
   products: Product[];
 }
 
+interface Metadata {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  clerkUserId: string;
+}
 
+interface GroupedCartItem {
+  product: CartItem["product"];
+  quantity: number;
+}

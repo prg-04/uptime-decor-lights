@@ -32,31 +32,31 @@ export const getOurCollectionBySlug = async (slug: string) => {
   }
 
   // Default category fetch
-  const CATEGORY_BY_SLUG_QUERY = defineQuery(`
-    *[_type == "category" && slug.current == $slug][0] {
-      _id,
-      title,
-      slug,
-      description,
-      hero_image {
-        asset->{
-          _id,
-          url
-        },
-        alt
-      }
-    }
-  `);
-
-  try {
-    const category = await sanityFetch({
-      query: CATEGORY_BY_SLUG_QUERY,
-      params: { slug },
-    });
-
-    return category.data || null;
-  } catch (error) {
-    console.error(`Error fetching category with slug "${slug}":`, error);
-    throw new Error("Failed to fetch category by slug");
-  }
+  // const CATEGORY_BY_SLUG_QUERY = defineQuery(`
+  //   *[_type == "category" && slug.current == $slug][0] {
+  //     _id,
+  //     title,
+  //     slug,
+  //     description,
+  //     hero_image {
+  //       asset->{
+  //         _id,
+  //         url
+  //       },
+  //       alt
+  //     }
+  //   }
+  // `);
+  //
+  // try {
+  //   const category = await sanityFetch({
+  //     query: CATEGORY_BY_SLUG_QUERY,
+  //     params: { slug },
+  //   });
+  //
+  //   return category.data || null;
+  // } catch (error) {
+  //   console.error(`Error fetching category with slug "${slug}":`, error);
+  //   throw new Error("Failed to fetch category by slug");
+  // }
 };

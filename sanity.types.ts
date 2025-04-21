@@ -68,6 +68,30 @@ export type Geopoint = {
   alt?: number;
 };
 
+export type OurCollection = {
+  _id: string;
+  _type: "ourCollection";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  description?: string;
+  hero_image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+};
+
 export type HeroSection = {
   _id: string;
   _type: "heroSection";
@@ -105,6 +129,7 @@ export type HeroSection = {
   additionalInfo?: string;
   promo_code?: string;
   order?: number;
+  isActive?: boolean;
 };
 
 export type Sale = {
@@ -343,8 +368,43 @@ export type SanityImageMetadata = {
   isOpaque?: boolean;
 };
 
-export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | HeroSection | Sale | Order | Product | Category | Slug | BlockContent | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata;
+export type AllSanitySchemaTypes = SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityFileAsset | Geopoint | OurCollection | HeroSection | Sale | Order | Product | Category | Slug | BlockContent | SanityImageCrop | SanityImageHotspot | SanityImageAsset | SanityAssetSourceData | SanityImageMetadata;
 export declare const internalGroqTypeReferenceTo: unique symbol;
+// Source: ./sanity/lib/category/getCategoryBySlug.ts
+// Variable: CATEGORY_BY_SLUG_QUERY
+// Query: *[_type == "category" && slug.current == $slug][0] {      _id,      title,      slug,      description,      hero_image {        asset->{          _id,          url        },        alt      }    }
+export type CATEGORY_BY_SLUG_QUERYResult = {
+  _id: string;
+  title: string | null;
+  slug: Slug | null;
+  description: string | null;
+  hero_image: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+    alt: string | null;
+  } | null;
+} | null;
+
+// Source: ./sanity/lib/category/getOurCollectionBySlug.ts
+// Variable: OUR_COLLECTION_QUERY
+// Query: *[_type == "ourCollection"][0] {        "title": title,        "slug": { "current": "our-collection" },        description,        hero_image {          asset->{            _id,            url          },          alt        }      }
+export type OUR_COLLECTION_QUERYResult = {
+  title: string | null;
+  slug: {
+    current: "our-collection";
+  };
+  description: string | null;
+  hero_image: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+    alt: string | null;
+  } | null;
+} | null;
+
 // Source: ./sanity/lib/hero/getHeroSectionContent.ts
 // Variable: HERO_SECTION_QUERY
 // Query: *[_type == "heroSection"] | order(order asc) {      _id,      type,      title,      subtitle_1,      description,      "imageUrl_1": imageUrl_1.asset->url,      "imageUrl_2": imageUrl_2.asset->url,      additionalInfo,      promo_code    }
@@ -733,6 +793,8 @@ export type ACTIVE_SALE_BY_COUPON_QUERYResult = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
+    "\n    *[_type == \"category\" && slug.current == $slug][0] {\n      _id,\n      title,\n      slug,\n      description,\n      hero_image {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    }\n  ": CATEGORY_BY_SLUG_QUERYResult;
+    "\n      *[_type == \"ourCollection\"][0] {\n        \"title\": title,\n        \"slug\": { \"current\": \"our-collection\" },\n        description,\n        hero_image {\n          asset->{\n            _id,\n            url\n          },\n          alt\n        }\n      }\n    ": OUR_COLLECTION_QUERYResult;
     "\n    *[_type == \"heroSection\"] | order(order asc) {\n      _id,\n      type,\n      title,\n      subtitle_1,\n      description,\n      \"imageUrl_1\": imageUrl_1.asset->url,\n      \"imageUrl_2\": imageUrl_2.asset->url,\n      additionalInfo,\n      promo_code\n    }\n  ": HERO_SECTION_QUERYResult;
     "\n        *[\n        _type == \"category\"\n        ] | order(name asc)\n    ": ALL_CATEGORIES_QUERYResult;
     "\n        *[\n        _type == \"product\"\n        ] | order(name asc)\n    ": ALL_PRODUCTS_QUERYResult;

@@ -8,7 +8,7 @@ const FilterSection = () => {
   const [openPrice, setOpenPrice] = useState(false);
 
   return (
-    <div className="w-[25%] p-6 border-r min-h-screen hidden md:">
+    <div className="w-[25%] p-6 border-r min-h-screen hidden md:block">
       <h2 className="text-2xl font-bold flex items-center gap-2 mb-6">
         <Settings2 /> Filters
       </h2>
