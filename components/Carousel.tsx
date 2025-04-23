@@ -71,32 +71,30 @@ const Carousel: React.FC<CarouselProps> = ({
 
           if (item.type === "On Sale") {
             return (
-              <div
-                key={item.id}
-                className="min-w-full h-full flex flex-col md:flex-row"
-              >
-                <div className="w-full md:w-1/2 lg:w-1/3 h-64 md:h-full">
-                  <Image
-                    src={item.imageUrl_1}
-                    alt={item.title || "Product Image"}
-                    className="w-full h-full object-cover"
-                    width={500}
-                    height={500}
-                  />
-                </div>
-                <div className="bg-amber-100 md:w-1/2 lg:w-1/3">
-                  {sharedTextSection}
-                </div>
-                <div className="hidden lg:block w-1/3 h-full">
-                  <Image
-                    src={item.imageUrl_2 ?? ""}
-                    alt={item.title || "Secondary Product Image"}
-                    className="w-full h-full object-cover"
-                    width={500}
-                    height={500}
-                  />
-                </div>
-              </div>
+              <div key={item.id} className="min-w-full h-full flex flex-col md:flex-row">
+  <div className="w-full md:w-1/2 lg:w-1/3 h-64 md:h-full">
+    <Image
+      src={item.imageUrl_1}
+      alt={item.title || "Product Image"}
+      className="w-full h-full object-cover"
+      width={500}
+      height={500}
+    />
+  </div>
+  <div className="bg-amber-100 flex-grow flex items-center justify-center p-6 md:p-8 lg:p-10 min-h-[200px]">
+    {sharedTextSection}
+  </div>
+  <div className="hidden lg:block w-1/3 h-full">
+    <Image
+      src={item.imageUrl_2 ?? ""}
+      alt={item.title || "Secondary Product Image"}
+      className="w-full h-full object-cover"
+      width={500}
+      height={500}
+    />
+  </div>
+</div>
+
             );
           }
 

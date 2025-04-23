@@ -1,14 +1,12 @@
-import luxe_gold from "@/public/luxe-gold.webp";
-import chandelier_1 from "@/public/chandelier_1.jpeg";
-import chandelier_2 from "@/public/hero_cha_1.jpeg";
+import shipping_1 from "@/public/L-L_ICON_ASSET-01.webp";
+import shipping_2 from "@/public/L-L_ICON_ASSET-03.webp";
+import shipping_3 from "@/public/L-L_ICON_ASSET-05.png";
+import shipping_4 from "@/public/L-L_ICON_ASSET-18.webp";
 import new_arrival from "@/public/new_arrival.jpeg";
 import pendant_light from "@/public/hero_pr_1.jpeg";
 import switchesImg from "@/public/switches&sockets.jpeg";
+import chandelier_1 from "@/public/chandelier_1.jpeg";
 import banner from "@/public/lights_lamps_lights_and_lamps_TRADE_Banner.webp";
-import shipping_1 from "@/public/L-L_ICON_ASSET-01.webp";
-import shipping_2 from "@/public/L-L_ICON_ASSET-03.webp";
-import shipping_3 from "@/public/L-L_ICON_ASSET-05.avif";
-import shipping_4 from "@/public/L-L_ICON_ASSET-18.webp";
 
 import {
   categoriesHomeProps,
@@ -22,8 +20,8 @@ export const heroContent: HeroContentProps[] = [
   {
     type: "On Sale",
     id: 1,
-    imageUrl_1: chandelier_1,
-    imageUrl_2: chandelier_2,
+    imageUrl_1: "",
+    imageUrl_2: "",
     title: "Crystal Elegance Collection",
     subtitle_1: "Exclusive Ramadan Offers",
     description: "Don't miss out on our premium selection",
@@ -32,7 +30,7 @@ export const heroContent: HeroContentProps[] = [
   {
     type: "Best Seller",
     id: 2,
-    imageUrl_1: luxe_gold,
+    imageUrl_1: "",
     title: "Royal Luxe Collection",
     subtitle_1: "Premium Crystal Masterpieces",
     description: "Transform your space with timeless luxury",
@@ -42,7 +40,7 @@ export const heroContent: HeroContentProps[] = [
   {
     type: "New Arrival",
     id: 3,
-    imageUrl_1: new_arrival,
+    imageUrl_1: "",
     description: "Discover our latest collection of exquisite lighting designs",
     title: "New Arrivals 2024",
     subtitle_1: "",
@@ -51,8 +49,8 @@ export const heroContent: HeroContentProps[] = [
 
 export const categoriesHome: categoriesHomeProps[] = [
   {
-    title: "New Designs",
-    href: "/new-designs",
+    title: "New Arrivals",
+    href: "/new-arrivals",
     image: new_arrival,
   },
   {
@@ -75,27 +73,27 @@ export const categoriesHome: categoriesHomeProps[] = [
 export const new_arrivals: ProductCard[] = [
   {
     title: "Aurora - 1 light polished chrome and crystal pendant",
-    image: chandelier_2,
+    image: "",
     price: "$199",
   },
   {
     title: "Lumina - 3 light polished chrome and crystal pendant",
-    image: luxe_gold,
+    image: "",
     price: "$699",
   },
   {
     title: "Stella - 2 light polished chrome and crystal pendant",
-    image: new_arrival,
+    image: "",
     price: "$399",
   },
   {
     title: "Celeste - 4 light polished chrome and crystal pendant",
-    image: pendant_light,
+    image: "",
     price: "$999",
   },
   {
     title: "Rhapsody - 5 light polished chrome and crystal pendant",
-    image: chandelier_1,
+    image: "",
     price: "$1,299",
   },
 ];
@@ -103,27 +101,27 @@ export const new_arrivals: ProductCard[] = [
 export const bestSellers: ProductCard[] = [
   {
     title: "Lumina - 3 light polished chrome and crystal pendant",
-    image: luxe_gold,
+    image: "",
     price: "$699",
   },
   {
     title: "Celeste - 4 light polished chrome and crystal pendant",
-    image: pendant_light,
+    image: "",
     price: "$999",
   },
   {
     title: "Rhapsody - 5 light polished chrome and crystal pendant",
-    image: chandelier_1,
+    image: "",
     price: "$1,299",
   },
   {
     title: "Aurora - 1 light polished chrome and crystal pendant",
-    image: chandelier_2,
+    image: "",
     price: "$199",
   },
   {
     title: "Stella - 2 light polished chrome and crystal pendant",
-    image: new_arrival,
+    image: "",
     price: "$399",
   },
 ];
@@ -131,27 +129,27 @@ export const bestSellers: ProductCard[] = [
 export const onSale: ProductCard[] = [
   {
     title: "Aurora - 1 light polished chrome and crystal pendant",
-    image: chandelier_2,
+    image: "",
     price: "$149",
   },
   {
     title: "Luna - 3 light polished chrome and crystal pendant",
-    image: luxe_gold,
+    image: "",
     price: "$499",
   },
   {
     title: "Stella - 2 light polished chrome and crystal pendant",
-    image: new_arrival,
+    image: "",
     price: "$249",
   },
   {
     title: "Nova - 4 light polished chrome and crystal pendant",
-    image: pendant_light,
+    image: "",
     price: "$699",
   },
   {
     title: "Aster - 5 light polished chrome and crystal pendant",
-    image: chandelier_1,
+    image: "",
     price: "$999",
   },
 ];

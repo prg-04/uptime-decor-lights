@@ -1,49 +1,58 @@
+import { getTransactionStatus } from "@/actions/pesapal";
+import { backendClient } from "@/sanity/lib/backendClient";
 
-import { createClient } from "@sanity/client";
-import { v4 as uuidv4 } from "uuid";
-
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: "2023-10-01",
-  token: process.env.SANITY_API_WRITE_TOKEN, // Make sure this is set
-  useCdn: false,
-});
-
-type SaveOrderParams = {
-  orderNumber: string;
+type OrderDetails = {
+  orderTrackingId: string;
+  paymentMethod?: string;
+  amount?: number;
+  createdDate?: string;
+  confirmationCode?: string;
+  paymentStatusDescription?: string;
+  quantity?: number;
+  paymentAccount?: string;
   clerkUserId: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhoneNumber: string;
-  totalPrice: number;
-  currency: string;
-  status: "pending" | "paid" | "failed";
-  orderDate: string;
-  paymentMethod: "mpesa" | "card";
-  mpesaTransactionId?: string;
+  statusCode?: number;
+  merchantReference?: string;
+  currency?: string;
+  status?: "pending" | "paid" | "failed";
   products: {
-    product: string; // product _id reference
+    productId: string;
+    name: string;
     quantity: number;
+    price: number;
+    image: string;
   }[];
 };
 
-export async function saveOrderToSanity(order: SaveOrderParams) {
-  const orderId = uuidv4();
+export async function saveOrderToSanity(orderDetails: OrderDetails) {
+  const transaction = await getTransactionStatus(orderDetails.orderTrackingId);
+
+  const products = orderDetails.products ?? [];
 
   const doc = {
-    _id: `order-${orderId}`,
     _type: "order",
-    ...order,
-    products: order.products.map((p) => ({
-      _type: "orderItem",
-      product: {
-        _type: "reference",
-        _ref: p.product,
-      },
+    orderNumber: orderDetails.orderTrackingId,
+    paymentMethod: transaction.payment_method,
+    amount: transaction.amount,
+    createdDate: transaction.created_date,
+    clerkUserId: orderDetails.clerkUserId,
+    quantity: orderDetails.quantity,
+    confirmationCode: transaction.confirmation_code,
+    paymentStatusDescription: transaction.payment_status_description,
+    paymentAccount: transaction.payment_account,
+    products: products.map((p) => ({
+      _key: `${p.productId}-${p.name}`,
+      productId: p.productId,
+      price: p.price,
       quantity: p.quantity,
+      name: p.name,
+      image: p.image,
     })),
+    status:
+      transaction.payment_status_description?.toLowerCase() === "completed"
+        ? "paid"
+        : "failed",
   };
 
-  return await client.createIfNotExists(doc);
+  return backendClient.create(doc);
 }

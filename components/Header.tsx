@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   ClerkLoaded,
   SignedIn,
+  SignedOut,
   SignInButton,
   UserButton,
   useUser,
@@ -29,11 +30,6 @@ import {
 import Image, { StaticImageData } from "next/image";
 import { Menu, Search } from "lucide-react";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
-import lowceilImage from "@/public/hero_cha_2.jpeg";
-import pendantImage from "@/public/hero_3.webp";
-import chandelierImage from "@/public/chandelier_1.jpeg";
-import wallLight from "@/public/hero_wl_1.jpeg";
 import {
   Tooltip,
   TooltipContent,
@@ -81,9 +77,12 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchRef = useRef<HTMLFormElement | null>(null);
   const { user } = useUser();
+  const [mounted, setMounted] = useState(false);
   const itemCount = useCartStore((state) =>
     state.items.reduce((total, item) => total + item.quantity, 0)
   );
+
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -105,14 +104,14 @@ const Header = () => {
   }, [showSearch]);
 
   return (
-    <NavigationMenu className="@container flex min-w-full justify-between items-center px-4 py-2 sticky top-0 z-50 bg-white/50 backdrop-blur-md border-b border-b-gray-600/20">
-      <div className="flex flex-wrap w-full justify-between items-center">
+    <NavigationMenu className="@container flex max-w-full justify-between items-center px-4 py-2 sticky top-0 z-50 bg-white/50 backdrop-blur-md border-b border-b-gray-600/20  ">
+      <div className="flex  sm:flex-wrap w-full  justify-between items-center gap-3">
         <Link
           href="/"
           className="text-2xl text-black hover:opacity-50 cursor-pointer mx-auto sm:mx-0"
         >
           <Image
-            src="/uptime_logo.png"
+            src="/logo.png"
             alt="Uptime Decor Lights"
             width={100}
             height={50}
@@ -170,7 +169,7 @@ const Header = () => {
 
         <div className="flex  items-center space-x-4 mt-4 sm:mt-0 flex-1 sm:flex-none justify-end">
           {/* SEARCH */}
-          <div className="flex  items-center flex-1 sm:flex-none justify-end">
+          <div className="flex  items-center flex-1 sm:flex-none  justify-end">
             <div className="hidden md:flex items-center">
               {showSearch ? (
                 <Form
@@ -221,7 +220,7 @@ const Header = () => {
                   <TooltipTrigger>
                     <Link
                       href="/orders"
-                      className="relative hidden @sm:flex items-center hover:bg-white/50 hover:text-black font-bold rounded transition duration-300 ease-in-out"
+                      className="relative flex items-center hover:bg-white/50 hover:text-black font-bold rounded transition duration-300 ease-in-out"
                     >
                       <PackageIcon className="w-8 h-8" />
                     </Link>
@@ -231,7 +230,7 @@ const Header = () => {
               </TooltipProvider>
             </SignedIn>
             {user ? (
-              <div className="hidden @sm:flex items-center space-x-2 group">
+              <div className="hidden sm:flex items-center space-x-2 group">
                 <UserButton />
               </div>
             ) : (
@@ -247,7 +246,7 @@ const Header = () => {
           <Popover open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <PopoverTrigger asChild>
               <button
-                className="lg:hidden @container"
+                className="lg:hidden "
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 <Menu className="w-8 h-8" />
@@ -284,18 +283,17 @@ const Header = () => {
                 </div>
               ))}
 
-              <div className="pt-2 border-t @sm:hidden">
+              <div className="pt-2 border-t sm:hidden">
                 {user ? (
                   <UserButton />
                 ) : (
-                  <SignInButton mode="modal">
-                    <button
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="bg-blue-500 text-white px-4 py-2 rounded w-full"
-                    >
-                      Sign In
-                    </button>
-                  </SignInButton>
+                  <SignedOut>
+                    <SignInButton mode="modal">
+                      <button className="text-sm font-medium text-gray-700 hover:text-gray-900">
+                        Sign in
+                      </button>
+                    </SignInButton>
+                  </SignedOut>
                 )}
               </div>
             </PopoverContent>

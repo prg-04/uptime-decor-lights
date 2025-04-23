@@ -73,7 +73,7 @@ export const productType = defineType({
           options: {
             list: [
               { title: "On Sale", value: "onSale" },
-              { title: "Best Seller", value: "bestSeller" },
+              { title: "Best Sellers", value: "bestSellers" },
               { title: "New Arrivals", value: "newArrival" },
             ],
             layout: "dropdown",

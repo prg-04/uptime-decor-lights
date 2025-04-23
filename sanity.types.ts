@@ -154,36 +154,21 @@ export type Order = {
   _updatedAt: string;
   _rev: string;
   orderNumber?: string;
-  mpesaTransactionId?: string;
-  mpesaReceiptNumber?: string;
-  paymentMethod?: "mpesa" | "card" | "cod";
-  paymentDetails?: {
-    resultCode?: number;
-    resultDesc?: string;
-    transactionDate?: string;
-    phoneNumber?: string;
-    amount?: number;
-  };
-  paymentDate?: string;
+  paymentMethod?: string;
+  amount?: number;
   clerkUserId?: string;
-  customerName?: string;
-  customerEmail?: string;
-  customerPhoneNumber?: string;
+  createdDate?: string;
+  confirmationCode?: string;
+  paymentStatusDescription?: string;
+  paymentAccount?: string;
   products?: Array<{
-    product?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "product";
-    };
+    productId?: string;
+    name?: string;
     quantity?: number;
+    price?: number;
     _key: string;
   }>;
-  totalPrice?: number;
-  currency?: string;
-  amountDiscount?: number;
-  status?: "pending" | "paid" | "failed" | "shipped" | "delivered" | "cancelled";
-  orderDate?: string;
+  status?: "pending" | "paid" | "failed";
 };
 
 export type Product = {
@@ -246,7 +231,7 @@ export type Product = {
     [internalGroqTypeReferenceTo]?: "category";
   }>;
   stock?: number;
-  salesCategories?: Array<"onSale" | "bestSeller" | "newArrival">;
+  salesCategories?: Array<"onSale" | "bestSellers" | "newArrival">;
 };
 
 export type Category = {
@@ -420,6 +405,34 @@ export type HERO_SECTION_QUERYResult = Array<{
   promo_code: string | null;
 }>;
 
+// Source: ./sanity/lib/order/getMyOrders.ts
+// Variable: MY_ORDERS_QUERY
+// Query: *[            _type == "order"             && clerkUserId == $userId        ] | order(createdDate desc) {         ...,         products[]{            ...,            product->            }        }
+export type MY_ORDERS_QUERYResult = Array<{
+  _id: string;
+  _type: "order";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  orderNumber?: string;
+  paymentMethod?: string;
+  amount?: number;
+  clerkUserId?: string;
+  createdDate?: string;
+  confirmationCode?: string;
+  paymentStatusDescription?: string;
+  paymentAccount?: string;
+  products: Array<{
+    productId?: string;
+    name?: string;
+    quantity?: number;
+    price?: number;
+    _key: string;
+    product: null;
+  }> | null;
+  status?: "failed" | "paid" | "pending";
+}>;
+
 // Source: ./sanity/lib/products/getAllCategories.ts
 // Variable: ALL_CATEGORIES_QUERY
 // Query: *[        _type == "category"        ] | order(name asc)
@@ -510,7 +523,7 @@ export type ALL_PRODUCTS_QUERYResult = Array<{
     [internalGroqTypeReferenceTo]?: "category";
   }>;
   stock?: number;
-  salesCategories?: Array<"bestSeller" | "newArrival" | "onSale">;
+  salesCategories?: Array<"bestSellers" | "newArrival" | "onSale">;
 }>;
 
 // Source: ./sanity/lib/products/getProductBySlug.ts
@@ -576,7 +589,7 @@ export type PRODUCT_BY_SLUG_QUERYResult = {
     [internalGroqTypeReferenceTo]?: "category";
   }>;
   stock?: number;
-  salesCategories?: Array<"bestSeller" | "newArrival" | "onSale">;
+  salesCategories?: Array<"bestSellers" | "newArrival" | "onSale">;
 } | null;
 
 // Source: ./sanity/lib/products/getProductsByCategory.ts
@@ -642,7 +655,7 @@ export type PRODUCT_BY_CATEGORY_QUERYResult = Array<{
     [internalGroqTypeReferenceTo]?: "category";
   }>;
   stock?: number;
-  salesCategories?: Array<"bestSeller" | "newArrival" | "onSale">;
+  salesCategories?: Array<"bestSellers" | "newArrival" | "onSale">;
 }>;
 
 // Source: ./sanity/lib/products/getProductsBySalesCategory.ts
@@ -702,7 +715,7 @@ export type QueryResult = Array<{
     slug: Slug | null;
   }> | null;
   stock: number | null;
-  salesCategories: Array<"bestSeller" | "newArrival" | "onSale"> | null;
+  salesCategories: Array<"bestSellers" | "newArrival" | "onSale"> | null;
 }>;
 
 // Source: ./sanity/lib/products/searchProductsByName.ts
@@ -768,7 +781,7 @@ export type PRODUCT_SEARCH_QUERYResult = Array<{
     [internalGroqTypeReferenceTo]?: "category";
   }>;
   stock?: number;
-  salesCategories?: Array<"bestSeller" | "newArrival" | "onSale">;
+  salesCategories?: Array<"bestSellers" | "newArrival" | "onSale">;
 }>;
 
 // Source: ./sanity/lib/sales/getActiveSaleByCouponCode.ts
@@ -796,6 +809,7 @@ declare module "@sanity/client" {
     "\n    *[_type == \"category\" && slug.current == $slug][0] {\n      _id,\n      title,\n      slug,\n      description,\n      hero_image {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    }\n  ": CATEGORY_BY_SLUG_QUERYResult;
     "\n      *[_type == \"ourCollection\"][0] {\n        \"title\": title,\n        \"slug\": { \"current\": \"our-collection\" },\n        description,\n        hero_image {\n          asset->{\n            _id,\n            url\n          },\n          alt\n        }\n      }\n    ": OUR_COLLECTION_QUERYResult;
     "\n    *[_type == \"heroSection\"] | order(order asc) {\n      _id,\n      type,\n      title,\n      subtitle_1,\n      description,\n      \"imageUrl_1\": imageUrl_1.asset->url,\n      \"imageUrl_2\": imageUrl_2.asset->url,\n      additionalInfo,\n      promo_code\n    }\n  ": HERO_SECTION_QUERYResult;
+    "\n        *[\n            _type == \"order\" \n            && clerkUserId == $userId\n        ] | order(createdDate desc) {\n         ...,\n         products[]{\n            ...,\n            product->\n            }\n        }\n    ": MY_ORDERS_QUERYResult;
     "\n        *[\n        _type == \"category\"\n        ] | order(name asc)\n    ": ALL_CATEGORIES_QUERYResult;
     "\n        *[\n        _type == \"product\"\n        ] | order(name asc)\n    ": ALL_PRODUCTS_QUERYResult;
     "\n        *[\n            _type == \"product\" && slug.current == $slug\n        ] | order(name asc)[0]\n    ": PRODUCT_BY_SLUG_QUERYResult;

@@ -1,19 +1,22 @@
 "use client";
+import { createCheckoutSession } from "@/actions/createCheckoutSession";
 // import { createCheckoutSession } from "@/actions/createCheckoutSession";
 import AddToCartButton from "@/components/AddToCartButton";
 import { imageUrl } from "@/lib/imageUrl";
 import { useCartStore } from "@/store/store";
+import { Metadata } from "@/types";
 // import { Metadata } from "@/types";
-import { SignInButton, useAuth, } from "@clerk/nextjs";
+import { SignInButton, useAuth, useUser, } from "@clerk/nextjs";
 import Image from "next/image";
 // import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 
+
 function CartPage() {
   const groupedItems = useCartStore((state) => state.getGroupedCartItems());
   const { isSignedIn } = useAuth();
-  // const { user } = useUser();
+  const { user } = useUser();
   // const router = useRouter();
 
   const [isClient, setIsClient] = useState(false);
@@ -41,18 +44,18 @@ function CartPage() {
     setIsLoading(true);
 
     try {
-      // const metadata: Metadata = {
-      //   orderNumber: crypto.randomUUID(),
-      //   customerName: user?.fullName ?? "Unknown",
-      //   customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
-      //   clerkUserId: user!.id,
-      // };
+      const metadata: Metadata = {
+        orderNumber: crypto.randomUUID(),
+        customerName: user?.fullName ?? "Unknown",
+        customerEmail: user?.emailAddresses[0]?.emailAddress ?? "Unknown",
+        clerkUserId: user!.id,
+      };
 
-      // const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
+      const { redirectUrl } = await createCheckoutSession(groupedItems, metadata);
 
-      // if (checkoutUrl) {
-      //   window.location.href = checkoutUrl;
-      // }
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
+      }
     } catch (error) {
       console.error("Error during checkout:", error);
     } finally {

@@ -3,10 +3,8 @@ import CarouselHero from "./CarouselHero";
 
 const Hero = () => {
   return (
-    <section className="min-w-full min-h-full ">
-      <div className="h-[60vh] md:h-[50vh] min-w-full ">
-        <CarouselHero />
-      </div>
+    <section className="h-[60vh] md:h-[50vh] min-w-full ">
+      <CarouselHero />
     </section>
   );
 };
