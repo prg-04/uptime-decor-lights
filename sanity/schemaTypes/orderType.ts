@@ -20,6 +20,9 @@ export const orderType = defineType({
       type: "string",
       description: "Currency code (e.g. USD, KES, EUR)",
       initialValue: "KES",
+      options: {
+        list: [{ title: "Kenyan Shilling (KES)", value: "KES" }],
+      },
     }),
 
     defineField({

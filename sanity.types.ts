@@ -154,6 +154,7 @@ export type Order = {
   _updatedAt: string;
   _rev: string;
   orderNumber?: string;
+  currency?: string;
   paymentMethod?: string;
   amount?: number;
   clerkUserId?: string;
@@ -165,6 +166,18 @@ export type Order = {
     productId?: string;
     name?: string;
     quantity?: number;
+    image?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
     price?: number;
     _key: string;
   }>;
@@ -415,6 +428,7 @@ export type MY_ORDERS_QUERYResult = Array<{
   _updatedAt: string;
   _rev: string;
   orderNumber?: string;
+  currency?: string;
   paymentMethod?: string;
   amount?: number;
   clerkUserId?: string;
@@ -426,6 +440,18 @@ export type MY_ORDERS_QUERYResult = Array<{
     productId?: string;
     name?: string;
     quantity?: number;
+    image?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
     price?: number;
     _key: string;
     product: null;

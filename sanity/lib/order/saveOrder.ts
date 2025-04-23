@@ -40,6 +40,7 @@ export async function saveOrderToSanity(orderDetails: OrderDetails) {
     confirmationCode: transaction.confirmation_code,
     paymentStatusDescription: transaction.payment_status_description,
     paymentAccount: transaction.payment_account,
+    currency: transaction.currency,
     products: products.map((p) => ({
       _key: `${p.productId}-${p.name}`,
       productId: p.productId,
