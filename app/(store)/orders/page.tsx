@@ -63,7 +63,7 @@ const OrdersPage = async () => {
                   <div className="sm:text-right">
                     <p className="text-sm text-gray-600 mb-1">Total Amount Paid:</p>
                     <p className="font-medium text-lg">
-                      {formatCurrency(order.amount ?? 0, order.currency)}
+                      {formatCurrency(order.amount ?? 0, order?.currency ?? "KES")}
                     </p>
                   </div>
                 </div>
