@@ -53,14 +53,14 @@ const Carousel: React.FC<CarouselProps> = ({
       >
         {items.map((item) => {
           const sharedTextSection = (
-            <div className="w-full h-full flex flex-col justify-center items-center text-center p-6 md:p-8 lg:p-10 mx-auto max-w-[90%]">
+            <div className="w-full h-full flex  flex-col justify-center items-center text-center p-2 md:p-6 mx-auto">
               <h2 className="text-2xl sm:text-3xl md:text-[2.5rem] md:leading-[3.5rem] uppercase font-cormorant font-bold mb-4">
                 {item.title}
               </h2>
               <p className="text-base sm:text-lg md:text-xl mb-6">
                 {item.description}
               </p>
-              <Button className="md:mt-6">
+              <Button className="md:mt-2">
                 <Link href="/shop" className="flex items-center">
                   <span>Shop Now</span>
                   <ArrowUpRight className="ml-2" />
@@ -71,30 +71,32 @@ const Carousel: React.FC<CarouselProps> = ({
 
           if (item.type === "On Sale") {
             return (
-              <div key={item.id} className="min-w-full h-full flex flex-col md:flex-row">
-  <div className="w-full md:w-1/2 lg:w-1/3 h-64 md:h-full">
-    <Image
-      src={item.imageUrl_1}
-      alt={item.title || "Product Image"}
-      className="w-full h-full object-cover"
-      width={500}
-      height={500}
-    />
-  </div>
-  <div className="bg-amber-100 flex-grow flex items-center justify-center p-6 md:p-8 lg:p-10 min-h-[200px]">
-    {sharedTextSection}
-  </div>
-  <div className="hidden lg:block w-1/3 h-full">
-    <Image
-      src={item.imageUrl_2 ?? ""}
-      alt={item.title || "Secondary Product Image"}
-      className="w-full h-full object-cover"
-      width={500}
-      height={500}
-    />
-  </div>
-</div>
-
+              <div
+                key={item.id}
+                className="min-w-full h-full flex flex-col md:flex-row"
+              >
+                <div className="w-full md:w-1/2 lg:w-1/3 h-64 md:h-full">
+                  <Image
+                    src={item.imageUrl_1}
+                    alt={item.title || "Product Image"}
+                    className="w-full h-full object-cover"
+                    width={500}
+                    height={500}
+                  />
+                </div>
+                <div className="bg-amber-100 w-full md:w-1/3 flex-grow flex items-center justify-center p-2 md:p-4 h-full md:min-h-[200px]">
+                  {sharedTextSection}
+                </div>
+                <div className="hidden lg:block w-1/3 h-full">
+                  <Image
+                    src={item.imageUrl_2 ?? ""}
+                    alt={item.title || "Secondary Product Image"}
+                    className="w-full h-full object-cover"
+                    width={500}
+                    height={500}
+                  />
+                </div>
+              </div>
             );
           }
 
@@ -117,7 +119,7 @@ const Carousel: React.FC<CarouselProps> = ({
                   />
                 </div>
                 <div className="w-full md:w-1/2 lg:w-1/3 h-full flex bg-primary text-white flex-col justify-center items-center p-6 md:p-8 lg:p-10 text-center">
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-cormorant lg:text-6xl uppercase font-extrabold mb-4">
+                  <h2 className="text-2xl sm:text-3xl md:text-[2.5rem] md:leading-[3.5rem] font-cormorant uppercase font-bold mb-4">
                     {item.title}
                   </h2>
                   <p className="text-base sm:text-lg md:text-2xl hidden md:block mb-6">
@@ -164,7 +166,7 @@ const Carousel: React.FC<CarouselProps> = ({
                   />
                 </div>
                 <div className="w-full md:w-1/3 h-full flex bg-orange-100 text-primary flex-col justify-center items-center text-center p-6 md:p-8 lg:p-10">
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl  uppercase font-cormorant font-bold mb-4">
+                  <h2 className="text-2xl sm:text-3xl md:text-[2.5rem] md:leading-[3.5rem] uppercase font-cormorant font-bold mb-4">
                     {item.title}
                   </h2>
                   <p className="text-base sm:text-lg md:text-2xl mb-6">

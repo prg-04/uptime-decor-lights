@@ -13,6 +13,15 @@ export const orderType = defineType({
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
+
+    defineField({
+      name: "currency",
+      title: "Currency",
+      type: "string",
+      description: "Currency code (e.g. USD, KES, EUR)",
+      initialValue: "KES",
+    }),
+
     defineField({
       name: "paymentMethod",
       title: "Payment Method",

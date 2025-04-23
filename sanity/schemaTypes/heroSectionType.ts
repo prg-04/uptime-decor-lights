@@ -9,6 +9,7 @@ export const heroSection = defineType({
       name: "type",
       title: "Banner Type",
       type: "string",
+      initialValue: "New Arrival",
       options: {
         list: ["On Sale", "Best Seller", "New Arrival"],
         layout: "radio",
