@@ -115,7 +115,7 @@ const Header = () => {
             alt="Uptime Decor Lights"
             width={100}
             height={50}
-            className=""
+            className="dark:invert-100"
           />
         </Link>
 

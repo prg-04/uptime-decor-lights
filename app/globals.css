@@ -127,6 +127,6 @@
     @apply bg-background text-foreground font-josefin-sans;
   }
   img {
-    @apply h-auto max-w-full w-full;
+    @apply h-auto max-w-full w-full dark:invert-100;
   }
 }
