@@ -26,10 +26,15 @@ export const productType = defineType({
     defineField({
       name: "image",
       title: "Product Image",
-      type: "image",
-      options: {
-        hotspot: true,
-      },
+      type: "array",
+      of: [
+        {
+          type: "reference",
+          to: {
+            type: "ProductImage",
+          },
+        },
+      ],
     }),
     defineField({
       name: "description",
@@ -65,16 +70,21 @@ export const productType = defineType({
     defineField({
       name: "salesCategories",
       title: "Sales Categories",
+      description: "Select at least one sales category, default: New Arrival",
       type: "array",
       validation: (Rule) => Rule.min(1),
+      initialValue: ["newArrival"],
       of: [
         {
           type: "string",
           options: {
             list: [
               { title: "On Sale", value: "onSale" },
-              { title: "Best Sellers", value: "bestSellers" },
-              { title: "New Arrivals", value: "newArrival" },
+              { title: "Best Seller", value: "bestSeller" },
+              {
+                title: "New Arrivals",
+                value: "newArrival",
+              },
             ],
             layout: "dropdown",
           },

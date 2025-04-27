@@ -50,26 +50,11 @@ interface Link {
 }
 
 const links: Link[] = [
-  {
-    title: "Chandeliers",
-    href: "/chandeliers",
-  },
-  {
-    title: "Pendants Lights",
-    href: "/pendant-lights",
-  },
-  {
-    title: "Wall Lights",
-    href: "/wall-lights",
-  },
-  {
-    title: "Switches & Sockets",
-    href: "/switches-and-sockets",
-  },
-  {
-    title: "Our collection",
-    href: "/our-collection",
-  },
+  { title: "Chandeliers", href: "/chandeliers" },
+  { title: "Pendants Lights", href: "/pendant-lights" },
+  { title: "Wall Lights", href: "/wall-lights" },
+  { title: "Switches & Sockets", href: "/switches-and-sockets" },
+  { title: "Our collection", href: "/our-collection" },
 ];
 
 const Header = () => {
@@ -78,11 +63,27 @@ const Header = () => {
   const searchRef = useRef<HTMLFormElement | null>(null);
   const { user } = useUser();
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false); // State to detect scroll
   const itemCount = useCartStore((state) =>
     state.items.reduce((total, item) => total + item.quantity, 0)
   );
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    function handleScroll() {
+      if (window.scrollY > 50) {
+        setScrolled(true); // Set scrolled state when the user scrolls 50px or more
+      } else {
+        setScrolled(false);
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -104,8 +105,12 @@ const Header = () => {
   }, [showSearch]);
 
   return (
-    <NavigationMenu className="@container flex max-w-full justify-between items-center px-4 py-2 sticky top-0 z-50 bg-white/50 backdrop-blur-md border-b border-b-gray-600/20  ">
-      <div className="flex  sm:flex-wrap w-full  justify-between items-center gap-3">
+    <NavigationMenu
+      className={`flex min-w-full justify-between items-center px-4 py-2 fixed top-0 z-50 bg-transparent transition-all duration-300 ease-in-out ${
+        scrolled ? "backdrop-blur-md " : ""
+      }`}
+    >
+      <div className="flex sm:flex-wrap w-full justify-between items-center gap-3">
         <Link
           href="/"
           className="text-2xl text-black hover:opacity-50 cursor-pointer mx-auto sm:mx-0"
@@ -119,7 +124,7 @@ const Header = () => {
           />
         </Link>
 
-        <NavigationMenuList className="hidden md:flex items-center flex-wrap">
+        <NavigationMenuList className="hidden lg:flex items-center flex-wrap">
           {links.map((link) => (
             <NavigationMenuItem key={link.title}>
               {link.subLinks ? (
@@ -134,7 +139,7 @@ const Header = () => {
                           <NavigationMenuLink asChild>
                             <Link
                               href={subLink.href}
-                              className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                              className="flex h-full w-full select-none flex-col justify-end rounded-md  p-6 no-underline outline-none focus:shadow-md"
                             >
                               <Image
                                 src={subLink.image}
@@ -157,7 +162,7 @@ const Header = () => {
                   className="flex cursor-pointer h-full w-full select-none flex-col no-underline"
                 >
                   <Button
-                    className={`text-primary cursor-pointer shadow-none ${navigationMenuTriggerStyle()}`}
+                    className={`text-primary cursor-pointer shadow-none bg-transparent ${navigationMenuTriggerStyle()}`}
                   >
                     {link.title}
                   </Button>
@@ -167,9 +172,9 @@ const Header = () => {
           ))}
         </NavigationMenuList>
 
-        <div className="flex  items-center space-x-4 mt-4 sm:mt-0 flex-1 sm:flex-none justify-end">
+        <div className="flex items-center space-x-4 mt-4 sm:mt-0 flex-1 sm:flex-none justify-end">
           {/* SEARCH */}
-          <div className="flex  items-center flex-1 sm:flex-none  justify-end">
+          <div className="flex items-center flex-1 sm:flex-none justify-end">
             <div className="hidden md:flex items-center">
               {showSearch ? (
                 <Form

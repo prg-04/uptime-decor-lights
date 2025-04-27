@@ -6,7 +6,13 @@ export const searchProductsByName = async (searchParams: string) => {
         *[
             _type == "product"
             && name match $searchParam
-        ] | order(name asc)
+        ] | order(name asc){
+      ...,
+      image[]->{
+        _id,
+        image
+      }
+    } 
     `);
 
   try {

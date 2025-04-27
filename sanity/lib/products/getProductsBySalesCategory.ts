@@ -13,7 +13,10 @@ export async function getProductsBySalesCategory(categories: string[]) {
       _id,
       name,
       slug,
-      image,
+      image[]->{
+        _id,
+        image
+      },
       description,
       price,
       categories[]->{

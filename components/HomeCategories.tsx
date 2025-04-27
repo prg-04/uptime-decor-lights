@@ -14,9 +14,9 @@ const HomeCategories = () => {
   };
 
   return (
-    <section className="my-16 w-full px-4 lg:px-10 py-4 flex flex-col items-center gap-6">
+    <section className="w-full px-4 md:px-6 lg:px-10 py-8 flex flex-col items-center gap-8">
       {/* Grid for large screens */}
-      <div className="hidden lg:grid grid-cols-4 gap-6 w-full max-w-7xl">
+      <div className="hidden lg:grid grid-cols-4 gap-8 w-full max-w-7xl">
         {categoriesHome.map((category) => (
           <Link key={category.title} href={category.href}>
             <div className="relative rounded-3xl group overflow-hidden aspect-[4/5] shadow-lg hover:shadow-2xl transition-shadow max-w-sm">
@@ -41,20 +41,20 @@ const HomeCategories = () => {
       <div
         ref={scrollRef}
         onWheel={handleDragScroll}
-        className="lg:hidden flex gap-4 overflow-x-auto scrollbar-hide w-full px-1"
+        className="lg:hidden flex gap-5 overflow-x-auto scrollbar-hide w-full px-2"
       >
         {categoriesHome.map((category) => (
           <Link key={category.title} href={category.href}>
-            <div className="relative min-w-[65vw] sm:min-w-[45vw] aspect-[3/4] rounded-3xl group overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+            <div className="relative min-w-[55vw] sm:min-w-[35vw] aspect-[3/4] rounded-2xl group overflow-hidden shadow-md hover:shadow-lg transition-shadow">
               <Image
                 src={category.image}
                 alt={category.title}
-                className="object-cover w-full h-full rounded-3xl group-hover:scale-105 transition-transform duration-300"
+                className="object-cover w-full h-full rounded-2xl group-hover:scale-105 transition-transform duration-300"
                 fill
-                sizes="80vw"
+                sizes="70vw"
               />
-              <div className="absolute bottom-0 left-0 right-0 bg-black/60 flex items-center justify-center h-14 sm:h-16 rounded-b-3xl">
-                <h3 className="text-white text-lg sm:text-xl font-semibold text-center px-2">
+              <div className="absolute bottom-0 left-0 right-0 bg-black/50 flex items-center justify-center h-12 sm:h-14 rounded-b-2xl">
+                <h3 className="text-white text-base sm:text-lg font-semibold text-center px-2">
                   {category.title}
                 </h3>
               </div>

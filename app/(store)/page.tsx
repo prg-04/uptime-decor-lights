@@ -1,6 +1,5 @@
 import Banner from "@/components/Banner";
 import Hero from "@/components/Hero";
-import HeroSalesBanner from "@/components/HeroSalesBanner";
 import HomeBestSellers from "@/components/HomeBestSellers";
 import HomeCategories from "@/components/HomeCategories";
 import HomeChandelier from "@/components/HomeChandelier";
@@ -10,9 +9,6 @@ import HomeSeoContent from "@/components/HomeSeoContent";
 import HomeWallLights from "@/components/HomeWallLights";
 
 export default async function Home() {
-
-
-  
   return (
     <div className="">
       <Hero />
@@ -24,8 +20,6 @@ export default async function Home() {
       <HomePendants />
       <HomeWallLights />
       <HomeSeoContent />
-
-    
     </div>
   );
 }

@@ -6,7 +6,13 @@ async function getProductsByCategory(categorySlug: string) {
         *[
             _type == "product" 
             && references(*[_type == "category" && slug.current == $categorySlug]._id)
-            ] | order(name asc)
+            ] | order(name asc){
+      ...,
+      image[]->{
+        _id,
+        image
+      }
+    } 
         `);
 
   try {
