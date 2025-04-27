@@ -106,7 +106,7 @@ const Header = () => {
 
   return (
     <NavigationMenu
-      className={`flex min-w-full justify-between items-center px-4 py-2 fixed top-0 z-50 bg-transparent transition-all duration-300 ease-in-out ${
+      className={`flex min-w-full justify-between items-center px-4 py-2 fixed top-0 z-50 bg-transparent backdrop-blur-md transition-all duration-300 ease-in-out ${
         scrolled ? "backdrop-blur-md " : ""
       }`}
     >
@@ -120,7 +120,7 @@ const Header = () => {
             alt="Uptime Decor Lights"
             width={100}
             height={50}
-            className="dark:invert-100"
+            className={scrolled ? "invert-0" : "invert-0"}
           />
         </Link>
 

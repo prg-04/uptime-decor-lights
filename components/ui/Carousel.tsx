@@ -308,7 +308,7 @@ const ThirdLayout = ({ item }: { item: any }) => {
               alt=""
               width={500}
               height={500}
-              className="w-48 md:w-52 h-48 md:h-52 object-cover rounded-xl"
+              className="w-48 md:w-64 h-48 md:h-64 object-cover rounded-xl"
             />
           ))}
         </Marquee>
@@ -324,7 +324,7 @@ const ThirdLayout = ({ item }: { item: any }) => {
               alt=""
               width={500}
               height={500}
-              className="w-48 md:w-52 h-48 md:h-52 object-cover rounded-xl"
+              className="w-48 md:w-64 h-48 md:h-64 object-cover rounded-xl"
             />
           ))}
         </Marquee>
