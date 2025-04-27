@@ -36,6 +36,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { usePathname } from "next/navigation";
 
 interface SubLink {
   title: string;
@@ -58,6 +59,7 @@ const links: Link[] = [
 ];
 
 const Header = () => {
+  const pathname = usePathname();
   const [showSearch, setShowSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchRef = useRef<HTMLFormElement | null>(null);
@@ -120,7 +122,10 @@ const Header = () => {
             alt="Uptime Decor Lights"
             width={100}
             height={50}
-            className={scrolled ? "invert-0" : "invert-0"}
+            className={`
+      transition-all duration-300
+      ${scrolled ? "invert-0" : pathname !== "/" ? "invert-80" : "invert-30"}
+    `}
           />
         </Link>
 
