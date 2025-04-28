@@ -28,7 +28,8 @@ async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
         >
           {product.image &&
             product.image.length > 0 &&
-            product.image[0]?.image && (
+            product.image[0]?.image &&
+            product.image[0].image.asset?._ref && (
               <Image
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                 src={imageUrl(product.image[0].image.asset._ref).url()}
