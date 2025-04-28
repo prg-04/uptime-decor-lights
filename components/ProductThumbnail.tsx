@@ -6,11 +6,6 @@ import { imageUrl } from "@/lib/imageUrl";
 
 const ProductThumbnail = ({ product }: { product: Product }) => {
   const isOutOfStock = product.stock != null && product.stock <= 0;
-
-  console.log("Product on ProductThumbnail:", product.image?.[0]?.image?.asset?._ref)
-
-  // Check if the product has an image reference
-
   return (
     <Link
       href={`/products/${product.slug?.current}`}

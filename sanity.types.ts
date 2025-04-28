@@ -214,7 +214,6 @@ export type Product = {
   name?: string;
   slug?: Slug;
   image?: Array<{
-    [x: string]: any;
     _ref: string;
     _type: "reference";
     _weak?: boolean;
@@ -392,24 +391,6 @@ export type CATEGORY_BY_SLUG_QUERYResult = {
   _id: string;
   title: string | null;
   slug: Slug | null;
-  description: string | null;
-  hero_image: {
-    asset: {
-      _id: string;
-      url: string | null;
-    } | null;
-    alt: string | null;
-  } | null;
-} | null;
-
-// Source: ./sanity/lib/category/getOurCollectionBySlug.ts
-// Variable: OUR_COLLECTION_QUERY
-// Query: *[_type == "ourCollection"][0] {        "title": title,        "slug": { "current": "our-collection" },        description,        hero_image {          asset->{            _id,            url          },          alt        }      }
-export type OUR_COLLECTION_QUERYResult = {
-  title: string | null;
-  slug: {
-    current: "our-collection";
-  };
   description: string | null;
   hero_image: {
     asset: {
@@ -865,7 +846,6 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "\n    *[_type == \"category\" && slug.current == $slug][0] {\n      _id,\n      title,\n      slug,\n      description,\n      hero_image {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    }\n  ": CATEGORY_BY_SLUG_QUERYResult;
-    "\n      *[_type == \"ourCollection\"][0] {\n        \"title\": title,\n        \"slug\": { \"current\": \"our-collection\" },\n        description,\n        hero_image {\n          asset->{\n            _id,\n            url\n          },\n          alt\n        }\n      }\n    ": OUR_COLLECTION_QUERYResult;
     "\n    *[_type == \"heroSection\"] | order(order asc) {\n      _id,\n      type,\n      title,\n      subtitle_1,\n      description,\n      \"imageUrl_1\": imageUrl_1.asset->url,\n      \"imageUrl_2\": imageUrl_2.asset->url,\n      additionalInfo,\n      promo_code\n    }\n  ": HERO_SECTION_QUERYResult;
     "\n        *[\n            _type == \"order\" \n            && clerkUserId == $userId\n        ] | order(createdDate desc) {\n         ...,\n         products[]{\n            ...,\n            product->\n            }\n        }\n    ": MY_ORDERS_QUERYResult;
     "\n        *[\n        _type == \"category\"\n        ] | order(name asc)\n    ": ALL_CATEGORIES_QUERYResult;
