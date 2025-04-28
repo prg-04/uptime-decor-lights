@@ -1,16 +1,19 @@
 import { Product } from "@/sanity.types";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function adaptProduct(sanityProduct: any): Product {
-  // Transform the Sanity product into the expected Product type
+  // Ensure image transformation fits the expected type
   return {
     ...sanityProduct,
     image: sanityProduct.image
-      ? sanityProduct.image.map((image: { assetRef: string }) => ({
-          asset: {
-            _ref: image.assetRef, // Directly using assetRef instead of _ref
-          },
-        }))
+      ? sanityProduct.image.map((image: { assetRef: string | null }) => {
+          if (!image.assetRef) return null; // Handle case where assetRef is null
+          return {
+            assetRef: image.assetRef, // Include the assetRef
+            _ref: image.assetRef, // Use assetRef for _ref as well (ensure consistency)
+            _type: "reference", // Assuming it's a reference type
+            _key: image.assetRef, // You can generate a unique key based on assetRef
+          };
+        })
       : undefined,
   };
 }
