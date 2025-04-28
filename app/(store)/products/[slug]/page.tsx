@@ -6,6 +6,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
 
+export const dynamic = "force-static";
+export const revalidate = 60;
+
 async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
@@ -18,7 +21,7 @@ async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const isOutOfStock = product.stock != null && product.stock <= 0;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 mt-14">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
           className={`relative aspect-square overflow-hidden group  rounded-lg shadow-lg ${isOutOfStock ? "opacity-50" : ""}`}

@@ -118,7 +118,7 @@ const Header = () => {
           className="text-2xl text-black hover:opacity-50 cursor-pointer mx-auto sm:mx-0"
         >
           <Image
-            src="/logo.png"
+            src="/uptime_logo.png"
             alt="Uptime Decor Lights"
             width={100}
             height={50}
@@ -244,11 +244,13 @@ const Header = () => {
                 <UserButton />
               </div>
             ) : (
-              <SignInButton mode="modal">
-                <button className="bg-white hover:bg-blue-500 hover:text-white animate-pulse text-blue-500 font-bold px-4 py-2 rounded border-blue-300 border transition duration-300 ease-in-out">
-                  Sign In
-                </button>
-              </SignInButton>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="text-sm font-medium text-gray-700 hover:text-gray-900">
+                    Sign in
+                  </button>
+                </SignInButton>
+              </SignedOut>
             )}
           </ClerkLoaded>
 

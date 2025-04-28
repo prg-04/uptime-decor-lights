@@ -33,7 +33,7 @@ const OurCollection = async () => {
         <HeroBanner image={url} title={title} description={description} />
       )}
       <section className="flex">
-        <FilterSection />
+        {/* <FilterSection /> */}
         <div className="flex-1">
           <div className="gap-4 p-6">
             {products.map((product, idx) => (

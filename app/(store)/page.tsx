@@ -8,6 +8,9 @@ import HomePendants from "@/components/HomePendants";
 import HomeSeoContent from "@/components/HomeSeoContent";
 import HomeWallLights from "@/components/HomeWallLights";
 
+export const dynamic = "force-static";
+export const revalidate = 60;
+
 export default async function Home() {
   return (
     <div className="">

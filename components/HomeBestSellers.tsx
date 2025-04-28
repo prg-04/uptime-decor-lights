@@ -4,7 +4,7 @@ import CatSecLayout from "./CatSecLayout";
 const HomeBestSellers = () => {
   return (
     <div className="w-full mt-10">
-      <CatSecLayout title="Best Sellers" salesCategory="bestSellers" />
+      <CatSecLayout title="Best Sellers" salesCategory="bestSeller" />
     </div>
   );
 };

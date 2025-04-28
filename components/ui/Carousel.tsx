@@ -39,7 +39,7 @@ const heroSections = [
     },
     image: "/hero_cha_1.jpeg",
     image_2:
-      "/suspension nordiques modernes en verre pour décoration loft bar.jpeg",
+      "/image_1.jpeg",
     image_3: "/Rope Chandelier.jpeg",
   },
   {
@@ -51,10 +51,9 @@ const heroSections = [
       label: "See What's New",
       href: "/new-arrivals",
     },
-    image: "/banner-pendant.jpeg",
-    image_2:
-      "/suspension nordiques modernes en verre pour décoration loft bar.jpeg",
-    image_3: "/Rope Chandelier.jpeg",
+    image: "/banner_pendant.jpeg",
+    image_2: "/image_1.jpeg",
+    image_3: "/Rope_Chandelier.jpeg",
   },
   {
     type: "third",
@@ -66,10 +65,10 @@ const heroSections = [
       href: "/inspiration",
     },
     images: [
-      "/suspension nordiques modernes en verre pour décoration loft bar.jpeg",
-      "/pendant-4.jpg",
-      "/pendant-3.jpg",
-      "/pendant-1.jpg",
+      "/image_1.jpeg",
+      "/pendant_4.jpg",
+      "/pendant_3.jpg",
+      "/pendant_1.jpg",
     ],
   },
 ];
@@ -99,13 +98,13 @@ export function Carousel({ items }: { items: any[] }) {
   return (
     <div
       ref={emblaRef}
-      className="embla w-full h-full overflow-hidden relative min-w-full"
+      className="embla w-full h-fit overflow-hidden relative min-w-full"
     >
       <div className="embla__container">
         {heroSections.map((item, index) => (
           <section
             key={index}
-            className="embla__slide w-full h-full flex-shrink-0"
+            className="embla__slide w-full h-fit flex-shrink-0"
           >
             {renderLayout(item)}
           </section>
@@ -119,12 +118,12 @@ const FirstLayout = ({ item }: { item: any }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false });
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
   };
 
-  const imageVariants = {
+  const imageVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: {
       opacity: 1,
@@ -136,7 +135,7 @@ const FirstLayout = ({ item }: { item: any }) => {
   return (
     <div
       ref={ref}
-      className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 mt-10"
+      className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 mt-10 max-h-[700px]"
     >
       <div className="flex flex-col justify-center gap-4 text-center lg:text-left">
         <h1 className="text-4xl md:text-5xl font-bold font-cormorant">
@@ -198,12 +197,12 @@ const SecondLayout = ({ item }: { item: any }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false });
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.3 } },
   };
 
-  const imageVariants = {
+  const imageVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8, y: 20 },
     visible: {
       opacity: 1,
@@ -216,7 +215,7 @@ const SecondLayout = ({ item }: { item: any }) => {
   return (
     <div
       ref={ref}
-      className="w-full flex flex-col items-center px-2 sm:px-6 md:px-12 mt-6"
+      className="w-full h-[70vh] sm:h-[80vh] md:max-h-[700px] flex flex-col items-center px-2 sm:px-6 md:px-12 mt-6"
     >
       <div className="flex flex-col items-center mt-12 md:mt-16 w-full gap-4 md:gap-6">
         <div className="w-full text-left md:text-left">
@@ -231,7 +230,7 @@ const SecondLayout = ({ item }: { item: any }) => {
 
       <motion.div
         ref={ref}
-        className="relative h-[70vh] md:h-[90dvh]  w-full overflow-hidden mt-6"
+        className="relative w-full h-full overflow-hidden mt-6 aspect-video "
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
@@ -251,7 +250,7 @@ const SecondLayout = ({ item }: { item: any }) => {
 
         <motion.div
           variants={imageVariants}
-          className="h-64 md:h-96 w-full  sm:max-w-sm  lg:max-w-lg absolute z-20 top-0 sm:top-10 lg:top-10 left-0 sm:left-1/2 transform sm:-translate-x-1/2"
+          className="h-64 md:h-96 w-full  sm:max-w-sm  md:max-w-[600px] absolute z-20 top-0 sm:top-10 lg:top-10 left-0 sm:left-1/2 transform sm:-translate-x-1/2"
         >
           <Image
             src={item.image_2}
@@ -264,7 +263,7 @@ const SecondLayout = ({ item }: { item: any }) => {
 
         <motion.div
           variants={imageVariants}
-          className="absolute right-0 lg:right-28 top-1/2 h-40 md:h-56 w-40 md:w-56 lg:bottom-0"
+          className="absolute right-0 lg:right-28 top-1/2 h-40 md:h-56 w-40 md:w-56 lg:bottom-0 z-30 sm:z-10"
         >
           <Image
             src={item.image_3}
@@ -281,7 +280,7 @@ const SecondLayout = ({ item }: { item: any }) => {
 
 const ThirdLayout = ({ item }: { item: any }) => {
   return (
-    <div className="flex flex-col md:flex-row h-auto md:h-dvh px-4 md:px-8 pb-4 mt-14">
+    <div className="flex flex-col md:flex-row md:h-dvh h-full max-h-[700px] px-4 md:px-8 pb-4 mt-14 ">
       <div className="flex flex-col justify-center items-start p-4 w-full md:w-1/2">
         <h1 className="text-3xl md:text-6xl font-bold font-cormorant">
           {item.title}
@@ -296,11 +295,11 @@ const ThirdLayout = ({ item }: { item: any }) => {
       </div>
 
       {/* Hide Marquee on small screens */}
-      <div className="relative flex h-full md:w-1/2 flex-col gap-4 overflow-hidden">
+      <div className="relative flex h-full md:max-h-[700px] md:w-1/2 flex-col gap-4 overflow-hidden">
         <div className="pointer-events-none absolute left-0 top-0 h-full w-16 md:w-32 bg-gradient-to-r from-white to-transparent z-10" />
         <div className="pointer-events-none absolute right-0 top-0 h-full w-16 md:w-32 bg-gradient-to-l from-white to-transparent z-10" />
 
-        <Marquee reverse pauseOnHover className="[--duration:20s] h-1/2">
+        <Marquee reverse pauseOnHover className="[--duration:20s] py-1">
           {item.images.map((image, index) => (
             <Image
               key={index}
@@ -308,15 +307,12 @@ const ThirdLayout = ({ item }: { item: any }) => {
               alt=""
               width={500}
               height={500}
-              className="w-48 md:w-64 h-48 md:h-64 object-cover rounded-xl"
+              className="w-52 md:w-64 h-52 md:h-full object-cover rounded-xl"
             />
           ))}
         </Marquee>
 
-        <Marquee
-          pauseOnHover
-          className="[--duration:20s] h-1/2 hidden md:flex"
-        >
+        <Marquee pauseOnHover className="[--duration:20s] hidden md:flex">
           {item.images.map((image, index) => (
             <Image
               key={index}
@@ -324,7 +320,7 @@ const ThirdLayout = ({ item }: { item: any }) => {
               alt=""
               width={500}
               height={500}
-              className="w-48 md:w-64 h-48 md:h-64 object-cover rounded-xl"
+              className="w-48 md:w-64 h-48 md:h-full object-cover rounded-xl"
             />
           ))}
         </Marquee>
