@@ -29,7 +29,7 @@ async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
           {product?.image[0]?.image && (
             <Image
               className="object-cover transition-transform duration-300 group-hover:scale-105"
-              src={imageUrl(product.image[0].image.asset._ref).url()}
+              src={imageUrl(product?.image[0]?.image?.asset?._ref).url()}
               alt={product.name || "Product Image"}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
