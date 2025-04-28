@@ -1,6 +1,7 @@
 import React from "react";
 import { searchProductsByName } from "@/sanity/lib/products/searchProductsByName";
 import ProductGrid from "@/components/ProductGrid";
+import { Product } from "@/sanity.types";
 
 const SearchPage = async ({
   searchParams,
@@ -8,7 +9,9 @@ const SearchPage = async ({
   searchParams: Promise<{ query: string }>;
 }) => {
   const { query } = await searchParams;
-  const products = await searchProductsByName(query);
+  const productsData = await searchProductsByName(query);
+
+  const products: Product[] = productsData as unknown as Product[];
 
   if (!products.length) {
     return (
