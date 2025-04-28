@@ -12,6 +12,7 @@ import {
   categoriesHomeProps,
   FooterNavItem,
   HeroContentProps,
+  HeroSection,
   ProductCard,
   ShippingInfoProps,
 } from "@/types";
@@ -191,10 +192,6 @@ export const footerNav: FooterNavItem[] = [
     title: "Company",
     links: [
       {
-        title: "About Us",
-        href: "/about-us",
-      },
-      {
         title: "Contact Us",
         href: "/contact-us",
       },
@@ -205,27 +202,6 @@ export const footerNav: FooterNavItem[] = [
       {
         title: "Privacy Policy",
         href: "/privacy-policy",
-      },
-    ],
-  },
-  {
-    title: "Resource",
-    links: [
-      {
-        title: "Chandelier Size Guide",
-        href: "/chandelier-size-guide",
-      },
-      {
-        title: "Chandelier blogs",
-        href: "/chandelier-blogs",
-      },
-      {
-        title: "Customization",
-        href: "/customization",
-      },
-      {
-        title: "Customer Reviews",
-        href: "/customer-reviews",
       },
     ],
   },
@@ -256,9 +232,9 @@ export const footerNav: FooterNavItem[] = [
     title: "Customer Service",
     services: [
       {
-        href: "tel:+12068801339",
+        href: "",
         icon: "☎️",
-        text: "206-880-1339",
+        text: "+254 706 969 085",
         subText: "Hours: 10:00 AM - 6:00 PM PST",
       },
       {
@@ -268,7 +244,7 @@ export const footerNav: FooterNavItem[] = [
       },
       {
         title: "Email Support",
-        href: "mailto:support@lightsandlamps.com",
+        href: "mailto:uptimeelectricals@gmail.com",
         icon: "✉️",
         text: "Response within 24 hours",
       },
@@ -295,3 +271,38 @@ export const shippingInfo: ShippingInfoProps[] = [
   },
 ];
 
+export const heroSections: HeroSection[] = [
+  {
+    type: "first",
+    title: "Lighting That Feels Like Home",
+    subtitle:
+      "Soft glows, bold statements, and everything in between — curated for your comfort.",
+    cta: { label: "Browse Collections", href: "/our-collection" },
+    image: "/hero_cha_1.jpeg",
+    image_2: "/image_1.jpeg",
+    image_3: "/Rope_Chandelier.jpeg",
+  },
+  {
+    type: "second",
+    title: "Introducing: The Spring/Summer Glow Collection",
+    subtitle:
+      "Celebrate the season with fresh, airy designs inspired by natural light.",
+    cta: { label: "See What's New", href: "/new-arrivals" },
+    image: "/banner_pendant.jpeg",
+    image_2: "/image_1.jpeg",
+    image_3: "/Rope_Chandelier.jpeg",
+  },
+  {
+    type: "third",
+    title: "Your Room, Your Rules",
+    subtitle:
+      "Explore lighting ideas to match your style — minimalist, rustic, modern, or cozy.",
+    cta: { label: "Get Inspired", href: "/new-arrivals" },
+    images: [
+      "/image_1.jpeg",
+      "/pendant_4.jpg",
+      "/pendant_3.jpg",
+      "/pendant_1.jpg",
+    ],
+  },
+];

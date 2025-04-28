@@ -7,7 +7,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 
 export const dynamic = "force-static";
-export const revalidate = 60;
+export const revalidate = 3600;
 
 async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

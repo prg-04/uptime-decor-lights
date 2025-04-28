@@ -1,6 +1,5 @@
 import React from "react";
 import HeroBanner from "@/components/HeroBanner";
-import FilterSection from "@/components/FilterSection";
 import { getOurCollectionBySlug } from "@/sanity/lib/category/getOurCollectionBySlug";
 import { getAllProducts } from "@/sanity/lib/products/getAllProducts";
 import ProductsView from "@/components/ProductsView";
@@ -8,6 +7,8 @@ import { getAllCategories } from "@/sanity/lib/products/getAllCategories";
 
 const OurCollection = async () => {
   const categoryData = await getOurCollectionBySlug("our-collection");
+
+
   const products = [await getAllProducts()];
   const categories = await getAllCategories();
 

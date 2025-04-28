@@ -108,7 +108,7 @@ const Header = () => {
 
   return (
     <NavigationMenu
-      className={`flex min-w-full justify-between items-center px-4 py-2 fixed top-0 z-50 bg-transparent backdrop-blur-md transition-all duration-300 ease-in-out ${
+      className={`flex min-w-full justify-between items-center px-4 py-2 fixed top-0 z-50 bg-white backdrop-blur-md transition-all duration-300 ease-in-out ${
         scrolled ? "backdrop-blur-md " : ""
       }`}
     >
@@ -124,7 +124,6 @@ const Header = () => {
             height={50}
             className={`
       transition-all duration-300
-      ${scrolled ? "invert-0" : pathname !== "/" ? "invert-80" : "invert-30"}
     `}
           />
         </Link>

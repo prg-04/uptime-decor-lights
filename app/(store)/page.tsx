@@ -9,7 +9,7 @@ import HomeSeoContent from "@/components/HomeSeoContent";
 import HomeWallLights from "@/components/HomeWallLights";
 
 export const dynamic = "force-static";
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export default async function Home() {
   return (

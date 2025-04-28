@@ -143,3 +143,25 @@ interface ProductCard {
   image: string | StaticImageData;
   price: string;
 }
+
+type HeroSectionBase = {
+  type: "first" | "second" | "third";
+  title: string;
+  subtitle: string;
+  cta: {
+    label: string;
+    href: string;
+  };
+};
+
+type FirstOrSecondHeroSection = HeroSectionBase & {
+  image: string;
+  image_2: string;
+  image_3: string;
+};
+
+type ThirdHeroSection = HeroSectionBase & {
+  images: string[];
+};
+
+type HeroSection = FirstOrSecondHeroSection | ThirdHeroSection;

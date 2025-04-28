@@ -11,6 +11,12 @@ import { Marquee } from "../magicui/marquee";
 import * as motion from "motion/react-client";
 import { useInView } from "motion/react";
 import type { Variants } from "motion/react";
+import {
+  FirstOrSecondHeroSection,
+  HeroSection,
+  ThirdHeroSection,
+} from "@/types";
+import { heroSections } from "@/constants";
 
 export function useIsMobile(breakpoint = 768) {
   const [isMobile, setIsMobile] = useState(false);
@@ -27,53 +33,9 @@ export function useIsMobile(breakpoint = 768) {
   return isMobile;
 }
 
-const heroSections = [
-  {
-    type: "first",
-    title: "Lighting That Feels Like Home",
-    subtitle:
-      "Soft glows, bold statements, and everything in between — curated for your comfort.",
-    cta: {
-      label: "Browse Collections",
-      href: "/collections",
-    },
-    image: "/hero_cha_1.jpeg",
-    image_2:
-      "/image_1.jpeg",
-    image_3: "/Rope Chandelier.jpeg",
-  },
-  {
-    type: "second",
-    title: "Introducing: The Spring/Summer Glow Collection",
-    subtitle:
-      "Celebrate the season with fresh, airy designs inspired by natural light.",
-    cta: {
-      label: "See What's New",
-      href: "/new-arrivals",
-    },
-    image: "/banner_pendant.jpeg",
-    image_2: "/image_1.jpeg",
-    image_3: "/Rope_Chandelier.jpeg",
-  },
-  {
-    type: "third",
-    title: "Your Room, Your Rules",
-    subtitle:
-      "Explore lighting ideas to match your style — minimalist, rustic, modern, or cozy.",
-    cta: {
-      label: "Get Inspired",
-      href: "/inspiration",
-    },
-    images: [
-      "/image_1.jpeg",
-      "/pendant_4.jpg",
-      "/pendant_3.jpg",
-      "/pendant_1.jpg",
-    ],
-  },
-];
 
-export function Carousel({ items }: { items: any[] }) {
+
+export function Carousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     AutoPlay({ delay: 5000 }),
     Fade(),
@@ -81,17 +43,17 @@ export function Carousel({ items }: { items: any[] }) {
 
   useEffect(() => {
     if (emblaApi) {
-      console.log(emblaApi.slideNodes());
+      // console.log(emblaApi.slideNodes());
     }
   }, [emblaApi]);
 
-  const renderLayout = (item: any) => {
+  const renderLayout = (item: HeroSection) => {
     if (item.type === "third") {
-      return <ThirdLayout item={item} />;
+      return <ThirdLayout item={item as ThirdHeroSection} />;
     } else if (item.type === "first") {
-      return <FirstLayout item={item} />;
+      return <FirstLayout item={item as FirstOrSecondHeroSection} />;
     } else {
-      return <SecondLayout item={item} />;
+      return <SecondLayout item={item as FirstOrSecondHeroSection} />;
     }
   };
 
@@ -114,7 +76,7 @@ export function Carousel({ items }: { items: any[] }) {
   );
 }
 
-const FirstLayout = ({ item }: { item: any }) => {
+const FirstLayout = ({ item }: { item: FirstOrSecondHeroSection }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false });
 
@@ -193,7 +155,7 @@ const FirstLayout = ({ item }: { item: any }) => {
   );
 };
 
-const SecondLayout = ({ item }: { item: any }) => {
+const SecondLayout = ({ item }: { item: FirstOrSecondHeroSection }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false });
 
@@ -278,7 +240,7 @@ const SecondLayout = ({ item }: { item: any }) => {
   );
 };
 
-const ThirdLayout = ({ item }: { item: any }) => {
+const ThirdLayout = ({ item }: { item: ThirdHeroSection }) => {
   return (
     <div className="flex flex-col md:flex-row md:h-dvh h-full max-h-[700px] px-4 md:px-8 pb-4 mt-14 ">
       <div className="flex flex-col justify-center items-start p-4 w-full md:w-1/2">
