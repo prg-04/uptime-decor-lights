@@ -11,6 +11,7 @@ type Props = {
 const SecWrapper = async ({ title, category }: Props) => {
   const products = await getProductsByCategory(category);
 
+
   const productsSlice = products.slice(0, 4);
   return (
     <div className="px-2 sm:px-10 my-12">

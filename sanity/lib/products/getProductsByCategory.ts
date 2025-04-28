@@ -8,10 +8,15 @@ async function getProductsByCategory(categorySlug: string) {
             && references(*[_type == "category" && slug.current == $categorySlug]._id)
             ] | order(name asc){
       ...,
-      image[]->{
-        _id,
-        image
-      }
+    
+ image[]{
+    _type == "image" => {
+      "assetRef": asset._ref
+    },
+    _type == "reference" => @->{
+      "assetRef": image.asset._ref
+    }
+  }
     } 
         `);
 

@@ -5,10 +5,15 @@ export const getAllProducts = async () => {
   const ALL_PRODUCTS_QUERY = defineQuery(`
     *[_type == "product"] | order(name asc){
       ...,
-      image[]->{
-        _id,
-        image
-      }
+    
+ image[]{
+    _type == "image" => {
+      "assetRef": asset._ref
+    },
+    _type == "reference" => @->{
+      "assetRef": image.asset._ref
+    }
+  }
     } 
   `);
   try {

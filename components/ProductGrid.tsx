@@ -4,16 +4,11 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ProductThumbnail from "./ProductThumbnail";
 
-type FlexibleProduct = Product 
+const ProductGrid = ({ products }: { products: Product[] }) => {
 
-interface ProductGridProps {
-  products: FlexibleProduct[];
-}
-
-const ProductGrid = ({ products }: ProductGridProps) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {products?.map((product) => (
+      {products.map((product) => (
         <AnimatePresence key={product._id}>
           <motion.div
             layout

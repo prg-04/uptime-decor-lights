@@ -214,6 +214,7 @@ export type Product = {
   name?: string;
   slug?: Slug;
   image?: Array<{
+    assetRef: any;
     _ref: string;
     _type: "reference";
     _weak?: boolean;
@@ -401,6 +402,42 @@ export type CATEGORY_BY_SLUG_QUERYResult = {
   } | null;
 } | null;
 
+// Source: ./sanity/lib/category/getOurCollectionBySlug.ts
+// Variable: OUR_COLLECTION_QUERY
+// Query: *[_type == "ourCollection" && slug.current == "our-collection"][0] {    _id,    title,    slug {      current    },    description,    hero_image {      asset->{        _id,        url      },      alt    }  }
+export type OUR_COLLECTION_QUERYResult = {
+  _id: string;
+  title: string | null;
+  slug: {
+    current: string | null;
+  } | null;
+  description: string | null;
+  hero_image: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+    alt: string | null;
+  } | null;
+} | null;
+// Variable: OUR_CATEGORY_BY_SLUG_QUERY
+// Query: *[_type == "category" && slug.current == $slug][0] {      _id,      title,      slug {        current      },      description,      hero_image {        asset->{          _id,          url        },        alt      }    }
+export type OUR_CATEGORY_BY_SLUG_QUERYResult = {
+  _id: string;
+  title: string | null;
+  slug: {
+    current: string | null;
+  } | null;
+  description: string | null;
+  hero_image: {
+    asset: {
+      _id: string;
+      url: string | null;
+    } | null;
+    alt: string | null;
+  } | null;
+} | null;
+
 // Source: ./sanity/lib/hero/getHeroSectionContent.ts
 // Variable: HERO_SECTION_QUERY
 // Query: *[_type == "heroSection"] | order(order asc) {      _id,      type,      title,      subtitle_1,      description,      "imageUrl_1": imageUrl_1.asset->url,      "imageUrl_2": imageUrl_2.asset->url,      additionalInfo,      promo_code    }
@@ -486,7 +523,7 @@ export type ALL_CATEGORIES_QUERYResult = Array<{
 
 // Source: ./sanity/lib/products/getAllProducts.tsx
 // Variable: ALL_PRODUCTS_QUERY
-// Query: *[_type == "product"] | order(name asc){      ...,      image[]->{        _id,        image      }    }
+// Query: *[_type == "product"] | order(name asc){      ...,     image[]{    _type == "image" => {      "assetRef": asset._ref    },    _type == "reference" => @->{      "assetRef": image.asset._ref    }  }    }
 export type ALL_PRODUCTS_QUERYResult = Array<{
   _id: string;
   _type: "product";
@@ -496,19 +533,7 @@ export type ALL_PRODUCTS_QUERYResult = Array<{
   name?: string;
   slug?: Slug;
   image: Array<{
-    _id: string;
-    image: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
+    assetRef: string | null;
   }> | null;
   description?: Array<{
     children?: Array<{
@@ -555,7 +580,7 @@ export type ALL_PRODUCTS_QUERYResult = Array<{
 
 // Source: ./sanity/lib/products/getProductBySlug.ts
 // Variable: PRODUCT_BY_SLUG_QUERY
-// Query: *[            _type == "product" && slug.current == $slug        ] | order(name asc){      ...,      image[]->{        _id,        image      }    } [0]
+// Query: *[            _type == "product" && slug.current == $slug        ] | order(name asc){      ...,     image[]{    _type == "image" => {      "assetRef": asset._ref    },    _type == "reference" => @->{      "assetRef": image.asset._ref    }  }    } [0]
 export type PRODUCT_BY_SLUG_QUERYResult = {
   _id: string;
   _type: "product";
@@ -565,19 +590,7 @@ export type PRODUCT_BY_SLUG_QUERYResult = {
   name?: string;
   slug?: Slug;
   image: Array<{
-    _id: string;
-    image: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
+    assetRef: string | null;
   }> | null;
   description?: Array<{
     children?: Array<{
@@ -624,7 +637,7 @@ export type PRODUCT_BY_SLUG_QUERYResult = {
 
 // Source: ./sanity/lib/products/getProductsByCategory.ts
 // Variable: PRODUCT_BY_CATEGORY_QUERY
-// Query: *[            _type == "product"             && references(*[_type == "category" && slug.current == $categorySlug]._id)            ] | order(name asc){      ...,      image[]->{        _id,        image      }    }
+// Query: *[            _type == "product"             && references(*[_type == "category" && slug.current == $categorySlug]._id)            ] | order(name asc){      ...,     image[]{    _type == "image" => {      "assetRef": asset._ref    },    _type == "reference" => @->{      "assetRef": image.asset._ref    }  }    }
 export type PRODUCT_BY_CATEGORY_QUERYResult = Array<{
   _id: string;
   _type: "product";
@@ -634,19 +647,7 @@ export type PRODUCT_BY_CATEGORY_QUERYResult = Array<{
   name?: string;
   slug?: Slug;
   image: Array<{
-    _id: string;
-    image: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
+    assetRef: string | null;
   }> | null;
   description?: Array<{
     children?: Array<{
@@ -693,25 +694,13 @@ export type PRODUCT_BY_CATEGORY_QUERYResult = Array<{
 
 // Source: ./sanity/lib/products/getProductsBySalesCategory.ts
 // Variable: query
-// Query: *[_type == "product" && count(salesCategories[@ in $categories]) > 0]{      _id,      name,      slug,      image[]->{        _id,        image      },      description,      price,      categories[]->{        _id,        title,        slug      },      stock,      salesCategories    }
+// Query: *[_type == "product" && count(salesCategories[@ in $categories]) > 0]{      _id,      name,      slug,     image[]{    _type == "image" => {      "assetRef": asset._ref    },    _type == "reference" => @->{      "assetRef": image.asset._ref    }  },      description,      price,      categories[]->{        _id,        title,        slug      },      stock,      salesCategories    }
 export type QueryResult = Array<{
   _id: string;
   name: string | null;
   slug: Slug | null;
   image: Array<{
-    _id: string;
-    image: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
+    assetRef: string | null;
   }> | null;
   description: Array<{
     children?: Array<{
@@ -756,7 +745,7 @@ export type QueryResult = Array<{
 
 // Source: ./sanity/lib/products/searchProductsByName.ts
 // Variable: PRODUCT_SEARCH_QUERY
-// Query: *[            _type == "product"            && name match $searchParam        ] | order(name asc){      ...,      image[]->{        _id,        image      }    }
+// Query: *[            _type == "product"            && name match $searchParam        ] | order(name asc){      ...,     image[]{    _type == "image" => {      "assetRef": asset._ref    },    _type == "reference" => @->{      "assetRef": image.asset._ref    }  }    }
 export type PRODUCT_SEARCH_QUERYResult = Array<{
   _id: string;
   _type: "product";
@@ -766,19 +755,7 @@ export type PRODUCT_SEARCH_QUERYResult = Array<{
   name?: string;
   slug?: Slug;
   image: Array<{
-    _id: string;
-    image: {
-      asset?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-      };
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      _type: "image";
-    } | null;
+    assetRef: string | null;
   }> | null;
   description?: Array<{
     children?: Array<{
@@ -846,14 +823,16 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "\n    *[_type == \"category\" && slug.current == $slug][0] {\n      _id,\n      title,\n      slug,\n      description,\n      hero_image {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    }\n  ": CATEGORY_BY_SLUG_QUERYResult;
+    "\n  *[_type == \"ourCollection\" && slug.current == \"our-collection\"][0] {\n    _id,\n    title,\n    slug {\n      current\n    },\n    description,\n    hero_image {\n      asset->{\n        _id,\n        url\n      },\n      alt\n    }\n  }\n": OUR_COLLECTION_QUERYResult;
+    "\n    *[_type == \"category\" && slug.current == $slug][0] {\n      _id,\n      title,\n      slug {\n        current\n      },\n      description,\n      hero_image {\n        asset->{\n          _id,\n          url\n        },\n        alt\n      }\n    }\n  ": OUR_CATEGORY_BY_SLUG_QUERYResult;
     "\n    *[_type == \"heroSection\"] | order(order asc) {\n      _id,\n      type,\n      title,\n      subtitle_1,\n      description,\n      \"imageUrl_1\": imageUrl_1.asset->url,\n      \"imageUrl_2\": imageUrl_2.asset->url,\n      additionalInfo,\n      promo_code\n    }\n  ": HERO_SECTION_QUERYResult;
     "\n        *[\n            _type == \"order\" \n            && clerkUserId == $userId\n        ] | order(createdDate desc) {\n         ...,\n         products[]{\n            ...,\n            product->\n            }\n        }\n    ": MY_ORDERS_QUERYResult;
     "\n        *[\n        _type == \"category\"\n        ] | order(name asc)\n    ": ALL_CATEGORIES_QUERYResult;
-    "\n    *[_type == \"product\"] | order(name asc){\n      ...,\n      image[]->{\n        _id,\n        image\n      }\n    } \n  ": ALL_PRODUCTS_QUERYResult;
-    "\n        *[\n            _type == \"product\" && slug.current == $slug\n        ] | order(name asc){\n      ...,\n      image[]->{\n        _id,\n        image\n      }\n    } [0]\n    ": PRODUCT_BY_SLUG_QUERYResult;
-    "\n        *[\n            _type == \"product\" \n            && references(*[_type == \"category\" && slug.current == $categorySlug]._id)\n            ] | order(name asc){\n      ...,\n      image[]->{\n        _id,\n        image\n      }\n    } \n        ": PRODUCT_BY_CATEGORY_QUERYResult;
-    "\n    *[_type == \"product\" && count(salesCategories[@ in $categories]) > 0]{\n      _id,\n      name,\n      slug,\n      image[]->{\n        _id,\n        image\n      },\n      description,\n      price,\n      categories[]->{\n        _id,\n        title,\n        slug\n      },\n      stock,\n      salesCategories\n    }\n  ": QueryResult;
-    "\n        *[\n            _type == \"product\"\n            && name match $searchParam\n        ] | order(name asc){\n      ...,\n      image[]->{\n        _id,\n        image\n      }\n    } \n    ": PRODUCT_SEARCH_QUERYResult;
+    "\n    *[_type == \"product\"] | order(name asc){\n      ...,\n    \n image[]{\n    _type == \"image\" => {\n      \"assetRef\": asset._ref\n    },\n    _type == \"reference\" => @->{\n      \"assetRef\": image.asset._ref\n    }\n  }\n    } \n  ": ALL_PRODUCTS_QUERYResult;
+    "\n        *[\n            _type == \"product\" && slug.current == $slug\n        ] | order(name asc){\n      ...,\n    \n image[]{\n    _type == \"image\" => {\n      \"assetRef\": asset._ref\n    },\n    _type == \"reference\" => @->{\n      \"assetRef\": image.asset._ref\n    }\n  }\n    } [0]\n    ": PRODUCT_BY_SLUG_QUERYResult;
+    "\n        *[\n            _type == \"product\" \n            && references(*[_type == \"category\" && slug.current == $categorySlug]._id)\n            ] | order(name asc){\n      ...,\n    \n image[]{\n    _type == \"image\" => {\n      \"assetRef\": asset._ref\n    },\n    _type == \"reference\" => @->{\n      \"assetRef\": image.asset._ref\n    }\n  }\n    } \n        ": PRODUCT_BY_CATEGORY_QUERYResult;
+    "\n    *[_type == \"product\" && count(salesCategories[@ in $categories]) > 0]{\n      _id,\n      name,\n      slug,\n    \n image[]{\n    _type == \"image\" => {\n      \"assetRef\": asset._ref\n    },\n    _type == \"reference\" => @->{\n      \"assetRef\": image.asset._ref\n    }\n  },\n      description,\n      price,\n      categories[]->{\n        _id,\n        title,\n        slug\n      },\n      stock,\n      salesCategories\n    }\n  ": QueryResult;
+    "\n        *[\n            _type == \"product\"\n            && name match $searchParam\n        ] | order(name asc){\n      ...,\n    \n image[]{\n    _type == \"image\" => {\n      \"assetRef\": asset._ref\n    },\n    _type == \"reference\" => @->{\n      \"assetRef\": image.asset._ref\n    }\n  }\n    } \n    ": PRODUCT_SEARCH_QUERYResult;
     "\n        *[\n            _type == \"sale\"\n            && isActive == true\n            && couponCode == $couponCode  \n            ] | order(validFrom desc)[0]\n        ": ACTIVE_SALE_BY_COUPON_QUERYResult;
   }
 }

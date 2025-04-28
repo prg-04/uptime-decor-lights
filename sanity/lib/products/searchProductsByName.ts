@@ -8,10 +8,15 @@ export const searchProductsByName = async (searchParams: string) => {
             && name match $searchParam
         ] | order(name asc){
       ...,
-      image[]->{
-        _id,
-        image
-      }
+    
+ image[]{
+    _type == "image" => {
+      "assetRef": asset._ref
+    },
+    _type == "reference" => @->{
+      "assetRef": image.asset._ref
+    }
+  }
     } 
     `);
 

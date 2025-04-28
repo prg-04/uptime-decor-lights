@@ -4,23 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { imageUrl } from "@/lib/imageUrl";
 
-interface ImageReference {
-  image?: {
-    asset?: {
-      _ref: string;
-    };
-  };
-}
-
 
 const ProductThumbnail = ({ product }: { product: Product }) => {
   const isOutOfStock = product.stock != null && product.stock <= 0;
 
-  // Use type assertion to access the nested structure
-  const imageRef =
-    product.image?.[0] && (product.image[0] as ImageReference).image?.asset?._ref;
-
-  console.log("Product on ProductThumbnail:", imageRef);
+  const imageRef = product.image?.[0]?.assetRef;
 
   return (
     <Link

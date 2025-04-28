@@ -13,10 +13,15 @@ export async function getProductsBySalesCategory(categories: string[]) {
       _id,
       name,
       slug,
-      image[]->{
-        _id,
-        image
-      },
+    
+ image[]{
+    _type == "image" => {
+      "assetRef": asset._ref
+    },
+    _type == "reference" => @->{
+      "assetRef": image.asset._ref
+    }
+  },
       description,
       price,
       categories[]->{

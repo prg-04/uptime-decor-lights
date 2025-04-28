@@ -7,10 +7,15 @@ export const getProductBySlug = async (slug: string) => {
             _type == "product" && slug.current == $slug
         ] | order(name asc){
       ...,
-      image[]->{
-        _id,
-        image
-      }
+    
+ image[]{
+    _type == "image" => {
+      "assetRef": asset._ref
+    },
+    _type == "reference" => @->{
+      "assetRef": image.asset._ref
+    }
+  }
     } [0]
     `);
 
