@@ -24,17 +24,19 @@ async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
     <div className="container mx-auto px-4 py-8 mt-14">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
-          className={`relative aspect-square overflow-hidden group  rounded-lg shadow-lg ${isOutOfStock ? "opacity-50" : ""}`}
+          className={`relative aspect-square overflow-hidden group rounded-lg shadow-lg ${isOutOfStock ? "opacity-50" : ""}`}
         >
-          {product.image[0].image && (
-            <Image
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              src={imageUrl(product.image[0].image.asset._ref).url()}
-              alt={product.name || "Product Image"}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          )}
+          {product.image &&
+            product.image[0]?.image &&
+            product.image[0].image.asset && (
+              <Image
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                src={imageUrl(product.image[0].image.asset._ref).url()}
+                alt={product.name || "Product Image"}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            )}
           {isOutOfStock && (
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <span className="text-white font-bold text-lg">Out of Stock</span>
