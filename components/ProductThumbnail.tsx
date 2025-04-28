@@ -4,10 +4,23 @@ import Link from "next/link";
 import Image from "next/image";
 import { imageUrl } from "@/lib/imageUrl";
 
+interface ImageReference {
+  image?: {
+    asset?: {
+      _ref: string;
+    };
+  };
+}
+
 const ProductThumbnail = ({ product }: { product: Product }) => {
   const isOutOfStock = product.stock != null && product.stock <= 0;
 
-  console.log(product.image);
+  // Use type assertion to access the nested structure
+  const imageRef =
+    product.image?.[0] &&
+    (product.image[0] as ImageReference).image?.asset?._ref;
+
+  console.log("Product on ProductThumbnail:", imageRef);
 
   return (
     <Link
@@ -15,10 +28,10 @@ const ProductThumbnail = ({ product }: { product: Product }) => {
       className={`group flex flex-col bg-white rounded-lg w-64 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden ${isOutOfStock ? "opacity-50" : ""}`}
     >
       <div className="relative aspect-square w-full sm:h-64 md:h-72 rounded-lg overflow-hidden">
-        {product.image && product.image.length > 0 ? (
+        {imageRef ? (
           <Image
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            src={imageUrl(product.image[0]?.image?.asset?._ref).url()}
+            src={imageUrl(imageRef).url()}
             alt={product.name || "Product Image"}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
