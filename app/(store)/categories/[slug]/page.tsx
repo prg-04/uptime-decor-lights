@@ -1,6 +1,7 @@
 import ProductsView from "@/components/ProductsView";
 import { getAllCategories } from "@/sanity/lib/products/getAllCategories";
 import getProductsByCategory from "@/sanity/lib/products/getProductsByCategory";
+import { Product } from "@/sanity.types";
 
 export default async function CategoryPage({
   params,
@@ -8,8 +9,11 @@ export default async function CategoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const products = await getProductsByCategory(slug);
+  const productsData = await getProductsByCategory(slug);
   const categories = await getAllCategories();
+
+  // Cast the result to Product[] type
+  const products: Product[] = productsData as unknown as Product[];
 
   return (
     <div className="flex flex-col items-center justify-top min-h-screen bg-gray-100 p-4">
