@@ -4,13 +4,15 @@ import { getOurCollectionBySlug } from "@/sanity/lib/category/getOurCollectionBy
 import { getAllProducts } from "@/sanity/lib/products/getAllProducts";
 import ProductsView from "@/components/ProductsView";
 import { getAllCategories } from "@/sanity/lib/products/getAllCategories";
+import { Product } from "@/sanity.types";
 
 const OurCollection = async () => {
   const categoryData = await getOurCollectionBySlug("our-collection");
-
-
-  const products = [await getAllProducts()];
+  const productsData = await getAllProducts();
   const categories = await getAllCategories();
+
+  // Cast the result to Product[] type
+  const products: Product[] = productsData as unknown as Product[];
 
   if (
     !categoryData ||
@@ -37,13 +39,7 @@ const OurCollection = async () => {
         {/* <FilterSection /> */}
         <div className="flex-1">
           <div className="gap-4 p-6">
-            {products.map((product, idx) => (
-              <ProductsView
-                key={idx}
-                products={product}
-                categories={categories}
-              />
-            ))}
+            <ProductsView products={products} categories={categories} />
           </div>
         </div>
       </section>
