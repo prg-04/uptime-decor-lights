@@ -1,32 +1,15 @@
 import React from "react";
-import HeroBanner from "@/components/HeroBanner";
-import { getOurCollectionBySlug } from "@/sanity/lib/category/getOurCollectionBySlug";
 import { getAllProducts } from "@/sanity/lib/products/getAllProducts";
 import ProductsView from "@/components/ProductsView";
 import { getAllCategories } from "@/sanity/lib/products/getAllCategories";
-import { getCategoryBySlug } from "@/sanity/lib/category/getCategoryBySlug";
 import Image from "next/image";
+import { Product } from "@/sanity.types";
 
 const NewArrivalsPage = async () => {
-  // const categoryData = await getCategoryBySlug("bestSeller");
-  const products = [await getAllProducts()];
+  const productsData = await getAllProducts();
   const categories = await getAllCategories();
 
-  // if (
-  //   !categoryData ||
-  //   !categoryData.hero_image?.asset?.url ||
-  //   !categoryData.title
-  // ) {
-  //   return null;
-  // }
-
-  // const {
-  //   hero_image: {
-  //     asset: { url },
-  //   },
-  //   title,
-  //   description,
-  // } = categoryData;
+  const products: Product[] = productsData as unknown as Product[];
 
   return (
     <section className="">
@@ -61,7 +44,7 @@ const NewArrivalsPage = async () => {
             {products.map((product, idx) => (
               <ProductsView
                 key={idx}
-                products={product}
+                products={products}
                 categories={categories}
               />
             ))}
