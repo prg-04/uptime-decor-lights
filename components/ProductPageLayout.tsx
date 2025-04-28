@@ -4,10 +4,13 @@ import HeroBanner from "./HeroBanner";
 import getProductsByCategory from "@/sanity/lib/products/getProductsByCategory";
 import ProductGrid from "./ProductGrid";
 import { getCategoryBySlug } from "@/sanity/lib/category/getCategoryBySlug";
+import { Product } from "@/sanity.types";
 
 const ProductPageLayout = async ({ category }: { category: string }) => {
-  const products = await getProductsByCategory(category); // <-- fixed here
+  const productsData = await getProductsByCategory(category); // <-- fixed here
   const categoryData = await getCategoryBySlug(category);
+
+  const products: Product[] = productsData as unknown as Product[];
 
   if (!categoryData) return null;
 
