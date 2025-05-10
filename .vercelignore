@@ -1,1 +1,3 @@
 !lib/sanityClient.ts
+!types/**/*.ts
+!constants/**/*.ts
