@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { FloatingBackButton } from "@/components/layout/FloatingBackButton"; // Import the floating back button
 import ShippingInfo from "@/components/layout/ShippingInfo"; // Import the new ShippingInfo component
 import { ClerkProvider } from "@clerk/nextjs";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Uptime Decor Lights",
@@ -24,31 +25,31 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en" className="h-full">
-      {/* Apply the font variables to the body */}
-      <body
-        className={cn(
-          "relative h-full font-sans antialiased",
-          GeistSans.variable, // Use the variable directly
-          GeistMono.variable // Use the variable directly
-        )}
-      >
-        <CartProvider>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            {/* Apply container and padding directly to main */}
-            <main className="flex-grow container mx-auto px-2 md:px-8 min-w-full ">
-              {children}
-            </main>
-            {/* Add ShippingInfo section before the footer */}
-            <ShippingInfo />
-            <Footer />
-            <Toaster />
-            <FloatingBackButton /> {/* Add the floating back button */}
-          </div>
-        </CartProvider>
-      </body>
+      <html lang="en" className="h-full">
+        {/* Apply the font variables to the body */}
+        <body
+          className={cn(
+            "relative h-full font-sans antialiased",
+            GeistSans.variable, // Use the variable directly
+            GeistMono.variable // Use the variable directly
+          )}
+        >
+          <CartProvider>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              {/* Apply container and padding directly to main */}
+              <main className="flex-grow container mx-auto px-2 md:px-8 min-w-full ">
+                <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+              </main>
+              {/* Add ShippingInfo section before the footer */}
+              <ShippingInfo />
+              <Footer />
+              <Toaster />
+              <FloatingBackButton /> {/* Add the floating back button */}
+            </div>
+          </CartProvider>
+        </body>
       </html>
-      </ClerkProvider>
+    </ClerkProvider>
   );
 }
