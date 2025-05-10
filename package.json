@@ -29,6 +29,8 @@
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-fade": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "firebase": "^11.6.1",
+    "firebase-admin": "^13.3.0",
     "framer-motion": "^12.9.2",
     "lucide-react": "^0.487.0",
     "motion": "^12.9.2",

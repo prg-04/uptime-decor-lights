@@ -6,12 +6,10 @@ import { imageUrl } from "@/lib/imageUrl";
 import { useCartStore } from "@/store/store";
 import { Metadata } from "@/types";
 // import { Metadata } from "@/types";
-import { SignInButton, useAuth, useUser, } from "@clerk/nextjs";
+import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 // import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
-
 
 function CartPage() {
   const groupedItems = useCartStore((state) => state.getGroupedCartItems());
@@ -51,7 +49,10 @@ function CartPage() {
         clerkUserId: user!.id,
       };
 
-      const { redirectUrl } = await createCheckoutSession(groupedItems, metadata);
+      const { redirectUrl } = await createCheckoutSession(
+        groupedItems,
+        metadata
+      );
 
       if (redirectUrl) {
         window.location.href = redirectUrl;
@@ -61,7 +62,8 @@ function CartPage() {
     } finally {
       setIsLoading(false);
     }
-  };  return (
+  };
+  return (
     <div className="container mx-auto p-4 max-w-6xl">
       <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
       <div className="flex flex-col lg:flex-row gap-8">
@@ -74,7 +76,7 @@ function CartPage() {
               <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 mr-4">
                 {item.product.image && (
                   <Image
-                    src={imageUrl(item.product.image).url()}
+                    src={imageUrl(item.product.image?.[0]?.assetRef).url()}
                     alt={item.product.name ?? "Product Image"}
                     width={96}
                     height={96}

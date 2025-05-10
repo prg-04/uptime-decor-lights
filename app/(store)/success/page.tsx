@@ -1,51 +1,106 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useCartStore } from "@/store/store";
 import { saveOrderToSanity } from "@/sanity/lib/order/saveOrder";
 import { useUser } from "@clerk/nextjs";
 import { imageUrl } from "@/lib/imageUrl";
+import { getTransactionStatus } from "@/actions/pesapal";
+import { sendOrderToN8N } from "@/lib/sendOrderToN8N";
 
 const SuccessPage = () => {
   const searchParams = useSearchParams();
-  const items = useCartStore((state) => state.items);
   const orderTrackingId = searchParams.get("OrderTrackingId");
+
+  const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
   const router = useRouter();
-  const [confirmed, setConfirmed] = useState(false);
   const { user } = useUser();
 
-  const flattenedItems = items.map((item) => ({
+  const hasConfirmed = useRef(false);
+
+  const internalProducts = items.map((item) => ({
     productId: item.product._id,
     name: item.product.name || "",
     quantity: item.quantity,
     price: item.product.price || 0,
     image:
       item.product.image && "asset" in item.product.image
-        ? imageUrl(item.product.image).url()
+        ? imageUrl(item.product.image[0].assetRef).url()
         : "",
   }));
 
-  useEffect(() => {
-    const confirmOrder = async () => {
-      if (!orderTrackingId || !items.length || confirmed || !user?.id) return;
+  const n8nProducts = items.map((item) => ({
+    product_id: item.product._id,
+    name: item.product.name || "",
+    quantity: String(item.quantity),
+    price: item.product.price || 0,
+    image_url:
+      item.product.image && "asset" in item.product.image
+        ? imageUrl(item.product.image[0].assetRef).url()
+        : "",
+  }));
 
-      try {
-        if (orderTrackingId) {
-          await saveOrderToSanity({clerkUserId: user?.id , orderTrackingId, products: flattenedItems });
+  const confirmOrder = useCallback(async () => {
+    if (!orderTrackingId || !items.length || hasConfirmed.current || !user?.id)
+      return;
 
-          clearCart();
-          setConfirmed(true);
-        }
-      } catch (err) {
-        console.error("Error confirming order:", err);
+    hasConfirmed.current = true;
+
+    try {
+      // Save to Sanity
+      await saveOrderToSanity({
+        clerkUserId: user.id,
+        orderTrackingId,
+        products: internalProducts,
+      });
+
+      // Confirm with Pesapal
+      const transaction = await getTransactionStatus(orderTrackingId);
+      console.log("Transaction result:", transaction);
+
+      if (transaction.payment_status_description === "Completed") {
+        const n8nOrder = {
+          order_number: orderTrackingId,
+          confirmation_code: transaction.confirmation_code,
+          payment_status: "paid",
+          amount: parseFloat(transaction.amount),
+          payment_method: transaction.payment_method || "M-Pesa",
+          created_date: transaction.created_date,
+          payment_account: transaction.payment_account ?? "",
+          customer_email: user.emailAddresses?.[0]?.emailAddress ?? "",
+          customer_name: user.fullName ?? "",
+          customer_phone: user.phoneNumbers?.[0]?.phoneNumber ?? "",
+          products: n8nProducts,
+        };
+
+        console.log("Sending order to n8n:", n8nOrder);
+        await sendOrderToN8N(n8nOrder);
+        console.log("Successfully sent order to n8n");
       }
-    };
 
+      clearCart();
+    } catch (err) {
+      console.error("Error confirming order:", err);
+    }
+  }, [
+    orderTrackingId,
+    items,
+    user?.id,
+    user?.emailAddresses,
+    user?.fullName,
+    user?.phoneNumbers,
+    internalProducts,
+    clearCart,
+    n8nProducts,
+  ]);
+
+  useEffect(() => {
     confirmOrder();
-  }, [orderTrackingId, items, clearCart, flattenedItems, confirmed, user?.id]);
+  }, [orderTrackingId, confirmOrder]);
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <div className="flex flex-col items-center justify-center gap-4 bg-white p-12 rounded-xl shadow-lg max-w-2xl w-full mx-4 lg:mx-0">

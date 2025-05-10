@@ -177,9 +177,9 @@ const SecondLayout = ({ item }: { item: FirstOrSecondHeroSection }) => {
   return (
     <div
       ref={ref}
-      className="w-full h-[70vh] sm:h-[80vh] md:max-h-[700px] flex flex-col items-center px-2 sm:px-6 md:px-12 mt-6"
+      className="w-full h-[70vh] sm:h-[80vh] md:h-[620px] flex flex-col items-center px-2 sm:px-6 md:px-12 mt-6 md:mt-16 "
     >
-      <div className="flex flex-col items-center mt-12 md:mt-16 w-full gap-4 md:gap-6">
+      <div className="flex flex-col items-center w-full gap-1 md:gap-6 ">
         <div className="w-full text-left md:text-left">
           <h1 className="text-4xl md:text-5xl font-bold font-cormorant">
             {item.title}
@@ -192,7 +192,7 @@ const SecondLayout = ({ item }: { item: FirstOrSecondHeroSection }) => {
 
       <motion.div
         ref={ref}
-        className="relative w-full h-full overflow-hidden mt-6 aspect-video "
+        className="relative w-full h-full md:max-h-[700px] overflow-hidden mt- aspect-video "
         variants={containerVariants}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
@@ -212,7 +212,7 @@ const SecondLayout = ({ item }: { item: FirstOrSecondHeroSection }) => {
 
         <motion.div
           variants={imageVariants}
-          className="h-64 md:h-96 w-full  sm:max-w-sm  md:max-w-[600px] absolute z-20 top-0 sm:top-10 lg:top-10 left-0 sm:left-1/2 transform sm:-translate-x-1/2"
+          className="h-64 md:h-96 w-full  sm:max-w-sm  md:max-w-md lg:max-w-lg absolute z-20 top-0 sm:top-10 lg:top-10 left-0 sm:left-1/2 transform sm:-translate-x-1/2"
         >
           <Image
             src={item.image_2}
