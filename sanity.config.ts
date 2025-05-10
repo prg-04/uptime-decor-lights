@@ -1,37 +1,45 @@
-'use client'
+// sanity.config.ts
+import { defineConfig } from "sanity";
+import { structureTool } from "sanity/structure";
+import { visionTool } from "@sanity/vision";
+import { schemaTypes } from "./schemas"; // Import combined schemas
+import { defaultDocumentNode, structure } from "./structure"; // Import custom structure
 
-/**
- * This configuration is used to for the Sanity Studio that’s mounted on the `/app/studio/[[...tool]]/page.tsx` route
- */
+// Environment variables for Sanity project ID and dataset
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
 
-import {visionTool} from '@sanity/vision'
-import {defineConfig} from 'sanity'
-import { structureTool } from 'sanity/structure'
-import { presentationTool } from 'sanity/presentation'
-
-// Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
-import {apiVersion, dataset, projectId} from './sanity/env'
-import {schema} from './sanity/schemaTypes'
-import {structure} from './sanity/structure'
+if (!projectId) {
+  throw new Error(
+    "The environment variable NEXT_PUBLIC_SANITY_PROJECT_ID is missing or is still set to the placeholder value. Please update it in your .env file."
+  );
+}
+if (!dataset) {
+  throw new Error(
+    "The environment variable NEXT_PUBLIC_SANITY_DATASET is missing. Please add it to your .env file (e.g., 'production')."
+  );
+}
 
 export default defineConfig({
-  basePath: "/studio",
+  basePath: "/studio", // URL path for the studio
+  name: "uptime_decor_lights_content_studio",
+  title: "Uptime Decor Lights Studio",
+
   projectId,
   dataset,
-  // Add and edit the content schema in the './sanity/schemaTypes' folder
-  schema,
+
   plugins: [
-    structureTool({ structure }),
-    // Vision is for querying with GROQ from inside the Studio
-    // https://www.sanity.io/docs/the-vision-plugin
-    visionTool({ defaultApiVersion: apiVersion }),
-    presentationTool({
-      previewUrl: {
-        preview: "/",
-        previewMode: {
-          enable: "/draft-mode/enable"
-        }
-      }
-    })
+    // Use the custom structure
+    structureTool({
+      structure,
+      defaultDocumentNode,
+    }),
+    visionTool(), // Enable Vision tool for querying data
+    // Add other plugins as needed
   ],
+
+  schema: {
+    // Pass the imported schema types
+    types: schemaTypes,
+  },
 });

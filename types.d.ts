@@ -1,3 +1,8 @@
+import { StaticImageData } from "next/image";
+import { Product } from "./sanity.types";
+import { CartItem } from "./store/store";
+
+
 interface SignupResponse {
   success: boolean;
   error?: string;
@@ -32,16 +37,16 @@ interface LoginResponse {
   error?: string;
 }
 
-import { StaticImageData } from "next/image";
-import { Product } from "./sanity.types";
-import { CartItem } from "./store/store";
 
 export interface CarouselItem {
-  id: number;
-  imageUrl_1: StaticImageData;
-  imageUrl_2: StaticImageData;
+  _id?: string; // Optional: If data comes from Sanity (might be _key)
+  _key?: string; // Sanity uses _key for items within arrays
   title: string;
   description: string;
+  imageUrl: string; // Main image URL
+  image?: { asset?: { _ref?: string; _type?: string } }; // Keep raw image ref
+  ctaText?: string; // Call-to-action button text
+  ctaLink?: string; // Call-to-action button link
 }
 
 export interface HeroContentProps {
@@ -61,7 +66,7 @@ export interface HeroContentProps {
 }
 
 export interface CarouselProps {
-  items: HeroContentProps[];
+  items: CarouselItem[];
   autoPlayInterval?: number;
 }
 
