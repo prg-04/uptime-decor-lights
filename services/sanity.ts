@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { sanityClient } from "@/utils/sanityClient";
+import { sanityClient } from "./sanityClient";
 import { groq } from "next-sanity";
 import { cache } from "react";
 import type { CarouselItem } from "types"; // Import CarouselItem type
