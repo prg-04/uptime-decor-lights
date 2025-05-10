@@ -91,14 +91,14 @@ export function Header() {
             </SheetClose>
           ) : (
             <NavigationMenuItem key={category._id}>
-              <Link href={`/products/${category.slug.current}`}>
-                {/* Reduced horizontal padding for desktop */}
-                <NavigationMenuLink
+              <NavigationMenuLink asChild>
+                <Link
+                  href={`/products/${category.slug.current}`}
                   className={cn(navigationMenuTriggerStyle(), "px-2 md:px-3")}
                 >
                   {category.name}
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           )
         );

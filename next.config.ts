@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -17,13 +17,23 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
-        // Add Sanity CDN hostname
         protocol: "https",
         hostname: "cdn.sanity.io",
         port: "",
         pathname: "/**",
       },
     ],
+  },
+  webpack(config) {
+    config.resolve.alias["@"] = path.resolve(__dirname);
+    return config;
+  },
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        "@": ".", // resolves @ to project root
+      },
+    },
   },
 };
 

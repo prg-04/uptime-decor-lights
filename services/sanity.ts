@@ -2,7 +2,7 @@
 import { sanityClient } from "@/lib/sanityClient";
 import { groq } from "next-sanity";
 import { cache } from "react";
-import type { CarouselItem } from "@/types"; // Import CarouselItem type
+import type { CarouselItem } from "types"; // Import CarouselItem type
 import { homeContent as defaultRawSeoItems } from "@/constants/homeContent"; // Import default raw SEO content
 
 /**
