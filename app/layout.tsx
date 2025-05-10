@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { FloatingBackButton } from "@/components/layout/FloatingBackButton"; // Import the floating back button
 import ShippingInfo from "@/components/layout/ShippingInfo"; // Import the new ShippingInfo component
 import { ClerkProvider } from "@clerk/nextjs";
-import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Uptime Decor Lights",
@@ -39,7 +38,7 @@ export default function RootLayout({
               <Header />
               {/* Apply container and padding directly to main */}
               <main className="flex-grow container mx-auto px-2 md:px-8 min-w-full ">
-                <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+                {children}
               </main>
               {/* Add ShippingInfo section before the footer */}
               <ShippingInfo />
