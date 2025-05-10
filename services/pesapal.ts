@@ -80,7 +80,7 @@ export interface PaymentTransaction {
 // These are accessed server-side only (e.g., in Server Actions)
 const PESAPAL_API_URL = process.env.PESAPAL_API_URL;
 const PESAPAL_CONSUMER_KEY = process.env.NEXT_PUBLIC_PESAPAL_CONSUMER_KEY;
-const PESAPAL_CONSUMER_SECRET = process.env.NEXT_PUBLIC_PESAPAL_CONSUMER_SECRET;
+const PESAPAL_CONSUMER_SECRET = process.env.NEXT_PUBLIC_PESAPAL_CONSUMER_CODE;
 
 // This is the URL PesaPal will POST IPN data to. Must be publicly accessible.
 // Used in registerIpnUrl function.
@@ -218,9 +218,7 @@ async function makeApiRequest<T>(
         `Successfully obtained auth token (expires: ${tokenInfo.expiryDate})`
       );
     } else {
-      console.log(
-        `${method} ${urlPath}: Successfully parsed JSON response.`
-      );
+      console.log(`${method} ${urlPath}: Successfully parsed JSON response.`);
     }
     return data;
   } catch (parseError: any) {
