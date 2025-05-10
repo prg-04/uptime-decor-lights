@@ -25,18 +25,10 @@ const nextConfig: NextConfig = {
     ],
   },
   webpack(config) {
-    // Keep the existing alias
     config.resolve.alias["@"] = path.resolve(__dirname);
-
-    // Add modules resolution for better path handling
-    config.resolve.modules.push(path.resolve("./"));
-
     return config;
   },
-  // Add experimental flag to ensure proper module resolution
-  experimental: {
-    esmExternals: "loose", // This might help with ESM/CJS interop issues
-  },
+ 
 };
 
 export default nextConfig;
