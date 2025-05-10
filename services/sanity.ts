@@ -1,4 +1,5 @@
-import { sanityClient } from "../lib/sanityClient";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { sanityClient } from "@/lib/sanityClient";
 import { groq } from "next-sanity";
 import { cache } from "react";
 import type { CarouselItem } from "@/types"; // Import CarouselItem type
@@ -598,7 +599,6 @@ export const getRelatedProducts = cache(
   async (
     categoryId: string,
     currentProductId: string,
-    limit: number = 4
   ): Promise<Product[]> => {
     if (!categoryId || !currentProductId) {
       return [];
