@@ -1,4 +1,4 @@
-import { sanityClient } from "@/lib/sanityClient";
+import { sanityClient } from "../lib/sanityClient";
 import { groq } from "next-sanity";
 import { cache } from "react";
 import type { CarouselItem } from "@/types"; // Import CarouselItem type
