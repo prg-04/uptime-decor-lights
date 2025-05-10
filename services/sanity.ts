@@ -443,6 +443,7 @@ export const getAllProducts = cache(async (): Promise<Product[]> => {
       .map(ensureProductImages)
       .filter((p): p is Product => p !== null);
     return processedProducts;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("❌ Failed to fetch products from Sanity:", error.message);
     if (error.response?.body)
@@ -702,7 +703,6 @@ export const getHomePageSettings = async (): Promise<HomePageSettings> => {
     settings = await sanityClient.fetch<HomePageSettings | null>(
       getHomePageSettingsQuery
     );
-   
 
     // If fetch returned null, use defaults
     if (!settings) {
