@@ -1,11 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// Remove the import for `use` as it's causing the hydration error in this context
-// import { use } from 'react';
 import type { Product, ProductImage } from "@/services/sanity"; // Updated type import
 import { getProductById, getRelatedProducts } from "@/services/sanity"; // Updated imports
-import NextImage from "next/image"; // Keep NextImage separate
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Minus, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
