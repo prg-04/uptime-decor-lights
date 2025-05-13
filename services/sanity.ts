@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { sanityClient } from "./sanityClient";
+import { sanityClient } from "./sanityClient"; 
 import { groq } from "next-sanity";
 import { cache } from "react";
-import type { CarouselItem } from "types"; // Import CarouselItem type
+import type { CarouselItem } from "@/types"; // Import CarouselItem type
 import { homeContent as defaultRawSeoItems } from "@/constants/homeContent"; // Import default raw SEO content
 
 /**
@@ -196,7 +196,8 @@ const getHomePageSettingsQuery = groq`*[_type == "homePageSettings" && _id == "h
         }
     },
     ctaText,
-    ctaLink
+    ctaLink,
+    textColor // Fetch the textColor field
   },
   featuredProductsTitle,
   featuredProductsLinkText,
@@ -294,13 +295,18 @@ const ensureRoomItemImageUrl = (item: RoomItem): RoomItem => ({
     item.image?.asset?.url ?? defaultPicsumUrl(item.name ?? "room", 400, 300), // Use name as seed if no _key/id
 });
 
-// Helper to ensure carousel item has an image URL
-const ensureCarouselItemImageUrl = (item: CarouselItem): CarouselItem => ({
+// Helper to ensure carousel item has an image URL and textColor
+const ensureCarouselItemProcessed = (item: CarouselItem): CarouselItem => ({
   ...item,
   // Use the URL from the dereferenced asset if available
   imageUrl:
     item.image?.asset?.url ??
     defaultPicsumUrl(item.title || "carousel", 1600, 800), // Use title as seed
+  _id:
+    item._id ??
+    item._key ??
+    `hero_${item.title?.replace(/\s+/g, "_") ?? Math.random()}`,
+  textColor: item.textColor, // Pass through textColor
 });
 
 // Helper to ensure SEO item has an ID (using _key)
@@ -323,16 +329,6 @@ const ensureRoomItemId = (item: RoomItem): RoomItem => ({
     `room_${item.name?.replace(/\s+/g, "_") ?? Math.random()}`,
 });
 
-// Helper to ensure Carousel item has an ID (using _key)
-const ensureCarouselItemId = (item: CarouselItem): CarouselItem => ({
-  ...item,
-  // Use _key as _id if _id is missing. Use title as fallback key if _key is also missing.
-  _id:
-    item._id ??
-    item._key ??
-    `hero_${item.title?.replace(/\s+/g, "_") ?? Math.random()}`,
-});
-
 // --- Default Settings Generator ---
 // Map imported default content to match SeoContentItem structure with _id and _key
 const defaultSeoItems: SeoContentItem[] = defaultRawSeoItems.map(
@@ -345,6 +341,7 @@ const defaultSeoItems: SeoContentItem[] = defaultRawSeoItems.map(
 );
 
 const generateDefaultHomePageSettings = (): HomePageSettings => {
+  console.log("Generating default homepage settings...");
   const defaults: HomePageSettings = {
     _id: "homePageSettings_default", // Distinguish default ID
     _type: "homePageSettings",
@@ -354,27 +351,33 @@ const generateDefaultHomePageSettings = (): HomePageSettings => {
         title: "Illuminate Your World",
         description:
           "Discover our curated collection of exquisite lighting fixtures.",
-        imageUrl: defaultPicsumUrl("lightshero1", 1600, 800),
+        imageUrl: "",
+        image: { asset: { url: defaultPicsumUrl("lightshero1", 1600, 800) } },
         ctaText: "Explore Chandeliers",
         ctaLink: "/products/chandeliers",
+        textColor: "#FFFFFF",
       },
       {
         _key: "default_hero_2",
         title: "Modern Wall Sconces",
         description: "Add a touch of elegance and warmth to any room.",
-        imageUrl: defaultPicsumUrl("lightshero2", 1600, 800),
+        imageUrl: "",
+        image: { asset: { url: defaultPicsumUrl("lightshero2", 1600, 800) } },
         ctaText: "Shop Wall Lights",
         ctaLink: "/products/wall-lights",
+        textColor: "#FFFFFF",
       },
       {
         _key: "default_hero_3",
         title: "Statement Pendant Lights",
         description: "Create a focal point with our unique pendant designs.",
-        imageUrl: defaultPicsumUrl("lightshero3", 1600, 800),
+        imageUrl: "",
+        image: { asset: { url: defaultPicsumUrl("lightshero3", 1600, 800) } },
         ctaText: "View Pendants",
         ctaLink: "/products/pendant-lights",
+        textColor: "#FFFFFF",
       },
-    ].map(ensureCarouselItemId), // Ensure IDs for default items
+    ].map(ensureCarouselItemProcessed), // Ensure IDs and imageURLs for default items
     featuredProductsTitle: "Featured Products",
     featuredProductsLinkText: "View All Featured",
     featuredProductsLinkHref: "/products/featured",
@@ -421,11 +424,12 @@ const generateDefaultHomePageSettings = (): HomePageSettings => {
       .map(ensureRoomItemId), // Ensure URLs and IDs
     lightingTipsTitle: "Lighting Tips & Inspiration",
     lightingTipsDescription:
-      "Discover expert tips on choosing the right lighting, creating ambiance, and making the most of your space with Uptime Decor Lights.",
+      "Discover expert tips on choosing the right lighting, creating ambiance, and making the most of your space with Luminaire Haven.",
     lightingTipsButtonText: "Get Inspired",
     lightingTipsButtonLink: "/inspiration",
     seoContentItems: defaultSeoItems, // Use processed default SEO items with IDs
   };
+  // console.log("Default settings generated:", JSON.stringify(defaults, null, 2)); // Can be verbose
   return defaults;
 };
 
@@ -435,16 +439,21 @@ const generateDefaultHomePageSettings = (): HomePageSettings => {
  * @returns A promise that resolves to an array of Product objects.
  */
 export const getAllProducts = cache(async (): Promise<Product[]> => {
+  console.log("⏳ Fetching all products from Sanity...");
   try {
     const products = await sanityClient.fetch<Product[]>(getAllProductsQuery);
+    console.log(`✅ Fetched ${products?.length ?? 0} products initially.`);
     if (!products || products.length === 0) {
+      console.warn("⚠️ No products found in Sanity.");
       return [];
     }
     const processedProducts = products
       .map(ensureProductImages)
       .filter((p): p is Product => p !== null);
+    console.log(
+      `✅ Processed ${processedProducts.length} products with image data.`
+    );
     return processedProducts;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("❌ Failed to fetch products from Sanity:", error.message);
     if (error.response?.body)
@@ -458,14 +467,17 @@ export const getAllProducts = cache(async (): Promise<Product[]> => {
  * @returns A promise that resolves to an array of featured Product objects.
  */
 export const getFeaturedProducts = cache(async (): Promise<Product[]> => {
+  console.log("⏳ Fetching featured products from Sanity...");
   try {
     const products = await sanityClient.fetch<Product[]>(
       getFeaturedProductsQuery
     );
+    console.log(`✅ Fetched ${products?.length ?? 0} featured products.`);
     if (!products || products.length === 0) return [];
     const processed = products
       .map(ensureProductImages)
       .filter((p): p is Product => p !== null);
+    console.log(`✅ Processed ${processed.length} featured products.`);
     return processed;
   } catch (error: any) {
     console.error(
@@ -483,14 +495,17 @@ export const getFeaturedProducts = cache(async (): Promise<Product[]> => {
  * @returns A promise that resolves to an array of best seller Product objects.
  */
 export const getBestSellerProducts = cache(async (): Promise<Product[]> => {
+  console.log("⏳ Fetching best seller products from Sanity...");
   try {
     const products = await sanityClient.fetch<Product[]>(
       getBestSellerProductsQuery
     );
+    console.log(`✅ Fetched ${products?.length ?? 0} best seller products.`);
     if (!products || products.length === 0) return [];
     const processed = products
       .map(ensureProductImages)
       .filter((p): p is Product => p !== null);
+    console.log(`✅ Processed ${processed.length} best seller products.`);
     return processed;
   } catch (error: any) {
     console.error(
@@ -508,14 +523,17 @@ export const getBestSellerProducts = cache(async (): Promise<Product[]> => {
  * @returns A promise that resolves to an array of new arrival Product objects.
  */
 export const getNewArrivalProducts = cache(async (): Promise<Product[]> => {
+  console.log("⏳ Fetching new arrival products from Sanity...");
   try {
     const products = await sanityClient.fetch<Product[]>(
       getNewArrivalProductsQuery
     );
+    console.log(`✅ Fetched ${products?.length ?? 0} new arrival products.`);
     if (!products || products.length === 0) return [];
     const processed = products
       .map(ensureProductImages)
       .filter((p): p is Product => p !== null);
+    console.log(`✅ Processed ${processed.length} new arrival products.`);
     return processed;
   } catch (error: any) {
     console.error(
@@ -535,7 +553,9 @@ export const getNewArrivalProducts = cache(async (): Promise<Product[]> => {
  */
 export const getProductById = cache(
   async (id: string): Promise<Product | undefined> => {
+    console.log(`⏳ Fetching product by ID from Sanity: ${id}`);
     if (!id) {
+      console.warn("⚠️ getProductById called with no ID.");
       return undefined;
     }
     try {
@@ -543,9 +563,14 @@ export const getProductById = cache(
         getProductByIdQuery,
         { id }
       );
+      console.log(
+        `✅ Fetched product by ID ${id}:`,
+        product ? "Found" : "Not Found"
+      );
       if (!product) return undefined;
       const processedProduct = ensureProductImages(product);
-      return processedProduct ?? undefined;
+      console.log(`✅ Processed product by ID ${id}.`);
+      return processedProduct ?? undefined; // Return processed product or undefined if processing failed
     } catch (error: any) {
       console.error(
         `❌ Failed to fetch product ID ${id} from Sanity:`,
@@ -565,7 +590,9 @@ export const getProductById = cache(
  */
 export const getProductBySlug = cache(
   async (slug: string): Promise<Product | undefined> => {
+    console.log(`⏳ Fetching product by slug from Sanity: ${slug}`);
     if (!slug) {
+      console.warn("⚠️ getProductBySlug called with no slug.");
       return undefined;
     }
     try {
@@ -573,8 +600,13 @@ export const getProductBySlug = cache(
         getProductBySlugQuery,
         { slug }
       );
+      console.log(
+        `✅ Fetched product by slug ${slug}:`,
+        product ? "Found" : "Not Found"
+      );
       if (!product) return undefined;
       const processedProduct = ensureProductImages(product);
+      console.log(`✅ Processed product by slug ${slug}.`);
       return processedProduct ?? undefined;
     } catch (error: any) {
       console.error(
@@ -596,8 +628,17 @@ export const getProductBySlug = cache(
  * @returns A promise that resolves to an array of related Product objects.
  */
 export const getRelatedProducts = cache(
-  async (categoryId: string, currentProductId: string): Promise<Product[]> => {
+  async (
+    categoryId: string,
+    currentProductId: string,
+  ): Promise<Product[]> => {
+    console.log(
+      `⏳ Fetching related products for category ID: ${categoryId}, excluding product ID: ${currentProductId}`
+    );
     if (!categoryId || !currentProductId) {
+      console.warn(
+        "⚠️ getRelatedProducts called with missing categoryId or currentProductId."
+      );
       return [];
     }
 
@@ -606,10 +647,12 @@ export const getRelatedProducts = cache(
         getRelatedProductsQuery,
         { categoryId, currentProductId } // Pass parameters to the query
       );
+      console.log(`✅ Fetched ${products?.length ?? 0} related products.`);
       if (!products || products.length === 0) return [];
       const processed = products
         .map(ensureProductImages)
         .filter((p): p is Product => p !== null);
+      console.log(`✅ Processed ${processed.length} related products.`);
       return processed;
     } catch (error: any) {
       console.error(
@@ -628,10 +671,12 @@ export const getRelatedProducts = cache(
  * @returns A promise that resolves to an array of Category objects.
  */
 export const getAllCategories = cache(async (): Promise<Category[]> => {
+  console.log("⏳ Fetching all categories from Sanity...");
   try {
     const categories = await sanityClient.fetch<Category[]>(
       getAllCategoriesQuery
     );
+    console.log(`✅ Fetched ${categories?.length ?? 0} categories.`);
     return categories ?? [];
   } catch (error: any) {
     console.error("❌ Failed to fetch categories from Sanity:", error.message);
@@ -644,11 +689,17 @@ export const getAllCategories = cache(async (): Promise<Category[]> => {
 // Helper to get Category by slug (used in category page)
 export const getCategoryBySlug = cache(
   async (slug: string): Promise<Category | undefined> => {
+    console.log(`⏳ Fetching category by slug: ${slug}`);
     if (!slug) {
+      console.warn("⚠️ getCategoryBySlug called with no slug.");
       return undefined;
     }
-    const categories = await getAllCategories();
+    const categories = await getAllCategories(); // Leverage existing cached function
     const category = categories.find((cat) => cat.slug?.current === slug);
+    console.log(
+      `✅ Category lookup for slug "${slug}":`,
+      category ? "Found" : "Not Found"
+    );
     return category;
   }
 );
@@ -656,12 +707,20 @@ export const getCategoryBySlug = cache(
 // Helper to get Products by Category Slug
 export const getProductsByCategorySlug = cache(
   async (categorySlug: string): Promise<Product[]> => {
+    console.log(`⏳ Fetching products for category slug: ${categorySlug}`);
     if (!categorySlug) {
+      console.warn(
+        "⚠️ getProductsByCategorySlug called with no category slug."
+      );
       return [];
     }
-    const allProducts = await getAllProducts();
+    const allProducts = await getAllProducts(); // Leverage existing cache
+    // Filter products ensuring category and slug exist
     const filteredProducts = allProducts.filter(
       (product) => product.category?.slug?.current === categorySlug
+    );
+    console.log(
+      `✅ Found ${filteredProducts.length} products for category slug "${categorySlug}".`
     );
     return filteredProducts;
   }
@@ -669,19 +728,23 @@ export const getProductsByCategorySlug = cache(
 
 // Helper to get all Best Seller products (not just limited 4)
 export const getAllBestSellerProducts = cache(async (): Promise<Product[]> => {
-  const allProducts = await getAllProducts();
+  console.log("⏳ Fetching ALL best seller products from Sanity...");
+  const allProducts = await getAllProducts(); // Leverage existing cache
   const bestSellers = allProducts.filter(
     (product) => product.isBestSeller === true
   );
+  console.log(`✅ Found ${bestSellers.length} best seller products.`);
   return bestSellers;
 });
 
 // Helper to get all New Arrival products (not just limited 4)
 export const getAllNewArrivalProducts = cache(async (): Promise<Product[]> => {
-  const allProducts = await getAllProducts();
+  console.log("⏳ Fetching ALL new arrival products from Sanity...");
+  const allProducts = await getAllProducts(); // Leverage existing cache
   const newArrivals = allProducts.filter(
     (product) => product.isNewArrival === true
   );
+  console.log(`✅ Found ${newArrivals.length} new arrival products.`);
   return newArrivals;
 });
 
@@ -693,13 +756,25 @@ export const getAllNewArrivalProducts = cache(async (): Promise<Product[]> => {
 // Temporarily removing cache for debugging
 // export const getHomePageSettings = cache(async (): Promise<HomePageSettings> => {
 export const getHomePageSettings = async (): Promise<HomePageSettings> => {
+  console.log("⏳ Fetching homepage settings from Sanity (no cache)...");
   let settings: HomePageSettings | null = null;
-  const defaultSettings = generateDefaultHomePageSettings();
+  const defaultSettings = generateDefaultHomePageSettings(); // Generate defaults first
 
   try {
     settings = await sanityClient.fetch<HomePageSettings | null>(
       getHomePageSettingsQuery
     );
+    console.log(
+      "✅ Fetched homepage settings from Sanity:",
+      settings ? "Found" : "Not Found"
+    );
+    if (settings) {
+      // console.log("Raw fetched settings:", JSON.stringify(settings, null, 2)); // Log raw settings for debugging
+    } else {
+      console.log(
+        "⚠️ Sanity returned null for homepage settings. Document might be missing or unpublished."
+      );
+    }
 
     // If fetch returned null, use defaults
     if (!settings) {
@@ -717,9 +792,7 @@ export const getHomePageSettings = async (): Promise<HomePageSettings> => {
       settings.heroCarouselItems.length > 0
         ? settings.heroCarouselItems
         : defaultSettings.heroCarouselItems!
-      )
-        .map(ensureCarouselItemImageUrl)
-        .map(ensureCarouselItemId),
+      ).map(ensureCarouselItemProcessed), // Use unified processor
       featuredProductsTitle:
         settings.featuredProductsTitle ??
         defaultSettings.featuredProductsTitle!,
@@ -777,6 +850,7 @@ export const getHomePageSettings = async (): Promise<HomePageSettings> => {
         : defaultSettings.seoContentItems!
       ).map(ensureSeoItemId),
     };
+    // console.log("✅ Merged homepage settings:", JSON.stringify(mergedSettings, null, 2)); // Can be verbose
     return mergedSettings;
   } catch (error: any) {
     console.error(
@@ -789,4 +863,5 @@ export const getHomePageSettings = async (): Promise<HomePageSettings> => {
     // Return a complete default object on error
     return defaultSettings;
   }
+  // });
 };

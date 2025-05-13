@@ -74,7 +74,9 @@ export default function ContactPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <div className="flex flex-col lg:flex-row"></div>
+
+      <div className="flex flex-col-reverse  md:grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Contact information */}
         <div className="space-y-8 lg:col-span-1">
           <div className="flex items-start space-x-3">
@@ -191,7 +193,7 @@ export default function ContactPage() {
         </div>
 
         {/* Contact form */}
-        <div className="bg-card rounded-xl shadow-lg shadow-accent-foreground/45 border border-gray-200 p-6 lg:py-8 lg:col-span-2">
+        <div className="bg-card rounded-xl shadow-sm lg:shadow-lg shadow-accent-foreground/45 border border-gray-100 lg:border-gray-200 p-6 lg:py-8 lg:col-span-2">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

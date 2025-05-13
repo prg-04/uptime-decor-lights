@@ -47,11 +47,29 @@ export default defineType({
               type: "string",
               description: "e.g., /products/category-slug",
             }),
+            defineField({
+              name: "textColor",
+              title: "Text Color (Optional)",
+              type: "string",
+              description:
+                "Specify a custom text color for title and description (e.g., #FFFFFF for white, #000000 for black). Leave blank for default theme colors.",
+              // Example of using Sanity's built-in color picker (if you install @sanity/color-input)
+              // type: 'color',
+              // options: {
+              //   disableAlpha: true
+              // }
+            }),
           ],
           preview: {
-            select: { title: "title", media: "image" },
-            prepare({ title, media }) {
-              return { title: title || "Carousel Item", media };
+            select: { title: "title", media: "image", textColor: "textColor" },
+            prepare({ title, media, textColor }) {
+              return {
+                title: title || "Carousel Item",
+                subtitle: textColor
+                  ? `Text: ${textColor}`
+                  : "Default text color",
+                media,
+              };
             },
           },
         },

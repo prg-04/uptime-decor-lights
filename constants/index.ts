@@ -96,7 +96,7 @@ export const footerNav: FooterNavItem[] = [
       },
       {
         title: "Chat",
-        href: "/contact",
+        href: "/contact-us",
         icon: "💬",
       },
       {

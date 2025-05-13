@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button"; // Corrected path
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import type { CarouselItem, CarouselProps, } from "@/types";
+import type { CarouselProps, CarouselItem } from "@/types";
 import { cn } from "@/lib/utils";
 
 // Default items with required fields and unique _id/_key
@@ -15,18 +15,20 @@ const defaultItems: CarouselItem[] = [
     title: "Illuminate Your World",
     description:
       "Discover our curated collection of exquisite lighting fixtures.",
-    imageUrl: "public/banner-chandelier.jpg",
+    imageUrl: "https://picsum.photos/seed/lightshero1/1600/800",
     ctaText: "Explore Chandeliers",
     ctaLink: "/products/chandeliers",
+    textColor: "#FFFFFF",
   },
   {
     _id: "default_hero_2_id",
     _key: "default_hero_2_key",
     title: "Modern Wall Sconces",
     description: "Add a touch of elegance and warmth to any room.",
-    imageUrl: "public/wall-banner.jpg",
+    imageUrl: "https://picsum.photos/seed/lightshero2/1600/800",
     ctaText: "Shop Wall Lights",
     ctaLink: "/products/wall-lights",
+    textColor: "#FFFFFF",
   },
   {
     _id: "default_hero_3_id",
@@ -36,6 +38,7 @@ const defaultItems: CarouselItem[] = [
     imageUrl: "https://picsum.photos/seed/lightshero3/1600/800",
     ctaText: "View Pendants",
     ctaLink: "/products/pendant-lights",
+    textColor: "#FFFFFF",
   },
 ];
 
@@ -78,7 +81,11 @@ const Carousel: React.FC<CarouselProps> = ({
 
   console.log(
     "Rendering Carousel component with items:",
-    displayItems.map((i) => ({ title: i.title, id: i._id }))
+    displayItems.map((i) => ({
+      title: i.title,
+      id: i._id,
+      textColor: i.textColor,
+    }))
   );
 
   const handleMouseEnter = () => {
@@ -91,7 +98,7 @@ const Carousel: React.FC<CarouselProps> = ({
 
   return (
     <div
-      className="w-full h-[60dvh] md:h-[50dvh] overflow-hidden relative group" // Added group for hover effects on children
+      className="w-full h-[60dvh] md:h-[70dvh] overflow-hidden relative group" // Added group for hover effects on children
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -109,15 +116,29 @@ const Carousel: React.FC<CarouselProps> = ({
           // Ensure link is valid
           const validCtaLink = item.ctaLink || "#"; // Fallback link
 
+          const textStyles = item.textColor ? { color: item.textColor } : {};
+
           // Shared Text Section Styling
           const sharedTextSection = (
-            <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center p-4 md:p-8 text-primary-foreground bg-gradient-to-t from-black/70 via-black/40 to-transparent md:bg-none md:static md:text-inherit md:items-start md:text-left md:w-1/2 lg:w-1/3 md:p-12">
+            <div className="absolute inset-0 z-10 flex flex-col justify-center items-center text-center p-4 md:p-8 text-primary-foreground bg-gradient-to-t from-black/70 via-black/40 to-transparent md:bg-none md:static md:text-inherit md:items-start md:text-left md:w-1/2">
               {/* Title */}
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase font-bold mb-3 md:mb-5 drop-shadow-md text-white md:text-primary">
+              <h2
+                className={cn(
+                  "text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase font-bold mb-3 md:mb-5 drop-shadow-md",
+                  !item.textColor && "text-white md:text-primary" // Default colors if no custom color
+                )}
+                style={textStyles}
+              >
                 {item.title || "Untitled Slide"}
               </h2>
               {/* Description */}
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-md text-white/90 md:text-foreground/80 drop-shadow-sm">
+              <p
+                className={cn(
+                  "text-base sm:text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 max-w-md drop-shadow-sm",
+                  !item.textColor && "text-white/90 md:text-foreground/80" // Default colors if no custom color
+                )}
+                style={textStyles}
+              >
                 {item.description || "No description available."}
               </p>
               {/* CTA Button */}

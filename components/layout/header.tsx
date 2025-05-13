@@ -17,6 +17,8 @@ import {
   SheetContent,
   SheetTrigger,
   SheetClose,
+  SheetHeader,
+  SheetTitle,
 } from "@/components/ui/sheet"; // Added Sheet components
 import { useEffect, useState } from "react";
 import type { Category } from "@/services/sanity"; // Import type explicitly
@@ -30,6 +32,7 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
+  SignOutButton,
   UserButton,
   useUser,
 } from "@clerk/nextjs";
@@ -83,7 +86,7 @@ export function Header() {
             <SheetClose key={category._id} asChild>
               <Link
                 href={`/products/${category.slug.current}`}
-                className="block px-4 py-2 text-lg hover:bg-accent hover:text-accent-foreground rounded-md"
+                className="block px-4 py-2 text-md hover:bg-accent hover:text-accent-foreground rounded-md"
                 onClick={() => setIsMobileMenuOpen(false)} // Close sheet on link click
               >
                 {category.name}
@@ -91,12 +94,12 @@ export function Header() {
             </SheetClose>
           ) : (
             <NavigationMenuItem key={category._id}>
-              <Link
-                href={`/products/${category.slug.current}`}
+              <NavigationMenuLink
                 className={cn(navigationMenuTriggerStyle(), "px-2 md:px-3")}
+                href={`/products/${category.slug.current}`}
               >
-                <NavigationMenuLink asChild>{category.name}</NavigationMenuLink>
-              </Link>
+                {category.name}
+              </NavigationMenuLink>
             </NavigationMenuItem>
           )
         );
@@ -116,7 +119,7 @@ export function Header() {
             width={100}
             height={50}
             className={`
-      transition-all duration-300
+      transition-all duration-300 dark:invert-80
     `}
           />
         </Link>
@@ -177,7 +180,7 @@ export function Header() {
           ) : (
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="text-sm border bg-black text-white border-gray-300 py-2 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900">
+                <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900">
                   Sign in
                 </button>
               </SignInButton>
@@ -204,13 +207,17 @@ export function Header() {
               {/* Added padding top */}
               <div className="flex flex-col space-y-3 p-4">
                 <SheetClose asChild>
-                  <Link
-                    href="/"
-                    className="block px-4 py-2 text-lg font-semibold hover:bg-accent hover:text-accent-foreground rounded-md"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Home
-                  </Link>
+                  <SheetHeader>
+                    <SheetTitle>
+                      <Link
+                        href="/"
+                        className="block px-4 py-2 text-lg font-semibold hover:bg-accent hover:text-accent-foreground rounded-md"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Home
+                      </Link>
+                    </SheetTitle>
+                  </SheetHeader>
                 </SheetClose>
                 <Separator />
                 {renderNavLinks(true)}
@@ -218,7 +225,7 @@ export function Header() {
                 <SheetClose asChild>
                   <Link
                     href="/cart"
-                    className="flex items-center justify-between px-4 py-2 text-lg hover:bg-accent hover:text-accent-foreground rounded-md"
+                    className="flex items-center justify-between px-4 text-lg hover:bg-accent hover:text-accent-foreground rounded-md"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <span>Cart</span>
@@ -226,13 +233,21 @@ export function Header() {
                     {isClient && itemCount > 0 && (
                       <Badge
                         variant="destructive"
-                        className="h-5 w-5 flex items-center justify-center p-0 text-xs"
+                        className="h-5 w-5 flex items-center text-white justify-center p-0 text-xs"
                       >
                         {itemCount > 9 ? "9+" : itemCount}
                       </Badge>
                     )}
                   </Link>
                 </SheetClose>
+                {/* <SheetClose asChild> */}
+                <SignOutButton>
+                  <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
+                    Sign out
+                  </button>
+                </SignOutButton>
+
+                {/* </SheetClose> */}
               </div>
             </SheetContent>
           </Sheet>

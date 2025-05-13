@@ -39,14 +39,15 @@ interface LoginResponse {
 
 
 export interface CarouselItem {
-  _id?: string; // Optional: If data comes from Sanity (might be _key)
-  _key?: string; // Sanity uses _key for items within arrays
+  _id?: string; 
+  _key?: string; 
   title: string;
   description: string;
-  imageUrl: string; // Main image URL
-  image?: { asset?: { _ref?: string; _type?: string } }; // Keep raw image ref
-  ctaText?: string; // Call-to-action button text
-  ctaLink?: string; // Call-to-action button link
+  imageUrl: string; 
+  image?: { asset?: { _ref?: string; _type?: string; url?: string } }; 
+  ctaText?: string; 
+  ctaLink?: string; 
+  textColor?: string; 
 }
 
 export interface HeroContentProps {
