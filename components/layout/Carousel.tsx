@@ -79,15 +79,7 @@ const Carousel: React.FC<CarouselProps> = ({
     );
   }
 
-  console.log(
-    "Rendering Carousel component with items:",
-    displayItems.map((i) => ({
-      title: i.title,
-      id: i._id,
-      textColor: i.textColor,
-    }))
-  );
-
+ 
   const handleMouseEnter = () => {
     setIsPaused(true);
   };
