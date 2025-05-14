@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabaseAdminClient"; 
-import { sendSlackNotification } from "@/lib/slack";
+import { supabaseAdmin } from "@/utils/supabaseAdminClient"; 
+import { sendSlackNotification } from "@/utils/slack";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: Request) {
