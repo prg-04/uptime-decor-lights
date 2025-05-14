@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useCart, CartItem } from "@/context/CartContext";
-import { useToast } from "@/hooks/use-toast";
 import { confirmPesapalOrderAndTriggerN8N } from "@/app/checkout/actions";
 import type { CustomerDetails } from "@/app/checkout/actions";
 import { CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
@@ -19,7 +19,6 @@ type ConfirmationStatus =
 const SuccessPage = () => {
   const searchParams = useSearchParams();
   const { clearCart } = useCart();
-  const { toast } = useToast();
   const router = useRouter();
 
   const [status, setStatus] = useState<ConfirmationStatus>("loading");
