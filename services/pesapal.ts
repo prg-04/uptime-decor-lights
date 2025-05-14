@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // services/pesapal.ts
-
-import { v4 as uuidv4 } from "uuid";
 
 // --- Interfaces ---
 interface AuthResponse {
@@ -78,7 +78,6 @@ export interface PaymentTransaction {
 
 // --- Environment Variables ---
 // These are accessed server-side only (e.g., in Server Actions)
-const PESAPAL_API_URL = process.env.PESAPAL_API_URL;
 const PESAPAL_CONSUMER_KEY = process.env.NEXT_PUBLIC_PESAPAL_CONSUMER_KEY;
 const PESAPAL_CONSUMER_SECRET = process.env.NEXT_PUBLIC_PESAPAL_CONSUMER_CODE;
 
@@ -86,20 +85,6 @@ const PESAPAL_CONSUMER_SECRET = process.env.NEXT_PUBLIC_PESAPAL_CONSUMER_CODE;
 // Used in registerIpnUrl function.
 const IPN_URL_TO_REGISTER = process.env.NEXT_PUBLIC_PESAPAL_IPN_URL;
 
-// Log initial config status (server-side log)
-console.log("[PesaPal Service] Server-Side Initializing with Config:");
-console.log(
-  `  PESAPAL_API_URL: ${PESAPAL_API_URL ? "Loaded" : "MISSING! (Server-Side)"}`
-);
-console.log(
-  `  PESAPAL_CONSUMER_KEY: ${PESAPAL_CONSUMER_KEY ? "Loaded" : "MISSING! (Server-Side)"}`
-);
-console.log(
-  `  PESAPAL_CONSUMER_SECRET: ${PESAPAL_CONSUMER_SECRET ? "Loaded" : "MISSING! (Server-Side)"}`
-);
-console.log(
-  `  IPN_URL_TO_REGISTER (NEXT_PUBLIC_PESAPAL_IPN_URL): ${IPN_URL_TO_REGISTER ? IPN_URL_TO_REGISTER : "MISSING! (Server-Side for registration)"}`
-);
 
 let authToken: string | null = null;
 let tokenExpiry: Date | null = null;
@@ -118,7 +103,6 @@ async function makeApiRequest<T>(
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
   const urlPath = new URL(url).pathname;
-  console.log(`[PesaPal Request] ===> ${method} ${urlPath}`);
   if (body && method === "POST" && url.includes("/Auth/RequestToken")) {
     console.log(
       "  Body: { consumer_key: [Loaded], consumer_secret: [Loaded] }"
@@ -156,7 +140,7 @@ async function makeApiRequest<T>(
     responseBodyText = await response.text();
     if (responseBodyText.length > 0)
       console.log(
-        `Raw Response Body (${response.status}): ${responseBodyText.substring(0, 500)}...`
+        `Raw Response Body (${response.status}): ${responseBodyText.substring(0, 5)}...`
       );
     else if (response.ok && response.status !== 204)
       console.warn(
@@ -214,11 +198,7 @@ async function makeApiRequest<T>(
     const data: T = JSON.parse(responseBodyText);
     if (url.includes("/Auth/RequestToken") && "token" in data) {
       const tokenInfo = data as unknown as AuthResponse;
-      console.log(
-        `Successfully obtained auth token (expires: ${tokenInfo.expiryDate})`
-      );
-    } else {
-      console.log(`${method} ${urlPath}: Successfully parsed JSON response.`);
+   
     }
     return data;
   } catch (parseError: any) {

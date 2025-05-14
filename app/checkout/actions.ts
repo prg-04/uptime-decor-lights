@@ -196,14 +196,7 @@ export async function confirmPesapalOrderAndTriggerN8N(
   customerDetails: CustomerDetails | null, // Passed from localStorage on SuccessPage
   cartSnapshot: CartItem[] | null // Passed from localStorage on SuccessPage
 ): Promise<ConfirmOrderResult> {
-  console.log("[Action confirmAndTriggerN8N] Processing payment confirmation:");
-  console.log(`  Merchant Reference: ${merchantReference}`);
-  console.log(`  Transaction Tracking ID: ${transactionTrackingId}`);
-
   if (!merchantReference || !transactionTrackingId) {
-    console.error(
-      "[Action confirmAndTriggerN8N] Missing merchantReference or transactionTrackingId."
-    );
     return {
       success: false,
       paymentStatus: "INVALID",
@@ -211,7 +204,6 @@ export async function confirmPesapalOrderAndTriggerN8N(
     };
   }
   if (!customerDetails) {
-    console.error("[Action confirmAndTriggerN8N] Missing customerDetails.");
     return {
       success: false,
       paymentStatus: "INVALID",
@@ -219,24 +211,14 @@ export async function confirmPesapalOrderAndTriggerN8N(
     };
   }
   if (!cartSnapshot || cartSnapshot.length === 0) {
-    console.warn(
-      "[Action confirmAndTriggerN8N] Cart snapshot is empty. n8n will receive no products."
-    );
     // Continue to check payment status, but n8n payload will have empty products.
   }
 
   let pesapalTransaction: PaymentTransaction;
   try {
     pesapalTransaction = await checkPaymentStatus(transactionTrackingId);
-    console.log(
-      `[Action confirmAndTriggerN8N] PesaPal status for ${transactionTrackingId}:`,
-      pesapalTransaction
-    );
 
     if (pesapalTransaction.merchantReference !== merchantReference) {
-      console.error(
-        `[Action confirmAndTriggerN8N] Mismatched merchant reference! URL Ref: ${merchantReference}, PesaPal API Ref: ${pesapalTransaction.merchantReference}`
-      );
       return {
         success: false,
         paymentStatus: "INVALID",
@@ -250,10 +232,6 @@ export async function confirmPesapalOrderAndTriggerN8N(
       pesapalTransaction.paymentStatusDescription?.toLowerCase();
 
     if (currentPaymentStatusDesc === "completed") {
-      console.log(
-        `[Action confirmAndTriggerN8N] Payment COMPLETED for ${merchantReference}. Constructing n8n payload...`
-      );
-
       const n8nProducts: N8nProductDetail[] = (cartSnapshot || []).map(
         (item) => ({
           product_id: item._id,
@@ -282,13 +260,7 @@ export async function confirmPesapalOrderAndTriggerN8N(
         products: n8nProducts,
       };
 
-      console.log(
-        `[Action confirmAndTriggerN8N] Triggering n8n webhook for ${merchantReference}`
-      );
       await sendOrderToN8N(n8nPayload); // Await the n8n call
-      console.log(
-        `[Action confirmAndTriggerN8N] n8n webhook successfully triggered for ${merchantReference}.`
-      );
 
       return {
         success: true,
@@ -296,9 +268,6 @@ export async function confirmPesapalOrderAndTriggerN8N(
         confirmationCode: pesapalTransaction.confirmationCode,
       };
     } else if (currentPaymentStatusDesc === "pending") {
-      console.log(
-        `[Action confirmAndTriggerN8N] Payment status for ${merchantReference} is PENDING. n8n not triggered.`
-      );
       return {
         success: true, // Action succeeded, but payment is pending
         paymentStatus: "PENDING",
@@ -306,9 +275,7 @@ export async function confirmPesapalOrderAndTriggerN8N(
       };
     } else {
       // FAILED, INVALID, UNKNOWN
-      console.log(
-        `[Action confirmAndTriggerN8N] Payment status for ${merchantReference} is ${currentPaymentStatusDesc}. n8n not triggered.`
-      );
+
       return {
         success: true, // Action succeeded, but payment not completed
         paymentStatus: pesapalTransaction.status || "FAILED", // Use mapped status or default to FAILED
@@ -316,10 +283,6 @@ export async function confirmPesapalOrderAndTriggerN8N(
       };
     }
   } catch (error: any) {
-    console.error(
-      `[Action confirmAndTriggerN8N] Error during PesaPal status check or n8n trigger for ${transactionTrackingId}:`,
-      error
-    );
     return {
       success: false,
       paymentStatus: "UNKNOWN",

@@ -105,17 +105,10 @@ export async function getOrdersForUserAction(
       return { success: true, data: [] };
     }
 
-    console.log(
-      `[Action getOrdersForUser] Found ${ordersData.length} order(s) for Clerk User ID: ${clerkUserId}.`
-    );
-
     // 2. For each order, fetch its products
     const ordersWithProducts: OrderWithProducts[] = [];
 
     for (const order of ordersData as Order[]) {
-      console.log(
-        `[Action getOrdersForUser] Fetching products for order_id: ${order.id}`
-      );
       const { data: productsData, error: productsError } = await supabaseAdmin
         .from("order_products")
         .select("*")
@@ -127,24 +120,16 @@ export async function getOrdersForUserAction(
           productsError
         );
         ordersWithProducts.push({ ...order, products: [] });
-        console.warn(
-          `[Action getOrdersForUser] Order ${order.id} will be missing product details due to an error.`
-        );
-        continue;
+
+        
       }
 
-      console.log(
-        `[Action getOrdersForUser] Found ${productsData?.length || 0} product(s) for order_id: ${order.id}`
-      );
       ordersWithProducts.push({
         ...order,
         products: (productsData as OrderProduct[]) || [],
       });
     }
 
-    console.log(
-      `[Action getOrdersForUser] Successfully fetched ${ordersWithProducts.length} orders with product details for Clerk User ID: ${clerkUserId}.`
-    );
     return { success: true, data: ordersWithProducts };
   } catch (error: Error | unknown) {
     console.error("[Action getOrdersForUser] Unexpected error:", error);

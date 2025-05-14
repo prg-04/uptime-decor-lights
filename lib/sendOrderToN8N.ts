@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // lib/sendOrdersToN8N.ts
 import type { N8nPayload } from "@/app/checkout/actions";
 
@@ -13,11 +14,6 @@ export async function sendOrderToN8N(orderPayload: N8nPayload): Promise<void> {
     throw new Error("N8N_WEBHOOK_URL is not configured on the server.");
     // return;
   }
-
-  console.log(
-    `[sendOrderToN8N] Sending payload to n8n webhook: ${N8N_WEBHOOK_URL}`
-  );
-  // console.log('[sendOrderToN8N] Full Payload being sent:', JSON.stringify(orderPayload, null, 2)); // Log full payload for debugging
 
   try {
     const response = await fetch(N8N_WEBHOOK_URL, {
@@ -39,11 +35,9 @@ export async function sendOrderToN8N(orderPayload: N8nPayload): Promise<void> {
       throw new Error(
         `Failed to send order to n8n. Status: ${response.status}, Body: ${responseBodyText}`
       );
-    } else {
-      console.log(
-        `[sendOrderToN8N] Successfully sent order to n8n. Status: ${response.status}. Response: ${responseBodyText}`
-      );
-    }
+    } 
+    
+    
   } catch (error: any) {
     console.error(
       "[sendOrderToN8N] Exception while sending order to n8n:",
