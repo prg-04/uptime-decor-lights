@@ -241,11 +241,21 @@ export function Header() {
                   </Link>
                 </SheetClose>
                 {/* <SheetClose asChild> */}
-                <SignOutButton>
-                  <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
-                    Sign out
-                  </button>
-                </SignOutButton>
+
+                <SignedIn>
+                  <SignOutButton>
+                    <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
+                      Sign out
+                    </button>
+                  </SignOutButton>
+                </SignedIn>
+                <SignedOut>
+                  <SignInButton>
+                    <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
+                      Sign in
+                    </button>
+                  </SignInButton>
+                </SignedOut>
 
                 {/* </SheetClose> */}
               </div>
