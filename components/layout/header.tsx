@@ -180,7 +180,7 @@ export function Header() {
           ) : (
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-gray-700 hover:text-gray-900">
+                <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
                   Sign in
                 </button>
               </SignInButton>
@@ -251,7 +251,7 @@ export function Header() {
                 </SignedIn>
                 <SignedOut>
                   <SignInButton>
-                    <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
+                    <button className="hidden text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
                       Sign in
                     </button>
                   </SignInButton>

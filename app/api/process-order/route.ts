@@ -1,8 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/utils/supabaseAdminClient"; 
+import { supabaseAdmin } from "@/utils/supabaseAdminClient";
 import { sendSlackNotification } from "@/utils/slack";
 import { v4 as uuidv4 } from "uuid";
+
+
+const generateOrderNumber = () => {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `LH-${timestamp}-${randomPart}`;
+};
 
 export async function POST(request: Request) {
   try {
@@ -27,16 +34,12 @@ export async function POST(request: Request) {
     } = body;
 
     // Step 1: Save order
-   const orderId = uuidv4(); // always generate a valid UUID
-   const businessOrderNumber =
-     order_number ||
-     `LH-${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
-
+    const orderId = generateOrderNumber()
 
     const { error: orderError } = await supabaseAdmin.from("orders").insert([
       {
         id: orderId,
-        order_number: businessOrderNumber,
+        order_number,
         confirmation_code,
         payment_status,
         amount,

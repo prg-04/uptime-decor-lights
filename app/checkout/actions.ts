@@ -11,7 +11,13 @@ import {
   PaymentTransaction,
 } from "@/services/pesapal";
 import { sendOrderToN8N } from "@/lib/sendOrderToN8N";
-import { v4 as uuidv4 } from "uuid";
+import { processOrder } from "@/lib/orderProcessing";
+
+const generateOrderNumber = () => {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `UDL-${timestamp}-${randomPart}`;
+};
 
 // Define the structure for customer details
 export interface CustomerDetails {
@@ -87,7 +93,7 @@ export async function initiatePaymentAction(
   cart: CartItem[],
   totalPrice: number
 ): Promise<InitiatePaymentActionResult> {
-  const orderId = `LH-${uuidv4().split("-")[0].toUpperCase()}`;
+  const orderId = generateOrderNumber();
   const orderDescription = `Uptime Decor Lights Order #${orderId}`;
   const appBaseUrl = process.env.NEXT_PUBLIC_PESAPAL_CALLBACK_URL; // For constructing callback_url
 
@@ -193,8 +199,8 @@ export async function initiatePaymentAction(
 export async function confirmPesapalOrderAndTriggerN8N(
   merchantReference: string | null,
   transactionTrackingId: string | null,
-  customerDetails: CustomerDetails | null, // Passed from localStorage on SuccessPage
-  cartSnapshot: CartItem[] | null // Passed from localStorage on SuccessPage
+  customerDetails: CustomerDetails | null,
+  cartSnapshot: CartItem[] | null
 ): Promise<ConfirmOrderResult> {
   if (!merchantReference || !transactionTrackingId) {
     return {
@@ -211,7 +217,9 @@ export async function confirmPesapalOrderAndTriggerN8N(
     };
   }
   if (!cartSnapshot || cartSnapshot.length === 0) {
-    // Continue to check payment status, but n8n payload will have empty products.
+    console.warn(
+      "[checkout Action] Cart snapshot is empty. No items to process."
+    );
   }
 
   let pesapalTransaction: PaymentTransaction;
@@ -231,62 +239,92 @@ export async function confirmPesapalOrderAndTriggerN8N(
     const currentPaymentStatusDesc =
       pesapalTransaction.paymentStatusDescription?.toLowerCase();
 
+    // Map PesaPal status to our internal status
+    let internalPaymentStatus: "paid" | "pending" | "failed";
     if (currentPaymentStatusDesc === "completed") {
-      const n8nProducts: N8nProductDetail[] = (cartSnapshot || []).map(
-        (item) => ({
-          product_id: item._id,
-          name: item.name,
-          quantity: item.quantity, // Ensure this is a number
-          price: item.price,
-          image_url: item.imageUrl ?? item.images?.[0]?.asset?.url ?? null,
-        })
-      );
+      internalPaymentStatus = "paid";
+    } else if (currentPaymentStatusDesc === "pending") {
+      internalPaymentStatus = "pending";
+    } else {
+      internalPaymentStatus = "failed";
+    }
 
-      const n8nPayload: N8nPayload = {
-        order_tracking_id: transactionTrackingId,
-        order_number: merchantReference,
-        confirmation_code: pesapalTransaction.confirmationCode || null,
-        payment_status: "paid", // Hardcode to 'paid' for n8n as we've confirmed completion
-        amount: pesapalTransaction.amount,
-        payment_method: pesapalTransaction.paymentMethod || null,
-        created_date: pesapalTransaction.statusDate || new Date().toISOString(),
-        payment_account: pesapalTransaction.paymentAccount || null,
-        customer_email: customerDetails.email,
-        customer_name: `${customerDetails.firstName} ${customerDetails.lastName}`,
-        customer_phone: customerDetails.phone.replace(/\s+/g, ""),
-        city_town: customerDetails.city,
-        clerk_id: customerDetails.clerkUserId,
-        shipping_location: customerDetails.shippingLocation,
-        products: n8nProducts,
+    // Prepare order data
+    const n8nProducts = (cartSnapshot || []).map((item) => ({
+      product_id: item._id,
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      image_url: item.imageUrl ?? item.images?.[0]?.asset?.url ?? null,
+    }));
+
+    const orderData: N8nPayload = {
+      order_tracking_id: transactionTrackingId,
+      order_number: merchantReference,
+      confirmation_code: pesapalTransaction.confirmationCode || null,
+      payment_status: internalPaymentStatus,
+      amount: pesapalTransaction.amount,
+      payment_method: pesapalTransaction.paymentMethod || null,
+      created_date: pesapalTransaction.statusDate || new Date().toISOString(),
+      payment_account: pesapalTransaction.paymentAccount || null,
+      customer_email: customerDetails.email,
+      customer_name: `${customerDetails.firstName} ${customerDetails.lastName}`,
+      customer_phone: customerDetails.phone.replace(/\s+/g, ""),
+      city_town: customerDetails.city,
+      clerk_id: customerDetails.clerkUserId,
+      shipping_location: customerDetails.shippingLocation,
+      products: n8nProducts,
+    };
+
+    // Process the order regardless of status
+    try {
+      await processOrder(orderData);
+    } catch (processError: any) {
+      console.error("[checkout Action] Error in processOrder:", processError);
+      return {
+        success: false,
+        paymentStatus: "UNKNOWN",
+        error: `Failed to process order: ${processError.message}`,
       };
+    }
 
-      await sendOrderToN8N(n8nPayload); // Await the n8n call
+    // Try to send to N8N if configured (but don't fail if it fails)
+    try {
+      if (N8N_WEBHOOK_URL) {
+        await sendOrderToN8N(orderData);
+      }
+    } catch (n8nError) {
+      console.warn(
+        "[checkout Action] Failed to send to n8n, but order was processed:",
+        n8nError
+      );
+    }
 
+    if (internalPaymentStatus === "paid") {
       return {
         success: true,
         paymentStatus: "COMPLETED",
         confirmationCode: pesapalTransaction.confirmationCode,
       };
-    } else if (currentPaymentStatusDesc === "pending") {
+    } else if (internalPaymentStatus === "pending") {
       return {
-        success: true, // Action succeeded, but payment is pending
+        success: true,
         paymentStatus: "PENDING",
         confirmationCode: pesapalTransaction.confirmationCode,
       };
     } else {
-      // FAILED, INVALID, UNKNOWN
-
       return {
-        success: true, // Action succeeded, but payment not completed
-        paymentStatus: pesapalTransaction.status || "FAILED", // Use mapped status or default to FAILED
+        success: true,
+        paymentStatus: "FAILED",
         error: `Payment status: ${pesapalTransaction.paymentStatusDescription}`,
       };
     }
   } catch (error: any) {
+    console.error("[checkout Action] Error processing order:", error);
     return {
       success: false,
       paymentStatus: "UNKNOWN",
-      error: `Failed to confirm payment status or trigger order processing: ${error.message}`,
+      error: `Failed to confirm payment status or process order: ${error.message}`,
     };
   }
 }
