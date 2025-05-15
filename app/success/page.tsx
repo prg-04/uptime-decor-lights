@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// app/success/page.tsx
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { useCart, CartItem } from "@/context/CartContext";
-import { confirmPesapalOrderAndTriggerN8N } from "@/app/checkout/actions";
+import { useCart, CartItem } from "@/context/CartContext"; // Use current project's CartContext
+import { confirmPesapalOrderAndTriggerN8N } from "@/app/checkout/actions"; // New server action
 import type { CustomerDetails } from "@/app/checkout/actions";
 import { CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
 
@@ -18,7 +18,7 @@ type ConfirmationStatus =
 
 const SuccessPage = () => {
   const searchParams = useSearchParams();
-  const { clearCart } = useCart();
+  const { clearCart } = useCart(); // Use cart from context to get items
   const router = useRouter();
 
   const [status, setStatus] = useState<ConfirmationStatus>("loading");
@@ -28,7 +28,7 @@ const SuccessPage = () => {
     null
   );
   const [isClient, setIsClient] = useState(false);
-  const hasConfirmed = useRef(false);
+  const hasConfirmed = useRef(false); // To prevent multiple processing attempts
 
   useEffect(() => {
     setIsClient(true);
@@ -37,18 +37,18 @@ const SuccessPage = () => {
   const confirmOrderAndProcess = useCallback(async () => {
     if (!isClient || hasConfirmed.current) return;
 
-    const merchantRef = searchParams.get("OrderMerchantReference");
+    const merchantRefFromParams = searchParams.get("OrderMerchantReference");
     const trackingIdFromParams = searchParams.get("OrderTrackingId");
 
-    setOrderId(merchantRef);
+    setOrderId(merchantRefFromParams);
     setTrackingId(trackingIdFromParams);
 
-    if (!merchantRef || !trackingIdFromParams) {
+    if (!merchantRefFromParams || !trackingIdFromParams) {
       setStatus("error");
       setConfirmationMessage(
         "Payment identifiers are missing from the URL. Unable to confirm order."
       );
-      hasConfirmed.current = true;
+      hasConfirmed.current = true; // Mark as processed to avoid retries
       return;
     }
 
@@ -62,14 +62,20 @@ const SuccessPage = () => {
       return;
     }
 
-    hasConfirmed.current = true;
+    hasConfirmed.current = true; // Mark as processing started
     setStatus("loading");
 
+    // Clear any previous order confirmation
+    localStorage.removeItem("orderConfirmed");
+
+    // Retrieve customer details and cart snapshot from localStorage
     const customerDetailsJSON = localStorage.getItem("customerDetails");
     const cartSnapshotJSON = localStorage.getItem("cartSnapshot");
 
     if (!customerDetailsJSON || !cartSnapshotJSON) {
-      console.error("[SuccessPage] Missing customer details or cart snapshot.");
+      console.error(
+        "[SuccessPage] CRITICAL: Missing customer details or cart snapshot from localStorage. Cannot process order."
+      );
       setStatus("error");
       setConfirmationMessage(
         "Failed to retrieve necessary order details for confirmation. Please contact support."
@@ -83,6 +89,8 @@ const SuccessPage = () => {
     try {
       customerDetails = JSON.parse(customerDetailsJSON);
       cartSnapshot = JSON.parse(cartSnapshotJSON);
+
+      console.log("success customerDetails:", customerDetails);
     } catch (e) {
       console.error("[SuccessPage] Error parsing localStorage data:", e);
       setStatus("error");
@@ -92,93 +100,92 @@ const SuccessPage = () => {
       return;
     }
 
+    if (!cartSnapshot || cartSnapshot.length === 0) {
+      console.warn(
+        "[SuccessPage] Cart snapshot is empty. No items to process for n8n."
+      );
+      // Proceed to check payment status but n8n won't have products.
+      // Or, consider this an error state depending on business logic.
+    }
+
     try {
-      const result = await confirmPesapalOrderAndTriggerN8N(
-        merchantRef,
+      const actionResult = await confirmPesapalOrderAndTriggerN8N(
+        merchantRefFromParams,
         trackingIdFromParams,
         customerDetails,
         cartSnapshot
       );
 
-      if (result.success) {
-        if (result.paymentStatus === "COMPLETED") {
+      if (actionResult.success) {
+        if (actionResult.paymentStatus === "COMPLETED") {
           setStatus("completed");
           setConfirmationMessage(
             "Your order has been successfully confirmed and payment received!"
           );
-          clearCart();
-          localStorage.setItem("orderConfirmed", "true");
+          clearCart(); // Clear cart from context
           localStorage.removeItem("customerDetails");
           localStorage.removeItem("cartSnapshot");
-        } else if (result.paymentStatus === "PENDING") {
+          localStorage.setItem("orderConfirmed", "true"); // Set the confirmation flag
+        } else if (actionResult.paymentStatus === "PENDING") {
           setStatus("pending");
           setConfirmationMessage(
             "Your payment is pending. We will notify you once it's confirmed."
           );
+          // Optionally clear cart for pending as well, depending on business rules
           clearCart();
-          localStorage.setItem("orderConfirmed", "true");
           localStorage.removeItem("customerDetails");
           localStorage.removeItem("cartSnapshot");
+          localStorage.setItem("orderConfirmed", "true"); // Set the confirmation flag for pending too
         } else {
+          // FAILED, INVALID, UNKNOWN
           setStatus("failed");
           setConfirmationMessage(
-            result.error ||
-              `Payment status: ${result.paymentStatus}. Please try again or contact support.`
+            actionResult.error ||
+              `Payment status: ${actionResult.paymentStatus}. Please try again or contact support.`
           );
         }
       } else {
         setStatus("error");
         setConfirmationMessage(
-          result.error ||
-            "An unexpected error occurred while confirming your order."
+          actionResult.error ||
+            "An unexpected error occurred while confirming your order. Please contact support."
         );
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("[SuccessPage] Error confirming order:", error);
+      console.error("[SuccessPage] Error calling server action:", error);
       setStatus("error");
       setConfirmationMessage(
         "A system error occurred. Please contact support with your order details."
       );
     }
-  }, [isClient, searchParams, clearCart]);
+  }, [isClient, searchParams, clearCart]); // Added toast to dependencies
 
   useEffect(() => {
-    if (!isClient || hasConfirmed.current) return;
-
-    const trackingId = searchParams.get("OrderTrackingId");
-    const merchantRef = searchParams.get("OrderMerchantReference");
-
-    if (trackingId) {
-      confirmOrderAndProcess();
-    } else if (merchantRef) {
-      setStatus("failed");
-      setConfirmationMessage(
-        "The payment process was not completed. Your cart has not been cleared."
-      );
-      hasConfirmed.current = true;
-    } else {
-      setStatus("error");
-      setConfirmationMessage(
-        "No payment information received. If you made a payment, please contact support."
-      );
-      hasConfirmed.current = true;
+    if (isClient && !hasConfirmed.current) {
+      // Only run if client and not already confirmed/processing
+      const trackingIdFromParams = searchParams.get("OrderTrackingId");
+      if (trackingIdFromParams) {
+        // Only proceed if OrderTrackingId is present
+        confirmOrderAndProcess();
+      } else if (searchParams.get("OrderMerchantReference")) {
+        // If only merchant ref is present, it might be a cancelled order or incomplete redirect
+        setStatus("failed"); // Or a specific "cancelled" status
+        setConfirmationMessage(
+          "The payment process was not completed. Your cart has not been cleared."
+        );
+        hasConfirmed.current = true; // Prevent further processing
+      } else {
+        setStatus("error");
+        setConfirmationMessage(
+          "No payment information received. If you made a payment, please contact support."
+        );
+        hasConfirmed.current = true;
+      }
     }
-  }, [isClient, searchParams, confirmOrderAndProcess]);
+  }, [isClient, searchParams, confirmOrderAndProcess, router]);
 
   const renderContent = () => {
-    const details = (
-      <>
-        {orderId && (
-          <p className="text-sm text-muted-foreground">Order Ref: {orderId}</p>
-        )}
-        {trackingId && (
-          <p className="text-sm text-muted-foreground">
-            PesaPal Tracking ID: {trackingId}
-          </p>
-        )}
-      </>
-    );
-
     switch (status) {
       case "loading":
         return (
@@ -202,7 +209,16 @@ const SuccessPage = () => {
             <p className="text-muted-foreground mt-2 mb-6 max-w-md mx-auto">
               {confirmationMessage}
             </p>
-            {details}
+            {orderId && (
+              <p className="text-sm text-muted-foreground">
+                Order Ref: {orderId}
+              </p>
+            )}
+            {trackingId && (
+              <p className="text-sm text-muted-foreground">
+                PesaPal Tracking ID: {trackingId}
+              </p>
+            )}
           </>
         );
       case "pending":
@@ -213,7 +229,16 @@ const SuccessPage = () => {
             <p className="text-muted-foreground mt-2 mb-6 max-w-md mx-auto">
               {confirmationMessage}
             </p>
-            {details}
+            {orderId && (
+              <p className="text-sm text-muted-foreground">
+                Order Ref: {orderId}
+              </p>
+            )}
+            {trackingId && (
+              <p className="text-sm text-muted-foreground">
+                PesaPal Tracking ID: {trackingId}
+              </p>
+            )}
           </>
         );
       case "failed":
@@ -225,7 +250,16 @@ const SuccessPage = () => {
             <p className="text-muted-foreground mt-2 mb-6 max-w-md mx-auto">
               {confirmationMessage}
             </p>
-            {details}
+            {orderId && (
+              <p className="text-sm text-muted-foreground">
+                Order Ref: {orderId}
+              </p>
+            )}
+            {trackingId && (
+              <p className="text-sm text-muted-foreground">
+                PesaPal Tracking ID: {trackingId}
+              </p>
+            )}
             {status === "error" && (
               <p className="text-xs text-muted-foreground mt-4">
                 If you believe this is an error, please contact support with
