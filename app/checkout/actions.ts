@@ -11,7 +11,7 @@ import {
   PaymentTransaction,
 } from "@/services/pesapal";
 import { processOrder } from "@/utils/orderProcessing";
-import { sendOrderForProcessing } from "@/lib/sendOrderForProcessing";
+import { sendOrderForProcessing } from "@/utils/sendOrderForProcessing";
 
 const generateOrderNumber = () => {
   const timestamp = Date.now().toString(36).toUpperCase();
