@@ -10,8 +10,8 @@ import {
   checkPaymentStatus,
   PaymentTransaction,
 } from "@/services/pesapal";
-import { sendOrderToN8N } from "@/lib/sendOrderToN8N";
 import { processOrder } from "@/utils/orderProcessing";
+import { sendOrderForProcessing } from "@/lib/sendOrderForProcessing";
 
 const generateOrderNumber = () => {
   const timestamp = Date.now().toString(36).toUpperCase();
@@ -76,10 +76,10 @@ export interface N8nPayload {
   products: N8nProductDetail[];
 }
 
-const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
-if (!N8N_WEBHOOK_URL) {
+const CALLBACK_URL = process.env.CALLBACK_URL;
+if (!CALLBACK_URL) {
   console.warn(
-    "[Action Init] CRITICAL: N8N_WEBHOOK_URL is not configured in environment variables. n8n integration will fail."
+    "[Action Init] CRITICAL: CALLBACK_URL is not configured in environment variables. n8n integration will fail."
   );
 }
 
@@ -276,22 +276,10 @@ export async function confirmPesapalOrderAndTriggerN8N(
       products: n8nProducts,
     };
 
-    // Process the order regardless of status
+    // Send to N8N if configured (but don't fail if it fails)
     try {
-      await processOrder(orderData);
-    } catch (processError: any) {
-      console.error("[checkout Action] Error in processOrder:", processError);
-      return {
-        success: false,
-        paymentStatus: "UNKNOWN",
-        error: `Failed to process order: ${processError.message}`,
-      };
-    }
-
-    // Try to send to N8N if configured (but don't fail if it fails)
-    try {
-      if (N8N_WEBHOOK_URL) {
-        await sendOrderToN8N(orderData);
+      if (CALLBACK_URL) {
+        await sendOrderForProcessing(orderData);
       }
     } catch (n8nError) {
       console.warn(

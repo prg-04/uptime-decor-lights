@@ -95,7 +95,7 @@ export default function CheckoutPage() {
         ) || shippingOptions[0]
       );
     }
-  }, [contextCustomerDetails]);
+  }, [contextCustomerDetails, userId]);
 
   const handleShippingChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = shippingOptions[parseInt(e.target.value)];
@@ -180,9 +180,23 @@ export default function CheckoutPage() {
           description: "You will be redirected to complete your payment.",
         });
 
-        localStorage.setItem("customerDetails", JSON.stringify(formDetails));
+        // Update formDetails with shipping location before saving
+        const detailsWithShipping = {
+          ...formDetails,
+          shippingLocation: shippingMethod.label,
+        };
+        localStorage.setItem("customerDetails", JSON.stringify(detailsWithShipping));
         localStorage.setItem("cartSnapshot", JSON.stringify(cart));
         localStorage.setItem("shipping", JSON.stringify(shippingMethod));
+        sessionStorage.setItem(
+          "confirmedOrder",
+          JSON.stringify({
+            order_number: result.orderId,
+            tracking_id: result.trackingId,
+            confirmed: false, // Mark it initially false
+          })
+        );
+
 
         router.push(result.redirectUrl);
       } else {
