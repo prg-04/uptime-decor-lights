@@ -1,43 +1,54 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
 .yarn/install-state.gz
 
-/.idea/*
-!/.idea/runConfigurations
-
-# testing
+# Testing
 /coverage
 
-# next.js
+# Next.js
 /.next/
 /out/
 
-# production
+# Production
 /build
 
-# misc
+# Misc
 .DS_Store
 *.pem
 
-# debug
+# Environment Variables
+.env
+.env*.local
+
+# Sanity Studio build directory
+/studio/dist
+
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+*.log
 
-# local env files
-.env*.local
+# Editor directories and files
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# vercel
-.vercel
-
-# typescript
+# Typescript build outputs
 *.tsbuildinfo
-next-env.d.ts
+dist/
+lib/
 
-.env
+# Optional: Seed data temporary images
+/seed/images/
 
-/media
+# clerk configuration (can include secrets)
+/.clerk/

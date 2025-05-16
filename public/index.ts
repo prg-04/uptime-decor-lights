@@ -1,0 +1,12 @@
+export { default as IG_1 } from "./IG-1.jpeg";
+export { default as IG_2 } from "./IG-2.jpeg";
+export { default as IG_3 } from "./IG-3.jpeg";
+export { default as IG_4 } from "./IG-4.jpeg";
+export { default as IG_5 } from "./IG-5.jpeg";
+export { default as IG_6 } from "./IG-6.jpeg";
+export { default as IG_7 } from "./IG-7.jpeg";
+export { default as IG_8 } from "./IG-8.jpeg";
+export { default as IG_9 } from "./IG-9.jpeg";
+export { default as IG_10 } from "./IG-10.jpeg";
+export { default as IG_11 } from "./IG-11.jpeg";
+export { default as IG_12 } from "./IG-12.jpeg";
