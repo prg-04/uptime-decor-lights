@@ -7,6 +7,8 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { notFound } from "next/navigation";
 import { formatCategoryName } from "@/lib/utils";
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
   const categories = await getAllCategories();
   return categories.map((category) => ({

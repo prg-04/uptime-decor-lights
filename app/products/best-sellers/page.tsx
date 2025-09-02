@@ -2,6 +2,8 @@ import { getAllBestSellerProducts } from "@/services/sanity";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Metadata } from "next";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "Best Sellers | Uptime Decor Lights",
   description: "Discover our most popular and best-selling lighting fixtures.",

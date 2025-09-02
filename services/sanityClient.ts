@@ -27,7 +27,7 @@ export const config: ClientConfig = {
   projectId,
   dataset,
   apiVersion,
-  useCdn: process.env.NODE_ENV === "production",
+  useCdn: false,
   ...(token && { token }),
 };
 

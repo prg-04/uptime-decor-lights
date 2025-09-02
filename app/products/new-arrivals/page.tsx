@@ -2,6 +2,8 @@ import { getAllNewArrivalProducts } from "@/services/sanity";
 import { ProductCard } from "@/components/product/ProductCard";
 import { Metadata } from "next";
 
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: "New Arrivals | Uptime Decor Lights",
   description: "Check out the latest additions to our lighting collection.",

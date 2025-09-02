@@ -14,6 +14,8 @@ import { ArrowRight } from "lucide-react";
 import HomeBannerSec from "@/components/layout/HomeBannerSec";
 import HomeCategories from "@/components/layout/HomeCategories";
 
+export const revalidate = 60;
+
 // Helper to ensure item has an ID for mapping
 const ensureId = <T extends { _id?: string; _key?: string }>(
   item: T,
