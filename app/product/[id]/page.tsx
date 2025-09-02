@@ -14,6 +14,8 @@ import ProductImageCarousel from "@/components/product/ProductImageCarousel"; //
 import { ProductCard } from "@/components/product/ProductCard"; // Import ProductCard for related items
 import { Separator } from "@/components/ui/separator";
 
+export const revalidate = 60;
+
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
   // Access id directly from params. The useEffect hook will handle fetching when id is available.
