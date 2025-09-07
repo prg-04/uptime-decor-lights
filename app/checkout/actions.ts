@@ -10,7 +10,8 @@ import {
   checkPaymentStatus,
   PaymentTransaction,
 } from "@/services/pesapal";
-import { processOrder } from "@/utils/orderProcessing";
+import { sendOrderNotification } from "@/utils/slack-block-builder";
+import type { N8nPayload, N8nProductDetail } from "@/types";
 import { sendOrderForProcessing } from "@/utils/sendOrderForProcessing";
 
 const generateOrderNumber = () => {
@@ -41,7 +42,7 @@ interface InitiatePaymentActionResult {
   trackingId?: string;
 }
 
-// Define structure for confirmPesapalOrderAndTriggerN8N result
+// Define structure for confirmPesapalOrderAndTriggerSlack result
 interface ConfirmOrderResult {
   success: boolean;
   paymentStatus: "COMPLETED" | "PENDING" | "FAILED" | "INVALID" | "UNKNOWN";
@@ -49,39 +50,6 @@ interface ConfirmOrderResult {
   confirmationCode?: string | null;
 }
 
-// N8N Payload types - ensure these match n8n webhook expectations
-interface N8nProductDetail {
-  product_id: string;
-  name: string;
-  quantity: number; // Ensure this is number for n8n
-  price: number;
-  image_url: string | null;
-}
-
-export interface N8nPayload {
-  order_number: string; // Corresponds to PesaPal merchant_reference
-  order_tracking_id: string;
-  confirmation_code: string | null;
-  payment_status: "paid" | "pending" | "failed"; // Standardized status for n8n
-  amount: number;
-  payment_method: string | null;
-  created_date: string; // ISO string
-  payment_account: string | null;
-  customer_email: string;
-  customer_name: string;
-  customer_phone: string;
-  shipping_location: string;
-  clerk_id: string;
-  city_town: string;
-  products: N8nProductDetail[];
-}
-
-const CALLBACK_URL = process.env.CALLBACK_URL;
-if (!CALLBACK_URL) {
-  console.warn(
-    "[Action Init] CRITICAL: CALLBACK_URL is not configured in environment variables. n8n integration will fail."
-  );
-}
 
 let cachedIpnId: string | null = null;
 
@@ -95,7 +63,7 @@ export async function initiatePaymentAction(
 ): Promise<InitiatePaymentActionResult> {
   const orderId = generateOrderNumber();
   const orderDescription = `Uptime Decor Lights Order #${orderId}`;
-  const appBaseUrl = process.env.NEXT_PUBLIC_PESAPAL_CALLBACK_URL; // For constructing callback_url
+  const appBaseUrl = process.env.NEXT_PUBLIC_PESAPAL_CALLBACK_URL;
 
   if (!appBaseUrl) {
     console.error(
@@ -109,7 +77,6 @@ export async function initiatePaymentAction(
 
   try {
     const token = await getAuthToken();
-    // token is logged inside getAuthToken
 
     let ipnIdToUse: string | null = cachedIpnId;
     if (!ipnIdToUse) {
@@ -145,8 +112,7 @@ export async function initiatePaymentAction(
       city: customerDetails.city,
     };
 
-    // PesaPal expects the callback_url to be the page user lands on after payment attempt
-    const pesapalCallbackUrl = `${appBaseUrl}/success`; // User lands on /success page
+    const pesapalCallbackUrl = `${appBaseUrl}/success`;
     console.log(
       `[Action initiatePayment] PesaPal callback_url set to: ${pesapalCallbackUrl}`
     );
@@ -158,7 +124,7 @@ export async function initiatePaymentAction(
       "KES",
       orderId,
       orderDescription,
-      pesapalCallbackUrl, // Pass the success page URL
+      pesapalCallbackUrl,
       pesapalBillingAddress
     );
 
@@ -194,9 +160,9 @@ export async function initiatePaymentAction(
 }
 
 /**
- * Server action called from SuccessPage to confirm PesaPal transaction status and trigger n8n.
+ * Server action called from SuccessPage to confirm PesaPal transaction status and trigger Slack notification.
  */
-export async function confirmPesapalOrderAndTriggerN8N(
+export async function confirmPesapalOrderAndTriggerSlack(
   merchantReference: string | null,
   transactionTrackingId: string | null,
   customerDetails: CustomerDetails | null,
@@ -249,15 +215,40 @@ export async function confirmPesapalOrderAndTriggerN8N(
       internalPaymentStatus = "failed";
     }
 
-    // Prepare order data
-    const n8nProducts = (cartSnapshot || []).map((item) => ({
-      product_id: item._id,
+    /**
+     * Prepare product data for order processing
+     *
+     * NOTE: This is a critical mapping step. The cart items use '_id' but the order processing
+     * expects 'id' in the N8nProductDetail type. This mapping ensures the product identifier
+     * is correctly passed through the entire order processing pipeline.
+     *
+     * The 'id' field will later be mapped to 'product_id' in the database insertion.
+     */
+    const products: N8nProductDetail[] = (cartSnapshot || []).map((item) => ({
+      id: item._id,  // Map cart item _id to N8nProductDetail id
       name: item.name,
       quantity: item.quantity,
       price: item.price,
       image_url: item.imageUrl ?? item.images?.[0]?.asset?.url ?? null,
+      total: item.price * item.quantity,
     }));
 
+    /**
+     * Validate product data before proceeding
+     *
+     * This validation prevents NULL constraint violations in the database
+     * by ensuring all products have the required identifier before being
+     * sent to the order processing API.
+     */
+    if (products.some(p => !p.id)) {
+      console.error("[checkout Action] Invalid product data: id is missing in some products");
+      console.error("[checkout Action] Problematic products:", products.filter(p => !p.id));
+      throw new Error("Invalid product data: id is required for all products");
+    }
+
+    console.log("[checkout Action] Products payload:", products);
+
+    // Prepare order data for Slack notification
     const orderData: N8nPayload = {
       order_tracking_id: transactionTrackingId,
       order_number: merchantReference,
@@ -273,21 +264,39 @@ export async function confirmPesapalOrderAndTriggerN8N(
       city_town: customerDetails.city,
       clerk_id: customerDetails.clerkUserId,
       shipping_location: customerDetails.shippingLocation,
-      products: n8nProducts,
+      products: products,
     };
 
-    // Send to N8N if configured (but don't fail if it fails)
+    // Send to Slack directly (but don't fail the order if it fails)
     try {
-      if (CALLBACK_URL) {
-        await sendOrderForProcessing(orderData);
-      }
-    } catch (n8nError) {
-      console.warn(
-        "[checkout Action] Failed to send to n8n, but order was processed:",
-        n8nError
+      console.log(`[checkout Action] Sending Slack notification for order ${merchantReference}`);
+      await sendOrderNotification(orderData, 'order_notification');
+      console.log(`[checkout Action] Successfully sent Slack notification for order ${merchantReference}`);
+    } catch (slackError: any) {
+      console.error(
+        `[checkout Action] Failed to send Slack notification for order ${merchantReference}:`,
+        slackError.message || slackError
       );
+      // Don't fail the order processing if Slack fails - this is non-critical
+      console.warn("[checkout Action] Order was processed successfully despite Slack notification failure");
     }
 
+    // Send order for processing to n8n (which then saves to Supabase)
+    try {
+      console.log(`[checkout Action] Sending order ${merchantReference} for processing.`);
+      await sendOrderForProcessing(orderData);
+      console.log(`[checkout Action] Successfully sent order ${merchantReference} for processing.`);
+    } catch (processingError: any) {
+      console.error(
+        `[checkout Action] Failed to send order ${merchantReference} for processing:`,
+        processingError.message || processingError
+      );
+      // This is critical, so we might want to handle it more robustly,
+      // but for now, we'll just log and proceed with payment status.
+      console.error("[checkout Action] CRITICAL: Order was NOT fully processed (Supabase save failed) despite payment confirmation.");
+    }
+
+    // Return based on payment status
     if (internalPaymentStatus === "paid") {
       return {
         success: true,
@@ -314,5 +323,33 @@ export async function confirmPesapalOrderAndTriggerN8N(
       paymentStatus: "UNKNOWN",
       error: `Failed to confirm payment status or process order: ${error.message}`,
     };
+  }
+}
+
+/**
+ * Alternative function to send Slack notification via API route (if you prefer this approach)
+ */
+export async function sendSlackNotificationViaAPI(orderData: N8nPayload): Promise<boolean> {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/slack-notification`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(`API call failed: ${response.status} - ${errorData.message || 'Unknown error'}`);
+    }
+
+    const result = await response.json();
+    console.log(`[checkout Action] Slack notification sent successfully:`, result);
+    return true;
+  } catch (error: any) {
+    console.error(`[checkout Action] Failed to send Slack notification via API:`, error.message);
+    return false;
   }
 }

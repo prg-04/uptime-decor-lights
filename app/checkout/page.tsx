@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,7 @@ import { SignInButton, useAuth } from "@clerk/nextjs";
 const shippingOptions = [
   {
     label:
-      "Pick up point: New Nyamakima Electrical Point Building shop no: 216, Duruma road Nairobi",
+      "Pick up point: Bliss Hill center, 2nd floor shop: 003, Nairobi",
     cost: 0,
   },
   { label: "ZONE A: Within CBD", cost: 250 },
@@ -58,10 +58,12 @@ export default function CheckoutPage() {
   } = useCart();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isExpressCheckout, setIsExpressCheckout] = useState(false);
 
   const [formDetails, setFormDetails] = useState<CustomerDetails>({
     firstName: "",
@@ -82,12 +84,26 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     setIsClient(true);
+
+    // Check if this is an express checkout
+    const expressParam = searchParams.get("express");
+    if (expressParam === "true") {
+      setIsExpressCheckout(true);
+
+      // Check if we have an express cart in sessionStorage
+      const expressCart = sessionStorage.getItem("expressCheckoutCart");
+      if (expressCart) {
+        // This is an express checkout, we'll use the cart from sessionStorage
+        // No need to do anything special here as we'll handle it in the payment flow
+      }
+    }
+
     if (contextCustomerDetails) {
       setFormDetails(() => ({
         ...contextCustomerDetails,
         shippingLocation:
           contextCustomerDetails.shippingLocation || shippingOptions[0].label,
-        clerkUserId:  userId || ""
+        clerkUserId: userId || ""
       }));
       setShippingMethod(
         shippingOptions.find(
@@ -146,7 +162,8 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (cart.length === 0) {
+    // For express checkout, we need to check if we have items
+    if (cart.length === 0 && !isExpressCheckout) {
       toast({
         title: "Empty Cart",
         description:
@@ -161,7 +178,35 @@ export default function CheckoutPage() {
     setContextCustomerDetails(formDetails);
 
     try {
-      const baseTotal = getTotalPrice();
+      let checkoutCart = cart;
+      let baseTotal = getTotalPrice();
+
+      // For express checkout, use the cart from sessionStorage
+      if (isExpressCheckout) {
+        const expressCart = sessionStorage.getItem("expressCheckoutCart");
+        if (expressCart) {
+          const parsedExpressCart = JSON.parse(expressCart);
+
+          // Check if the user has other items in their cart beyond the express item
+          // The express item should already be in the cart
+          if (cart.length > parsedExpressCart.length) {
+            toast({
+              title: "Cart Has Other Items",
+              description: "Your cart has other items. Proceeding to standard checkout.",
+              variant: "default",
+            });
+
+            // Remove the express flag and use the regular cart
+            sessionStorage.removeItem("expressCheckoutCart");
+            // Don't use express cart if regular cart has more items
+          } else {
+            // Use the express cart
+            checkoutCart = parsedExpressCart;
+            baseTotal = checkoutCart.reduce((total, item) => total + item.price * item.quantity, 0);
+          }
+        }
+      }
+
       const grandTotal = baseTotal + shippingMethod.cost;
 
       const result = await initiatePaymentAction(
@@ -170,7 +215,7 @@ export default function CheckoutPage() {
           address: `${formDetails.address} - ${shippingMethod.label}`,
           clerkUserId: userId || "",
         },
-        cart,
+        checkoutCart,
         grandTotal
       );
 
@@ -185,9 +230,9 @@ export default function CheckoutPage() {
           ...formDetails,
           shippingLocation: shippingMethod.label,
         };
-        localStorage.setItem("customerDetails", JSON.stringify(detailsWithShipping));
-        localStorage.setItem("cartSnapshot", JSON.stringify(cart));
-        localStorage.setItem("shipping", JSON.stringify(shippingMethod));
+        localStorage.setItem("luminaire-haven-customer-details", JSON.stringify(detailsWithShipping));
+        localStorage.setItem("luminaire-haven-cart", JSON.stringify(cart));
+        localStorage.setItem("luminaire-haven-shipping", JSON.stringify(shippingMethod));
         sessionStorage.setItem(
           "confirmedOrder",
           JSON.stringify({
@@ -469,6 +514,7 @@ export default function CheckoutPage() {
               </SignInButton>
             )}
           </CardFooter>
+
         </Card>
       </div>
     </div>

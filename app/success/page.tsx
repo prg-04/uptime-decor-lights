@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useCart, CartItem } from "@/context/CartContext";
-import { confirmPesapalOrderAndTriggerN8N } from "@/app/checkout/actions";
+import { confirmPesapalOrderAndTriggerSlack } from "@/app/checkout/actions";
 import type { CustomerDetails } from "@/app/checkout/actions";
 import { CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
 
@@ -76,8 +76,11 @@ const SuccessPage = () => {
     hasConfirmed.current = true;
     setStatus("loading");
 
-    const customerDetailsJSON = localStorage.getItem("customerDetails");
-    const cartSnapshotJSON = localStorage.getItem("cartSnapshot");
+    const customerDetailsJSON = localStorage.getItem("luminaire-haven-customer-details");
+    const cartSnapshotJSON = localStorage.getItem("luminaire-haven-cart");
+
+
+    console.log(cartSnapshotJSON,customerDetailsJSON)
 
     if (!customerDetailsJSON || !cartSnapshotJSON) {
       console.error("[SuccessPage] Missing customer details or cart snapshot.");
@@ -104,7 +107,7 @@ const SuccessPage = () => {
     }
 
     try {
-      const result = await confirmPesapalOrderAndTriggerN8N(
+      const result = await confirmPesapalOrderAndTriggerSlack(
         merchantRef,
         trackingIdFromParams,
         customerDetails,
@@ -126,8 +129,8 @@ const SuccessPage = () => {
             })
           );
           clearCart();
-          localStorage.removeItem("customerDetails");
-          localStorage.removeItem("cartSnapshot");
+          localStorage.removeItem("luminaire-haven-customer-details");
+          localStorage.removeItem("luminaire-haven-cart");
         } else if (result.paymentStatus === "PENDING") {
           setStatus("pending");
           setConfirmationMessage(
@@ -142,8 +145,8 @@ const SuccessPage = () => {
             })
           );
           clearCart();
-          localStorage.removeItem("customerDetails");
-          localStorage.removeItem("cartSnapshot");
+          localStorage.removeItem("luminaire-haven-customer-details");
+          localStorage.removeItem("luminaire-haven-cart");
         } else {
           setStatus("failed");
           setConfirmationMessage(
@@ -160,10 +163,27 @@ const SuccessPage = () => {
       }
     } catch (error: any) {
       console.error("[SuccessPage] Error confirming order:", error);
+
+      // Extract more detailed error information if available
+      let errorMessage = "A system error occurred. Please contact support with your order details.";
+
+      if (error.message) {
+        errorMessage = error.message;
+
+        // Check for specific error patterns
+        if (error.message.includes("product_id") && error.message.includes("not-null constraint")) {
+          errorMessage = "There was an issue processing your order products. " +
+                        "Some product information is missing. Please contact support " +
+                        "with your Order Ref and Tracking ID.";
+        } else if (error.message.includes("Failed to save order products")) {
+          errorMessage = "We encountered an issue saving your order details. " +
+                        "Your payment was successful but we need to manually process your order. " +
+                        "Please contact support with your Order Ref.";
+        }
+      }
+
       setStatus("error");
-      setConfirmationMessage(
-        "A system error occurred. Please contact support with your order details."
-      );
+      setConfirmationMessage(errorMessage);
     }
   }, [isClient, searchParams, clearCart]);
 

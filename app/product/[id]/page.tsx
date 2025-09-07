@@ -12,9 +12,9 @@ import { useParams, notFound, useRouter } from "next/navigation";
 import Link from "next/link";
 import ProductImageCarousel from "@/components/product/ProductImageCarousel"; // Import the new carousel component
 import { ProductCard } from "@/components/product/ProductCard"; // Import ProductCard for related items
+import { BuyNowButton } from "@/components/product/BuyNowButton"; // Import BuyNowButton component
 import { Separator } from "@/components/ui/separator";
 
-export const revalidate = 60;
 
 export default function ProductDetailPage() {
   const params = useParams<{ id: string }>();
@@ -156,7 +156,7 @@ export default function ProductDetailPage() {
   // Use the processed images array which includes asset URLs
   const carouselImages: ProductImage[] =
     product.images && product.images.length > 0
-      ? product.images.map((img) => ({
+      ? product?.images?.map((img) => ({
           ...img,
           url:
             img.asset?.url ??
@@ -173,14 +173,20 @@ export default function ProductDetailPage() {
 
   const isInCart = quantity > 0;
 
+  
+  const imageUrl = product?.images?.[0]?.asset?.url;
+  console.log(imageUrl)
+  
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-2 gap-8 lg:gap-8 items-start max-w-6xl mx-auto  w-full">
         {/* Product Image Carousel */}
+        <div className="">
         <ProductImageCarousel
           images={carouselImages}
           productName={product.name}
         />
+        </div>
 
         {/* Product Details */}
         <div className="space-y-6">
@@ -231,7 +237,9 @@ export default function ProductDetailPage() {
                 Add to Cart
               </Button>
             )}
-            {/* If in cart, maybe show a different button or nothing? Or "Update Cart"? For now, just hiding "Add to Cart" */}
+
+            {/* Buy It Now button - Always visible */}
+            <BuyNowButton product={product} variant="productDetail" />
           </div>
           {/* Category Info */}
           {product.category?.name && product.category?.slug?.current && (

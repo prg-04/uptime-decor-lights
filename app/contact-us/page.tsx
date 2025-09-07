@@ -86,7 +86,7 @@ export default function ContactPage() {
             <div>
               <h3 className="font-medium">Visit Us</h3>
               <address className="mt-1 not-italic text-muted-foreground">
-                New Nyamakima Electrical Point Building Shop: 216,
+                Bliss Hill center, 2nd floor shop: 003
                 <br />
                 Nairobi
               </address>
@@ -125,12 +125,12 @@ export default function ContactPage() {
             <div>
               <h3 className="font-medium">Call Us</h3>
               <p className="mt-1 text-muted-foreground">
-                <a href="tel:+15551234567" className="hover:underline">
-                  +254 7 (06) 969 085
+                <a href="tel:+254794463841" className="hover:underline">
+                  +254 7 (94) 463 841 
                 </a>
               </p>
               <p className="mt-1 text-muted-foreground">
-                Monday-Saturday: 9am-5pm EST
+                Monday-Saturday: 8am-6pm EST
               </p>
             </div>
           </div>

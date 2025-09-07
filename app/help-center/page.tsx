@@ -70,7 +70,7 @@ export default function HelpCenterPage() {
             <div>
               <p className="font-medium">Email Support</p>
               <p className="text-muted-foreground text-sm">
-                support@uptimedecorlights.com
+                uptimelights@gmail.com
               </p>
             </div>
           </div>
@@ -79,7 +79,7 @@ export default function HelpCenterPage() {
             <div>
               <p className="font-medium">Call Us</p>
               <p className="text-muted-foreground text-sm">
-                +254 7 (06) 969 085
+                +254 7 (94) 463 841
               </p>
             </div>
           </div>
@@ -88,7 +88,7 @@ export default function HelpCenterPage() {
             <div>
               <p className="font-medium">Store Location</p>
               <p className="text-muted-foreground text-sm">
-                Visit us in Nairobi, Mon–Sat, 9 AM–5 PM
+                Visit us in Nairobi, Mon–Sat, 8 AM–6 PM
               </p>
             </div>
           </div>
