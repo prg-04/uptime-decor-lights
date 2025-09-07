@@ -21,7 +21,7 @@ export const heroSections: HeroSection[] = [
     title: "Introducing: The Spring/Summer Glow Collection",
     subtitle:
       "Celebrate the season with fresh, airy designs inspired by natural light.",
-    cta: { label: "See What's New", href: "/new-arrivals" },
+    cta: { label: "See What's New", href: "/products/new-arrivals" },
     image: "/banner_pendant.jpeg",
     image_2: "/image_1.jpeg",
     image_3: "/Rope_Chandelier.jpeg",
@@ -31,7 +31,7 @@ export const heroSections: HeroSection[] = [
     title: "Your Room, Your Rules",
     subtitle:
       "Explore lighting ideas to match your style — minimalist, rustic, modern, or cozy.",
-    cta: { label: "Get Inspired", href: "/new-arrivals" },
+    cta: { label: "Get Inspired", href: "/products/new-arrivals" },
     images: [
       "/image_1.jpeg",
       "/pendant_4.jpg",
@@ -91,8 +91,8 @@ export const footerNav: FooterNavItem[] = [
       {
         href: "",
         icon: "☎️",
-        text: "+254 706 969 085",
-        subText: "Hours: 10:00 AM - 6:00 PM PST",
+        text: "+254 794 463 841",
+        subText: "Hours: 8:00 AM - 6:00 PM PST",
       },
       {
         title: "Chat",
@@ -112,22 +112,22 @@ export const footerNav: FooterNavItem[] = [
 export const categoriesHome: categoriesHomeProps[] = [
   {
     title: "New Arrivals",
-    href: "/new-arrivals",
+    href: "/products/new-arrivals",
     image: new_arrival,
   },
   {
     title: "Chandelier",
-    href: "/chandeliers",
+    href: "/products/chandeliers",
     image: chandelier_1,
   },
   {
     title: "Pendants",
-    href: "/pendant-lights",
+    href: "/products/pendant-lights",
     image: pendant_light,
   },
   {
     title: "Switches & Sockets",
-    href: "/switches-and-sockets",
+    href: "/products/switches-and-sockets",
     image: switchesImg,
   },
 ];

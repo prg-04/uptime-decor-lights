@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/utils/supabaseAdminClient";
 import { sendSlackNotification } from "@/utils/slack";
+import type { N8nProductDetail } from "@/types";
 
 export async function POST(request: Request) {
   try {
@@ -54,24 +55,80 @@ export async function POST(request: Request) {
     if (!orderData?.id)
       throw new Error("Failed to get order ID after insertion");
 
-    // Step 2: Save order products with the generated order_id
-    const orderProducts = products.map((product: any) => ({
-      product_id: product.product_id,
+    /**
+     * Step 2: Save order products with the generated order_id
+     *
+     * This is where the critical mapping happens:
+     * - The N8nProductDetail type uses 'id' (from the cart)
+     * - The database table uses 'product_id'
+     *
+     * We map id → product_id here to ensure the database receives the correct field name.
+     */
+    console.log("[API Route] Received products:", products);
+
+    // Map products to order_products format, using id as product_id
+    const orderProducts = products.map((product: N8nProductDetail) => ({
+      product_id: product.id,  // Map id to product_id for database
       product_name: product.name,
-      quantity: parseInt(product.quantity, 10),
-      price: parseFloat(product.price),
+      quantity: parseInt(product.quantity.toString(), 10),
+      price: parseFloat(product.price.toString()),
       image_url: product.image_url,
       order_id: orderData.id,
     }));
 
+    // Validate all products have required fields
+    if (orderProducts.some((p: { product_id: string }) => !p.product_id)) {
+      console.error("[API Route] Invalid product data: product_id is missing in some products");
+      console.error("[API Route] Problematic products:", orderProducts.filter((p: { product_id: string }) => !p.product_id));
+
+      // Rollback the order creation since products are invalid
+      const { error: rollbackError } = await supabaseAdmin
+        .from("orders")
+        .delete()
+        .eq("id", orderData.id);
+
+      if (rollbackError) {
+        console.error("[API Route] Failed to rollback order creation:", rollbackError);
+      } else {
+        console.log("[API Route] Successfully rolled back order creation due to invalid product data");
+      }
+
+      throw new Error("Invalid product data: product_id cannot be null or undefined");
+    }
+
+    console.log("[API Route] Mapped order products:", orderProducts);
+
+    // Use transaction to ensure data integrity
     const { error: productsError } = await supabaseAdmin
       .from("order_products")
       .insert(orderProducts);
 
-    if (productsError)
-      throw new Error(
-        "Failed to save order products: " + productsError.message
-      );
+    if (productsError) {
+      console.error("[API Route] Product data that failed:", orderProducts);
+      console.error("[API Route] Supabase error details:", productsError);
+
+      // Rollback the order creation since products failed to save
+      const { error: rollbackError } = await supabaseAdmin
+        .from("orders")
+        .delete()
+        .eq("id", orderData.id);
+
+      if (rollbackError) {
+        console.error("[API Route] Failed to rollback order creation:", rollbackError);
+        throw new Error(
+          `Failed to save order products: ${productsError.message}. ` +
+          `Product data: ${JSON.stringify(orderProducts)}. ` +
+          `Also failed to rollback order creation. Manual cleanup may be required.`
+        );
+      } else {
+        console.log("[API Route] Successfully rolled back order creation due to product save failure");
+        throw new Error(
+          `Failed to save order products: ${productsError.message}. ` +
+          `Product data: ${JSON.stringify(orderProducts)}. ` +
+          `Order creation was rolled back.`
+        );
+      }
+    }
 
     // Step 3: Send Slack notification
     await sendSlackNotification({

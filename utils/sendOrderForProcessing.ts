@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // lib/sendOrdersToN8N.ts
-import type { N8nPayload } from "@/app/checkout/actions";
+import type { N8nPayload } from "@/types"; 
 
 const CALLBACK_URL = process.env.CALLBACK_URL!;
 

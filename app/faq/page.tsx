@@ -16,11 +16,11 @@ export default function FAQPage() {
     {
       question: "Do you offer international shipping?",
       answer:
-        "Yes! We ship worldwide. Shipping fees and delivery times vary based on the destination.",
+        "Currently, we only offer shipping within the Kenya. International shipping is not available at this time, but we’re actively working to expand our shipping options in the future. ",
     },
     {
       question: "What payment methods do you accept?",
-      answer: "We accept Visa, MasterCard, PayPal, and mobile money (M-Pesa).",
+      answer: "We currently only accept mobile money (M-Pesa).",
     },
     {
       question: "Can I return or exchange a product?",
@@ -30,7 +30,7 @@ export default function FAQPage() {
     {
       question: "How can I contact customer support?",
       answer:
-        "You can email us at support@uptimedecor.com or use the contact form on our website.",
+        "You can email us at uptimelights@gmail.com or use the contact form on our website.",
     },
   ];
 

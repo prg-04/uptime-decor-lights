@@ -2,17 +2,26 @@
 
 import { createClient } from "@supabase/supabase-js";
 
-// Define interfaces for the data structure based on your Supabase tables
-// These should match the structure of your 'orders' and 'order_products' tables
-
+/**
+ * OrderProduct interface - represents a product in an order
+ * This must match the structure of the 'order_products' table in Supabase
+ *
+ * @property id - UUID primary key
+ * @property order_id - Foreign key to orders table
+ * @property product_id - Sanity product _id
+ * @property name - Product name
+ * @property quantity - Number of items (must be a valid number)
+ * @property price - Unit price (must be a valid number)
+ * @property image_url - URL to product image (can be null)
+ */
 export interface OrderProduct {
-  id: string; // Corresponds to order_products.id (UUID)
+  id: string; // UUID primary key from order_products table
   order_id: string; // Foreign key to orders table
   product_id: string; // Sanity product _id
   name: string;
-  quantity: number;
-  price: number;
-  image_url: string | null;
+  quantity: number; // Must be a valid number
+  price: number; // Must be a valid number
+  image_url: string | null; // Can be null if no image available
 }
 
 export interface Order {
@@ -105,28 +114,41 @@ export async function getOrdersForUserAction(
       return { success: true, data: [] };
     }
 
-    // 2. For each order, fetch its products
+    // 2. For each order, fetch its products from the correct table
     const ordersWithProducts: OrderWithProducts[] = [];
 
     for (const order of ordersData as Order[]) {
+      // Query the correct table: order_products instead of orders
       const { data: productsData, error: productsError } = await supabaseAdmin
         .from("order_products")
         .select("*")
         .eq("order_id", order.id);
 
+      let products: OrderProduct[] = [];
       if (productsError) {
         console.error(
           `[Action getOrdersForUser] Error fetching products for order ${order.id}:`,
           productsError
         );
-        ordersWithProducts.push({ ...order, products: [] });
-
-        
+      } else {
+        // Explicitly convert price and quantity to numbers with validation
+        products =
+          productsData?.map((p: any) => ({
+            id: p.id,
+            order_id: p.order_id,
+            product_id: p.product_id,
+            name: p.name,
+            // Ensure price is a valid number, default to 0 if invalid
+            price: typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0,
+            // Ensure quantity is a valid number, default to 1 if invalid
+            quantity: typeof p.quantity === 'number' ? p.quantity : parseInt(p.quantity) || 1,
+            image_url: p.image_url || null,
+          })) || [];
       }
 
       ordersWithProducts.push({
         ...order,
-        products: (productsData as OrderProduct[]) || [],
+        products,
       });
     }
 

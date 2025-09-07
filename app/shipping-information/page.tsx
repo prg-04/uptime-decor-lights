@@ -16,7 +16,7 @@ export default function ShippingInfoPage() {
           <h2 className="text-xl font-semibold text-gray-800">Turnaround</h2>
           <p>
             All orders within Nairobi and its environs will be shipped within
-            24–48 hours between Monday and Friday, 9 am–5 pm. Orders outside
+            24–48 hours between Monday and Friday, 8 am–6 pm. Orders outside
             Nairobi but within Kenya will be shipped within 2–3 working days.
             International orders are shipped within 3–5 days. Before your
             package is dropped off, you will be notified by a member of the

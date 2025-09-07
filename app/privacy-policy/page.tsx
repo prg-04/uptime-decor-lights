@@ -118,10 +118,10 @@ export default function PrivacyPolicyPage() {
             If you have any questions or concerns about this policy, contact us
             at:{" "}
             <a
-              href="mailto:support@uptimedecorlights.com"
+              href="mailto:uptimelights@gmail.com"
               className="underline"
             >
-              support@uptimedecorlights.com
+              uptimelights@gmail.com
             </a>
           </p>
         </div>

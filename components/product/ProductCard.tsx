@@ -14,6 +14,7 @@ import {
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { BuyNowButton } from "./BuyNowButton";
 
 interface ProductCardProps {
   product: Product;
@@ -100,13 +101,14 @@ export function ProductCard({ product }: ProductCardProps) {
         </p>{" "}
         {/* Updated currency */}
       </CardContent>
-      <CardFooter className="p-4 border-t mt-auto">
+      <CardFooter className="p-4 border-t mt-auto flex flex-col gap-2">
         <Button
           onClick={handleAddToCart}
           className="w-full interactive-button bg-accent text-accent-foreground hover:bg-accent/90"
         >
           <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
         </Button>
+        <BuyNowButton product={product} variant="productCard" />
       </CardFooter>
     </Card>
   );

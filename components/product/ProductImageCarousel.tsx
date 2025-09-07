@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import useEmblaCarousel, {
-  EmblaOptionsType,
-  EmblaCarouselType,
-} from "embla-carousel-react";
-import NextImage from "next/image";
+import useEmblaCarousel from "embla-carousel-react";
+import { EmblaOptionsType, EmblaCarouselType } from "embla-carousel";
+import Image from "next/image";
 import { ProductImage } from "@/services/sanity"; // Import the type
 import { cn } from "@/lib/utils";
 
@@ -37,7 +35,7 @@ const Thumb: React.FC<ThumbProps> = (props) => {
         className="embla-thumbs__slide__button w-full h-full block bg-transparent p-0 m-0 border-0"
         aria-label={`View image ${index + 1}`}
       >
-        <NextImage
+        <Image
           className="embla-thumbs__slide__img w-full h-full object-cover"
           src={validImgSrc}
           alt={altText}
@@ -104,19 +102,19 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
     <div className="embla space-y-4">
       {/* Main Carousel Viewport */}
       <div
-        className="embla__viewport overflow-hidden rounded-lg border shadow-md"
+        className="embla__viewport overflow-hidden rounded-lg border shadow-md h-[400px] md:h-[500px] lg:h-[600px]"
         ref={emblaMainRef}
       >
-        <div className="embla__container flex">
+        <div className="embla__container flex h-full">
           {images.map((image, index) => {
             const validUrl =
               image.url || `https://picsum.photos/seed/main${index}/600/600`;
             return (
               <div
-                className="embla__slide relative flex-shrink-0 w-full aspect-square"
+                className="embla__slide relative flex-shrink-0 w-full aspect-square "
                 key={image._key || index}
               >
-                <NextImage
+                <Image
                   src={validUrl}
                   alt={image.alt || `${productName} - Image ${index + 1}`}
                   fill

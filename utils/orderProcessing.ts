@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "@/utils/supabaseAdminClient";
 import { sendSlackNotification } from "@/utils/slack";
 import { v4 as uuidv4 } from "uuid";
-import type { N8nPayload } from "@/app/checkout/actions";
+import type { N8nPayload } from "@/types";
 
 export async function processOrder(orderData: N8nPayload): Promise<void> {
   try {
@@ -35,7 +35,7 @@ export async function processOrder(orderData: N8nPayload): Promise<void> {
     const productRecords = orderData.products.map((product) => ({
       id: uuidv4(),
       order_id: orderId,
-      product_id: product.product_id,
+      product_id: product.id,  // Use id as product_id
       product_name: product.name,
       quantity: product.quantity,
       price: product.price,

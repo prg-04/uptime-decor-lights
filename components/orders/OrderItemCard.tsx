@@ -33,6 +33,18 @@ export function OrderItemCard({ order }: OrderItemCardProps) {
     return "outline";
   };
 
+  console.log(order.products);
+
+  // Validate product data and provide fallbacks
+  const validatedProducts = order.products?.map(product => ({
+    ...product,
+    // Ensure we have valid values for display
+    name: product.name || 'Unknown Product',
+    quantity: typeof product.quantity === 'number' ? product.quantity : 1,
+    price: typeof product.price === 'number' ? product.price : 0,
+    image_url: product.image_url || null
+  })) || [];
+
   return (
     <Card className="shadow-md hover:shadow-lg transition-shadow duration-300">
       <CardHeader>
@@ -54,35 +66,38 @@ export function OrderItemCard({ order }: OrderItemCardProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {order.products && order.products.length > 0 ? (
-          order.products.map((product) => (
+        {validatedProducts.length > 0 ? (
+          validatedProducts.map((product) => (
             <div
               key={product.id}
               className="flex items-start gap-4 py-3 border-b last:border-b-0"
             >
               <Image
                 src={
+                  // Use product image if available, otherwise use a more relevant fallback
                   product.image_url ||
-                  `https://picsum.photos/seed/${product.product_id}/80/80`
+                  (product.product_id ? `https://via.placeholder.com/80?text=${encodeURIComponent(product.name.slice(0, 10))}` : 'https://via.placeholder.com/80')
                 }
-                alt={product.name}
+                alt={product.name || 'Product image'}
                 width={80}
                 height={80}
                 className="rounded-md object-cover aspect-square"
-                unoptimized={product.image_url?.includes("picsum.photos")}
+                unoptimized={!product.image_url || product.image_url?.includes("placeholder.com")}
                 data-ai-hint="product photo"
               />
               <div className="flex-grow">
                 <p className="font-semibold">{product.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  Quantity: {product.quantity}
+                  Quantity: {typeof product.quantity === 'number' ? product.quantity : 'N/A'}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Price: Ksh {product.price.toFixed(2)}
+                  Price: Ksh {typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}
                 </p>
               </div>
               <p className="font-semibold text-right">
-                Ksh {(product.price * product.quantity).toFixed(2)}
+                {typeof product.price === 'number' && typeof product.quantity === 'number'
+                  ? `Ksh ${(product.price * product.quantity).toFixed(2)}`
+                  : 'N/A'}
               </p>
             </div>
           ))

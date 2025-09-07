@@ -171,3 +171,108 @@ type ThirdHeroSection = HeroSectionBase & {
 };
 
 type HeroSection = FirstOrSecondHeroSection | ThirdHeroSection;
+
+export interface N8nProductDetail {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  total: number;
+  image_url: string | null;
+}
+
+
+export interface N8nPayload {
+  order_number: string;
+  order_tracking_id: string;
+  confirmation_code: string | null;
+  payment_status: "paid" | "pending" | "failed";
+  amount: number;
+  payment_method: string | null;
+  created_date: string;
+  payment_account: string | null;
+  customer_email: string;
+  customer_name: string;
+  customer_phone: string;
+  shipping_location: string;
+  clerk_id: string;
+  city_town: string;
+  products: N8nProductDetail[];
+}
+
+interface SlackBlock {
+  type: string;
+  [key: string]: any;
+}
+
+interface SlackMessage {
+  blocks: SlackBlock[];
+}
+
+export type MessageType = 'order_notification' | 'payment_update' | 'order_shipped';
+// types/slack-blocks.ts
+export interface SlackText {
+  type: "plain_text" | "mrkdwn";
+  text: string;
+  emoji?: boolean;
+}
+
+export type SlackSection =
+  | {
+      type: "section";
+      text: SlackText;
+      accessory?: SlackAccessory;
+      fields?: never; // Cannot have fields if text is present
+    }
+  | {
+      type: "section";
+      fields: SlackText[];
+      text?: never; // Cannot have text if fields are present
+      accessory?: SlackAccessory;
+    };
+
+export interface SlackHeader {
+  type: "header";
+  text: SlackText;
+}
+
+export interface SlackDivider {
+  type: "divider";
+}
+
+export interface SlackButton {
+  type: "button";
+  text: SlackText;
+  value?: string;
+  url?: string;
+  action_id?: string;
+  style?: "primary" | "danger";
+}
+
+export interface SlackActions {
+  type: "actions";
+  elements: SlackButton[];
+}
+
+export interface SlackAccessory {
+  type: "image" | "button";
+  image_url?: string;
+  alt_text?: string;
+  text?: SlackText;
+  value?: string;
+  action_id?: string;
+}
+
+export interface SlackImageBlock {
+  type: "image";
+  image_url: string;
+  alt_text: string;
+  title?: SlackText;
+}
+
+export type SlackBlock = SlackHeader | SlackSection | SlackDivider | SlackActions | SlackImageBlock;
+
+export interface SlackBlockKit {
+  blocks: SlackBlock[];
+}
+
