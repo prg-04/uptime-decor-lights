@@ -441,7 +441,9 @@ const generateDefaultHomePageSettings = (): HomePageSettings => {
 export const getAllProducts = cache(async (): Promise<Product[]> => {
   console.log("⏳ Fetching all products from Sanity...");
   try {
-    const products = await sanityClient.fetch<Product[]>(getAllProductsQuery);
+    const products = await sanityClient.fetch<Product[]>(getAllProductsQuery, {
+      next: { revalidate: 60 },
+    });
     console.log(`✅ Fetched ${products?.length ?? 0} products initially.`);
     if (!products || products.length === 0) {
       console.warn("⚠️ No products found in Sanity.");
@@ -561,7 +563,8 @@ export const getProductById = cache(
     try {
       const product = await sanityClient.fetch<Product | null>(
         getProductByIdQuery,
-        { id }
+        { id },
+        { next: { revalidate: 60 } }
       );
       console.log(
         `✅ Fetched product by ID ${id}:`,
@@ -694,7 +697,11 @@ export const getCategoryBySlug = cache(
       console.warn("⚠️ getCategoryBySlug called with no slug.");
       return undefined;
     }
-    const categories = await getAllCategories(); // Leverage existing cached function
+    const categories = await sanityClient.fetch<Category[]>(
+      getAllCategoriesQuery,
+      {},
+      { next: { revalidate: 60 } }
+    );
     const category = categories.find((cat) => cat.slug?.current === slug);
     console.log(
       `✅ Category lookup for slug "${slug}":`,

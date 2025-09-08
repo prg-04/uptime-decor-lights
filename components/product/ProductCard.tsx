@@ -97,7 +97,7 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.description}
         </p>
         <p className="text-lg font-bold text-primary">
-          Ksh {product.price.toFixed(2)}
+          Ksh {product.price ? product.price.toFixed(2) : "N/A"}
         </p>{" "}
         {/* Updated currency */}
       </CardContent>
