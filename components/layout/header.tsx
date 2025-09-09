@@ -36,6 +36,8 @@ import {
   UserButton,
   useUser,
 } from "@clerk/nextjs";
+import { SearchBar } from "@/components/layout/SearchBar";
+import { Search } from "lucide-react";
 
 export function Header() {
   // Use getItemCount for the badge display
@@ -45,6 +47,8 @@ export function Header() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [isDesktopSearchOpen, setIsDesktopSearchOpen] = useState(false); // New state for desktop search
   const [isClient, setIsClient] = useState(false); // State to track client-side mount
 
   const [isLoggedIn] = useState(true); // Assuming a default logged-in state for demonstration
@@ -125,12 +129,25 @@ export function Header() {
         </Link>
 
         {/* Desktop Navigation - Allow wrapping */}
-        <NavigationMenu className="hidden lg:flex lg:items-center lg:justify-center lg:flex-1 mx-auto">
+        <NavigationMenu className="hidden lg:flex lg:items-center lg:justify-start mx-auto">
           {/* Apply flex-wrap to allow wrapping on smaller large screens, adjust gap */}
-          <NavigationMenuList className="flex-wrap justify-center gap-x-0">
+          <NavigationMenuList className="flex-wrap justify-center gap-x-2 md:gap-x-4">
             {renderNavLinks()}
           </NavigationMenuList>
         </NavigationMenu>
+
+        {/* Search Icon (Desktop) */}
+        <div className="hidden lg:flex lg:justify-end relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-7 h-7 rounded-2xl border border-gray-200 p-2"
+            onClick={() => setIsDesktopSearchOpen(!isDesktopSearchOpen)}
+          >
+            <Search className="h-7 w-7" />
+            <span className="sr-only">Open Search</span>
+          </Button>
+        </div>
 
         {/* Cart Icon & Mobile Menu Trigger */}
         <div className="flex items-center space-x-2 md:space-x-3 flex-shrink-0 ml-4">
@@ -187,81 +204,100 @@ export function Header() {
             </SignedOut>
           )}
 
-          {/* Mobile Menu Button - Visible below lg breakpoint */}
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="w-7 h-7 rounded-2xl border border-gray-200 p-2"
-              >
-                <Menu className="h-7 w-7" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="w-[280px] sm:w-[340px] pt-10 px-0"
+          {/* Mobile Search Icon & Menu Button - Visible below lg breakpoint */}
+          <div className="lg:hidden flex items-center space-x-2">
+            {/* Mobile Search Icon */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-7 h-7 rounded-2xl border border-gray-200 p-2"
+              onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)} // Toggle search visibility
             >
-              {" "}
-              {/* Added padding top */}
-              <div className="flex flex-col space-y-3 p-4">
-                <SheetClose asChild>
-                  <SheetHeader>
-                    <SheetTitle>
-                      <Link
-                        href="/"
-                        className="block px-4 py-2 text-lg font-semibold hover:bg-accent hover:text-accent-foreground rounded-md"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        Home
-                      </Link>
-                    </SheetTitle>
-                  </SheetHeader>
-                </SheetClose>
-                <Separator />
-                {renderNavLinks(true)}
-                <Separator />
-                <SheetClose asChild>
-                  <Link
-                    href="/cart"
-                    className="flex items-center justify-between px-4 text-lg hover:bg-accent hover:text-accent-foreground rounded-md"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span>Cart</span>
-                    {/* Render mobile badge only on client */}
-                    {isClient && itemCount > 0 && (
-                      <Badge
-                        variant="destructive"
-                        className="h-5 w-5 flex items-center text-white justify-center p-0 text-xs"
-                      >
-                        {itemCount > 9 ? "9+" : itemCount}
-                      </Badge>
-                    )}
-                  </Link>
-                </SheetClose>
-                {/* <SheetClose asChild> */}
+              <Search className="h-7 w-7" />
+              <span className="sr-only">Open Search</span>
+            </Button>
 
-                <SignedIn>
-                  <SignOutButton>
-                    <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
-                      Sign out
-                    </button>
-                  </SignOutButton>
-                </SignedIn>
-                <SignedOut>
-                  <SignInButton>
-                    <button className="hidden text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
-                      Sign in
-                    </button>
-                  </SignInButton>
-                </SignedOut>
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="w-7 h-7 rounded-2xl border border-gray-200 p-2"
+                >
+                  <Menu className="h-7 w-7" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="w-[280px] sm:w-[340px] pt-10 px-0"
+              >
+                <div className="flex flex-col space-y-3 p-4">
+                  <SheetClose asChild>
+                    <SheetHeader>
+                      <SheetTitle>
+                        <Link
+                          href="/"
+                          className="block px-4 py-2 text-lg font-semibold hover:bg-accent hover:text-accent-foreground rounded-md"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          Home
+                        </Link>
+                      </SheetTitle>
+                    </SheetHeader>
+                  </SheetClose>
+                  <Separator />
+                  {renderNavLinks(true)}
+                  <Separator />
+                  <SheetClose asChild>
+                    <Link
+                      href="/cart"
+                      className="flex items-center justify-between px-4 text-lg hover:bg-accent hover:text-accent-foreground rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span>Cart</span>
+                      {isClient && itemCount > 0 && (
+                        <Badge
+                          variant="destructive"
+                          className="h-5 w-5 flex items-center text-white justify-center p-0 text-xs"
+                        >
+                          {itemCount > 9 ? "9+" : itemCount}
+                        </Badge>
+                      )}
+                    </Link>
+                  </SheetClose>
 
-                {/* </SheetClose> */}
-              </div>
-            </SheetContent>
-          </Sheet>
+                  <SignedIn>
+                    <SignOutButton>
+                      <button className="text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
+                        Sign out
+                      </button>
+                    </SignOutButton>
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton>
+                      <button className="hidden text-sm border bg-black border-gray-300 py-2 px-4 rounded-lg font-medium text-white hover:text-gray-900">
+                        Sign in
+                      </button>
+                    </SignInButton>
+                    </SignedOut>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
+        {/* Mobile Search Bar outside Sheet, conditionally rendered */}
+        {isMobileSearchOpen && (
+          <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-md z-40 p-4">
+            <SearchBar isMobile={true} isInitiallyOpen={isMobileSearchOpen} />
+          </div>
+        )}
+        {/* Desktop Search Overlay, conditionally rendered */}
+        {isDesktopSearchOpen && (
+          <div className="hidden lg:block absolute top-full right-0 w-96 bg-white shadow-md z-40 p-4">
+            <SearchBar isMobile={false} isInitiallyOpen={isDesktopSearchOpen} />
+          </div>
+        )}
       </div>
     </header>
   );

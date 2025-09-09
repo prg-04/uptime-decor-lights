@@ -243,6 +243,21 @@ const getHomePageSettingsQuery = groq`*[_type == "homePageSettings" && _id == "h
   }
 }`;
 
+// Query to search products with optional category and fuzzy matching
+const searchProductsQuery = groq`
+  *[_type == "product" && ($category == "" || category->slug.current == $category) && (name match $query || description match $query || category->name match $query)] {
+    ${productFields}
+  }
+`;
+
+// Query to get search suggestions (product names and categories)
+const getSearchSuggestionsQuery = groq`
+  {
+    "products": *[_type == "product" && (name match $query || category->name match $query)][0...5].name,
+    "categories": *[_type == "category" && name match $query][0...5].name
+  }
+`;
+
 // --- Data Fetching Functions ---
 
 const defaultPicsumUrl = (seed: string, width: number, height: number) =>
@@ -441,7 +456,9 @@ const generateDefaultHomePageSettings = (): HomePageSettings => {
 export const getAllProducts = cache(async (): Promise<Product[]> => {
   console.log("⏳ Fetching all products from Sanity...");
   try {
-    const products = await sanityClient.fetch<Product[]>(getAllProductsQuery);
+    const products = await sanityClient.fetch<Product[]>(getAllProductsQuery, {
+      next: { revalidate: 60 },
+    });
     console.log(`✅ Fetched ${products?.length ?? 0} products initially.`);
     if (!products || products.length === 0) {
       console.warn("⚠️ No products found in Sanity.");
@@ -561,7 +578,8 @@ export const getProductById = cache(
     try {
       const product = await sanityClient.fetch<Product | null>(
         getProductByIdQuery,
-        { id }
+        { id },
+        { next: { revalidate: 60 } }
       );
       console.log(
         `✅ Fetched product by ID ${id}:`,
@@ -694,7 +712,11 @@ export const getCategoryBySlug = cache(
       console.warn("⚠️ getCategoryBySlug called with no slug.");
       return undefined;
     }
-    const categories = await getAllCategories(); // Leverage existing cached function
+    const categories = await sanityClient.fetch<Category[]>(
+      getAllCategoriesQuery,
+      {},
+      { next: { revalidate: 60 } }
+    );
     const category = categories.find((cat) => cat.slug?.current === slug);
     console.log(
       `✅ Category lookup for slug "${slug}":`,
@@ -865,3 +887,121 @@ export const getHomePageSettings = async (): Promise<HomePageSettings> => {
   }
   // });
 };
+
+/**
+ * Searches for products based on a query, with optional category filtering and sorting.
+ * Implements basic fuzzy matching using Sanity's 'match' operator.
+ * @param searchQuery The search term.
+ * @param categorySlug Optional category slug to filter by.
+ * @param sortBy How to sort the results ('relevance', 'price-asc', 'price-desc').
+ * @returns A promise that resolves to an array of Product objects.
+ */
+export const searchProducts = cache(
+  async (
+    searchQuery: string,
+    categorySlug: string = "",
+    sortBy: "relevance" | "price-asc" | "price-desc" = "relevance"
+  ): Promise<Product[]> => {
+    console.log(
+      `⏳ Searching products for query: "${searchQuery}", category: "${categorySlug}", sort: "${sortBy}"`
+    );
+    try {
+      // Sanitize query for GROQ 'match' operator
+      const fuzzyQuery = searchQuery ? `*${searchQuery}*` : "";
+
+      let products = await sanityClient.fetch<Product[]>(searchProductsQuery, {
+        query: fuzzyQuery,
+        category: categorySlug,
+      });
+
+      if (!products || products.length === 0) {
+        console.log("⚠️ No products found for the given search criteria.");
+        return [];
+      }
+
+      // Post-process for sorting (Sanity GROQ has limited sorting capabilities for complex queries)
+      switch (sortBy) {
+        case "price-asc":
+          products.sort((a, b) => a.price - b.price);
+          break;
+        case "price-desc":
+          products.sort((a, b) => b.price - a.price);
+          break;
+        case "relevance":
+        default:
+          // For 'relevance', we can prioritize exact matches if possible
+          // This is a simple heuristic; a dedicated search service would be better for true relevance
+          if (searchQuery) {
+            const lowerCaseQuery = searchQuery.toLowerCase();
+            products.sort((a, b) => {
+              const aNameMatch = a.name.toLowerCase().includes(lowerCaseQuery);
+              const bNameMatch = b.name.toLowerCase().includes(lowerCaseQuery);
+              const aDescMatch = a.description.toLowerCase().includes(lowerCaseQuery);
+              const bDescMatch = b.description.toLowerCase().includes(lowerCaseQuery);
+
+              if (aNameMatch && !bNameMatch) return -1;
+              if (!aNameMatch && bNameMatch) return 1;
+              if (aDescMatch && !bDescMatch) return -1;
+              if (!aDescMatch && bDescMatch) return 1;
+              return 0;
+            });
+          }
+          break;
+      }
+
+      const processedProducts = products
+        .map(ensureProductImages)
+        .filter((p): p is Product => p !== null);
+
+      console.log(
+        `✅ Found and processed ${processedProducts.length} products for search.`
+      );
+      return processedProducts;
+    } catch (error: any) {
+      console.error(
+        `❌ Failed to search products from Sanity for query "${searchQuery}":`,
+        error.message
+      );
+      if (error.response?.body)
+        console.error("Sanity Error Body:", error.response.body);
+      return [];
+    }
+  }
+);
+
+/**
+ * Retrieves search suggestions based on a partial query.
+ * Returns a combined list of matching product names and category names.
+ * @param partialQuery The partial search term for suggestions.
+ * @returns A promise that resolves to an object containing arrays of product and category suggestions.
+ */
+export const getSearchSuggestions = cache(
+  async (
+    partialQuery: string
+  ): Promise<{ products: string[]; categories: string[] }> => {
+    console.log(`⏳ Fetching search suggestions for: "${partialQuery}"`);
+    if (!partialQuery) {
+      return { products: [], categories: [] };
+    }
+    try {
+      const fuzzyQuery = `*${partialQuery}*`;
+      const suggestions = await sanityClient.fetch<{
+        products: string[];
+        categories: string[];
+      }>(getSearchSuggestionsQuery, { query: fuzzyQuery });
+
+      console.log(
+        `✅ Fetched suggestions: ${suggestions.products.length} products, ${suggestions.categories.length} categories.`
+      );
+      return suggestions;
+    } catch (error: any) {
+      console.error(
+        `❌ Failed to fetch search suggestions for "${partialQuery}":`,
+        error.message
+      );
+      if (error.response?.body)
+        console.error("Sanity Error Body:", error.response.body);
+      return { products: [], categories: [] };
+    }
+  }
+);
