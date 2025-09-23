@@ -36,7 +36,7 @@ const Thumb: React.FC<ThumbProps> = (props) => {
         aria-label={`View image ${index + 1}`}
       >
         <Image
-          className="embla-thumbs__slide__img w-full h-full object-cover"
+          className="embla-thumbs__slide__img w-full h-full object-cover "
           src={validImgSrc}
           alt={altText}
           width={100}
@@ -111,7 +111,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               image.url || `https://picsum.photos/seed/main${index}/600/600`;
             return (
               <div
-                className="embla__slide relative flex-shrink-0 w-full aspect-square "
+                className="embla__slide relative flex-shrink-0 w-full "
                 key={image._key || index}
               >
                 <Image
@@ -150,7 +150,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
               ))}
             </div>
           </div>
-        </div>
+        </div> 
       )}
     </div>
   );
