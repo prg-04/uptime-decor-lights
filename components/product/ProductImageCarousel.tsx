@@ -118,7 +118,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
                   src={validUrl}
                   alt={image.alt || `${productName} - Image ${index + 1}`}
                   fill
-                  // sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
                   priority={index === 0} // Prioritize the first image
                   unoptimized={validUrl.includes("picsum.photos")}
