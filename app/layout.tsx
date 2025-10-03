@@ -26,7 +26,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" className="h-full">
         {/* Apply the font variables to the body */}
-        <meta name="facebook-domain-verification" content="o2bzb51a8mmkbd9f4cdmczj786uk9h" />
+        <head>
+
+          <meta name="facebook-domain-verification" content="o2bzb51a8mmkbd9f4cdmczj786uk9h" />
+        </head>
 
         <body
           className={cn(
