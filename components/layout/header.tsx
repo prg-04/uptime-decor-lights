@@ -110,6 +110,7 @@ export function Header() {
 
   return (
     <header className="bg-white shadow-xs sticky top-0 z-50">
+      <meta name="facebook-domain-verification" content="o2bzb51a8mmkbd9f4cdmczj786uk9h" />
       {/* Increased max-width for the container */}
       <div className="container mx-auto px-3 py-2 flex justify-between items-center max-w-7xl">
         {/* Logo */}
